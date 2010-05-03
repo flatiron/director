@@ -8,7 +8,9 @@ var SugarSkull = (typeof SugarSkull != "undefined") ? SugarSkull : {
 SugarSkull.App.ExecutiveDelegation = function(params) {
 	var namespace = params.namespace;
 	
-	window[params.author || "SugarSkull"] = SugarSkull;
+	if(window[params.author] == "undefined") {
+		window[params.author || "SugarSkull"] = SugarSkull;
+	}
 
 	if(typeof window[params.author].App.NamespaceManager[namespace] == "undefined") {
 		window[params.author].App.NamespaceManager[namespace] = {};
