@@ -54,12 +54,11 @@ var APP = (typeof APP != "undefined") ? APP : {
 
     /* public */ return {
 
-        Main: function() { /* the main entry point for the program, is fired automatically. */
+        Main: function() {
 
             APP.exec.call(this, {
-            /* some sugar to take care of namespacing, execution-context and code orginization. */
 
-                ns: "myNS.foobar.bazz", /* the namespace that this code structure should be stored in. */
+                ns: "myNS.foobar.bazz", /* the full namespace for this code (wont overwrite) */
 
                 plan: [ /* an array of names of functions that will be executed. */
 
@@ -71,8 +70,7 @@ var APP = (typeof APP != "undefined") ? APP : {
         },
 
         UnitOne: function(args) {
-            //console.log("asd")
-            console.dir(myNS.foobar.bazz)
+            /* code... */
         },
 
         UnitTwo: function() {
