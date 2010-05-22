@@ -1,88 +1,86 @@
-
 // --- LIBRARY CODE ----------------------------------------------
 
-var SugarSkull = (typeof SugarSkull != "undefined") ? SugarSkull : {
-	App: { ExecutivePlan: {}, NamespaceManager: {} }
-};
+var APP = (typeof APP != "undefined") ? APP : (function() {
 
-SugarSkull.App.ExecutiveDelegation = function(params) {
-	var namespace = params.namespace;
-	
-	if(window[params.author] == "undefined") {
-		window[params.author || "SugarSkull"] = SugarSkull;
-	}
+	return {
 
-	if(typeof window[params.author].App.NamespaceManager[namespace] == "undefined") {
-		window[params.author].App.NamespaceManager[namespace] = {};
-	}
-	else {
-		alert("fatal development error occured, namespace collision: " + params.namespace);
-		return;
-	}
+		plan: {},
 
-	var self = this;
-	var methods = (typeof window[params.author].App.ExecutivePlan[namespace] == "undefined") ? 
-		params.executivePlan : window[params.author].App.ExecutivePlan[namespace];
+		exec: function(params) {
+			
+		    var strNS = params.ns;
+			var ns = {};
+		    var sectors = strNS.split('.');
 
-	$.each(methods, function(i, method) {
+		    for (var i = 0; i < sectors.length; i++) {
+				var sector = sectors[i];
+				
+				if (i == 0 && !window[sector]) {
+					window[sector] = {};
+					ns = window[sector];
+				}
+				else {
+					ns = (ns[sector] ? ns[sector] : {});
+				}
+		    }
 
-		if(Object.prototype.toString.call(method) == "[object Array]") {
-			self[method[0]].apply(self, method.slice(1, method.length));
+			var self = this;
+			var methods = (typeof APP.plan[namespace] == "undefined") ? 
+				params.plan : APP.plan[namespace];
+
+			for(method in methods) {
+				if(Object.prototype.toString.call(method) == "[object Array]") {
+					self[method[0]].apply(self, method.slice(1, method.length));
+				}
+				else {
+					self[method].apply(self);			
+				}
+			}
+
+			delete this.Main;
+			return (ns = this);
 		}
-		else {
-			self[method].apply(self);			
-		}
-	});
-
-	delete this.Main;
-	return (window[params.author].App[namespace] = this);
-};
-
+	}
+})();
 
 // --- APPLICATION CODE ----------------------------------------------
 
+ (function() {
 
-$(function(){
+	/* private */
 
-	 (function() {
+		/* code... */
 
-		/* private */
+	/* public */ return {
 
-			/* code... */
+		Main: function() { /* the main entry point for the program, is fired automatically. */
 
-		/* public */ return {
+			APP.exec.call(this, {
+			/* some sugar to take care of namespacing, execution-context and code orginization. */
 
-			Main: function() { /* the main entry point for the program, is fired automatically. */
+				ns: "myNS.foo", /* the namespace that this code structure should be stored in. */
 
-				return SugarSkull.App.ExecutiveDelegation.call(this, { /* some sugar to take care of namespacing, execution-context and code orginization. */
+				plan: [ /* functions from this structure that are to be executed. */
 
-					author: "myGlobalNamespace",
-					namespace: "nsOne", /* the namespace that this code structure should be stored in. */
+					["UnitOne", "test1"]
+					,"UnitTwo"
+					,"UnitThree"
+				]
+			});
+		},
 
-					executivePlan: [ /* functions from this structure that are to be executed. */
+		UnitOne: function(args) {
+			document.write(args[1]);
+		},
 
-						"UnitOne"
-						,"UnitTwo"
-						,"UnitThree"
-					]
+		UnitTwo: function() {
+			document.write(this);
+		},
 
-				});
+		UnitThree: function() {
+			document.write("test3");
+		}					
 
-			},
 
-			UnitOne: function() {
-				/* code... */
-			},
-			
-			UnitTwo: function() {
-				/* code... */
-			},
-			
-			UnitThree: function() {
-				/* code... */
-			}					
-			
-			
-		}
-	})().Main();
-});
+	}
+})().Main();
