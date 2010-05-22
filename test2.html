@@ -1,75 +1,75 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
-	<head>
-		<title></title>
-		<script src="SugarSkull.js" type="text/javascript" charset="utf-8"></script>
-		<script type="text/javascript" charset="utf-8">
-		
-		(function() {
+    <head>
+        <title></title>
+        <script src="SugarSkull.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" charset="utf-8">
 
-		    /* private */
+        (function() {
 
-		        var test = null;
+            /* private */
 
-		    /* public */ return {
+                var test = null;
 
-		        Main: function() {
+            /* public */ return {
 
-		            APP.exec.call(this, {
+                Main: function() {
 
-		                ns: "myNS.foo.test", /* the full namespace for this code (wont overwrite) */
+                    APP.exec.call(this, {
 
-		                plan: [ /* an array of names of functions that will be executed. */
+                        ns: "myNS.foo.test", /* the full namespace for this code (wont overwrite) */
 
-		                    "Init"
-		                    ,["SetupPage", "get"]
-		                    ,"BackgroundTask"
-							,"dart"
-		                ]
-		            });
-		        },
+                        plan: [ /* an array of names of functions that will be executed. */
 
-		        Init: function() {
-					test = this;
-		        },
-		
-				SetupPage: function(args) {
-					this.widgets.one(args[0]);
-					///* same as... */// test.widgets.one(args[0]);
-				},
-				
-				BackgroundTask: function() {
-				},
+                            "Init"
+                            ,["SetupPage", "get"]
+                            ,"BackgroundTask"
+                            ,"dart"
+                        ]
+                    });
+                },
 
-		        widgets: { // some kind of ui code.
-					one: function(method) { 
-						document.write(test.DAL[method].somedata());
-					},
-					two: function() {
-					},
-					three: function() {
-					}
-		        },
+                Init: function() {
+                    test = this;
+                },
 
-		        DAL: { // data access layer.
-					get: {
-						somedata: function() {
-							return "somedata";
-		        		}
-					},
-					set: {
-						somedata: function() {
-							return "someotherdata";							
-						}
-					}
-				}
+                SetupPage: function(args) {
+                    this.widgets.one(args[0]);
+                    ///* same as... */// test.widgets.one(args[0]);
+                },
 
-		    }
-		})().Main();
+                BackgroundTask: function() {
+                },
 
-		</script>
-	</head>
-	<body>
+                widgets: { // some kind of ui code.
+                    one: function(method) {
+                        document.write(test.DAL[method].somedata());
+                    },
+                    two: function() {
+                    },
+                    three: function() {
+                    }
+                },
 
-	</body>
+                DAL: { // data access layer.
+                    get: {
+                        somedata: function() {
+                            return "somedata";
+                        }
+                    },
+                    set: {
+                        somedata: function() {
+                            return "someotherdata";
+                        }
+                    }
+                }
+
+            }
+        })().Main();
+
+        </script>
+    </head>
+    <body>
+
+    </body>
 </html>

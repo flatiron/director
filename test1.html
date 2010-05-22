@@ -1,51 +1,51 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
-	<head>
-		<title></title>
-		<script src="SugarSkull.js" type="text/javascript" charset="utf-8"></script>
-		<script type="text/javascript" charset="utf-8">
-		
-		 (function() {
-		
-		    /* private */
-		
-		        /* code... */
-		
-		    /* public */ return {
-		
-		        Main: function() {
-		
-		            APP.exec.call(this, {
-		
-		                ns: "myNS.foobar.bazz", /* the full namespace for this code (wont overwrite) */
-		
-		                plan: [ /* an array of names of functions that will be executed. */
-		
-		                    ["UnitOne", "foo", 13, function() {}] /* sample parameters */
-		                    ,"UnitTwo"
-		                    ,"UnitThree"
-		                ]
-		            });
-		        },
-		
-		        UnitOne: function(args) {
-		            /* code... */
-		        },
-		
-		        UnitTwo: function() {
-		            /* code... */
-		        },
-		
-		        UnitThree: function() {
-		            /* code... */
-		        }
-		
-		    }
-		})().Main();
+    <head>
+        <title></title>
+        <script src="SugarSkull.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" charset="utf-8">
 
-		</script>
-	</head>
-	<body>
+         (function() {
 
-	</body>
+            /* private */
+
+                /* code... */
+
+            /* public */ return {
+
+                Main: function() {
+
+                    APP.exec.call(this, {
+
+                        ns: "myNS.foobar.bazz", /* the full namespace for this code (wont overwrite) */
+
+                        plan: [ /* an array of names of functions that will be executed. */
+
+                            ["UnitOne", "foo", 13, function() {}] /* sample parameters */
+                            ,"UnitTwo"
+                            ,"UnitThree"
+                        ]
+                    });
+                },
+
+                UnitOne: function(args) {
+                    /* code... */
+                },
+
+                UnitTwo: function() {
+                    /* code... */
+                },
+
+                UnitThree: function() {
+                    /* code... */
+                }
+
+            }
+        })().Main();
+
+        </script>
+    </head>
+    <body>
+
+    </body>
 </html>
