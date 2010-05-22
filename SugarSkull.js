@@ -1,5 +1,3 @@
-// --- LIBRARY CODE ----------------------------------------------
-
 var APP = (typeof APP != "undefined") ? APP : {
 
     overrides: {},
@@ -34,52 +32,20 @@ var APP = (typeof APP != "undefined") ? APP : {
             params.plan : APP.overrides[ns];
 
         for(method in methods) {
-            if(Object.prototype.toString.call(methods[method]) == "[object Array]") {
-                self[methods[method][0]].call(self, methods[method].slice(1, methods[method].length));
-            }
-            else {
-                self[methods[method]].call(self);
-            }
+			try {
+	            if(Object.prototype.toString.call(methods[method]) == "[object Array]") {
+	                self[methods[method][0]].call(self, methods[method].slice(1, methods[method].length));
+	            }
+	            else {
+	                self[methods[method]].call(self);
+	            }
+			}
+			catch(ex) {
+				var error = new Error();
+				error.name = "No such method";
+				error.message = "Execution-Plan method '"+methods[method]+"' not found.";
+				throw(error);
+			}
         }
     }
 };
-
-// --- APPLICATION CODE ----------------------------------------------
-
- (function() {
-
-    /* private */
-
-        /* code... */
-
-    /* public */ return {
-
-        Main: function() {
-
-            APP.exec.call(this, {
-
-                ns: "myNS.foobar.bazz", /* the full namespace for this code (wont overwrite) */
-
-                plan: [ /* an array of names of functions that will be executed. */
-
-                    ["UnitOne", "foo", 13, function() {}] /* sample parameters */
-                    ,"UnitTwo"
-                    ,"UnitThree"
-                ]
-            });
-        },
-
-        UnitOne: function(args) {
-            /* code... */
-        },
-
-        UnitTwo: function() {
-            /* code... */
-        },
-
-        UnitThree: function() {
-            /* code... */
-        }
-
-    }
-})().Main();
