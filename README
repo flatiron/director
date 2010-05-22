@@ -1,11 +1,9 @@
 After examining your spec, choosing your libraries, and conducting your pre-dev rituals, etc., when you sit down to write your first line; think hypothetically, about your last line, and ask yourself: "did you have a good code organization strategy?"
 
 
-SugarSkull tries to address the following issues...
+SugarSkull tries to address the following issues with as few moving parts as possible...
 
   A. Clarification of the execution path.
   B. Isolation of intention.
   C. Exclusion without interference.
   D. Static conditional execution.
-  E. Fewest moving parts.
-
