@@ -32,20 +32,20 @@ var APP = (typeof APP != "undefined") ? APP : {
             params.plan : APP.overrides[ns];
 
         for(method in methods) {
-			try {
-	            if(Object.prototype.toString.call(methods[method]) == "[object Array]") {
-	                self[methods[method][0]].call(self, methods[method].slice(1, methods[method].length));
-	            }
-	            else {
-	                self[methods[method]].call(self);
-	            }
-			}
-			catch(ex) {
-				var error = new Error();
-				error.name = "No such method";
-				error.message = "Execution-Plan method '"+methods[method]+"' not found.";
-				throw(error);
-			}
+            try {
+                if(Object.prototype.toString.call(methods[method]) == "[object Array]") {
+                    self[methods[method][0]].call(self, methods[method].slice(1, methods[method].length));
+                }
+                else {
+                    self[methods[method]].call(self);
+                }
+            }
+            catch(ex) {
+                var error = new Error();
+                error.name = "No such method";
+                error.message = "Execution-Plan method '"+methods[method]+"' not found.";
+                throw(error);
+            }
         }
     }
 };
