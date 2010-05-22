@@ -22,9 +22,12 @@ var APP = (typeof APP != "undefined") ? APP : {
 				ns = window[sector];
 			}
 			else {
-				ns = (ns[sector] ? ns[sector] : {});
+				ns = ns[sector] = (ns[sector] ? ns[sector] : {});
 			}
 	    }
+	
+		delete this.Main;
+		eval(params.ns + " = this;");
 
 		var self = this;
 		var methods = (typeof APP.overrides[ns] == "undefined") ? 
@@ -38,9 +41,6 @@ var APP = (typeof APP != "undefined") ? APP : {
 				self[methods[method]].call(self);			
 			}
 		}
-
-		delete this.Main;
-		return (ns = this);
 	}
 };
 
@@ -71,7 +71,8 @@ var APP = (typeof APP != "undefined") ? APP : {
 		},
 
 		UnitOne: function(args) {
-			/* code... */
+			//console.log("asd")
+			console.dir(myNS.foobar.bazz)
 		},
 
 		UnitTwo: function() {
