@@ -9,14 +9,14 @@ var APP = (typeof APP != "undefined") ? APP : {
 	},
 
 	exec: function(params) {
-		
+
 	    var strNS = params.ns;
 		var ns = {};
 	    var sectors = strNS.split('.');
 
 	    for (var i = 0; i < sectors.length; i++) {
 			var sector = sectors[i];
-			
+
 			if (i == 0 && !window[sector]) {
 				window[sector] = {};
 				ns = window[sector];
@@ -31,11 +31,11 @@ var APP = (typeof APP != "undefined") ? APP : {
 			params.plan : APP.overrides[ns];
 
 		for(method in methods) {
-			if(Object.prototype.toString.call(method) == "[object Array]") {
-				self[method[0]].apply(self, method.slice(1, method.length));
+			if(Object.prototype.toString.call(methods[method]) == "[object Array]") {
+				self[methods[method][0]].call(self, methods[method].slice(1, methods[method].length));
 			}
 			else {
-				self[method].apply(self);			
+				self[methods[method]].call(self);			
 			}
 		}
 
@@ -61,9 +61,9 @@ var APP = (typeof APP != "undefined") ? APP : {
 
 				ns: "myNS.foobar.bazz", /* the namespace that this code structure should be stored in. */
 
-				plan: [ /* functions from this structure that are to be executed. */
+				plan: [ /* an array of names of functions that will be executed. */
 
-					["UnitOne", "test1"]
+					["UnitOne", "foo", 13, function() {}] /* sample parameters */
 					,"UnitTwo"
 					,"UnitThree"
 				]
@@ -71,17 +71,16 @@ var APP = (typeof APP != "undefined") ? APP : {
 		},
 
 		UnitOne: function(args) {
-			document.write(args[1]);
+			/* code... */
 		},
 
 		UnitTwo: function() {
-			document.write(this);
+			/* code... */
 		},
 
 		UnitThree: function() {
-			document.write("test3");
+			/* code... */
 		}					
-
 
 	}
 })().Main();
