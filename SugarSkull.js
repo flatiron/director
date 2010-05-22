@@ -1,47 +1,48 @@
 // --- LIBRARY CODE ----------------------------------------------
 
-var APP = (typeof APP != "undefined") ? APP : (function() {
+var APP = (typeof APP != "undefined") ? APP : {
 
-	return {
+	overrides: {},
 
-		plan: {},
+	override: function(ns, plan) {
+		overrides[ns] = plan;
+	},
 
-		exec: function(params) {
+	exec: function(params) {
+		
+	    var strNS = params.ns;
+		var ns = {};
+	    var sectors = strNS.split('.');
+
+	    for (var i = 0; i < sectors.length; i++) {
+			var sector = sectors[i];
 			
-		    var strNS = params.ns;
-			var ns = {};
-		    var sectors = strNS.split('.');
-
-		    for (var i = 0; i < sectors.length; i++) {
-				var sector = sectors[i];
-				
-				if (i == 0 && !window[sector]) {
-					window[sector] = {};
-					ns = window[sector];
-				}
-				else {
-					ns = (ns[sector] ? ns[sector] : {});
-				}
-		    }
-
-			var self = this;
-			var methods = (typeof APP.plan[namespace] == "undefined") ? 
-				params.plan : APP.plan[namespace];
-
-			for(method in methods) {
-				if(Object.prototype.toString.call(method) == "[object Array]") {
-					self[method[0]].apply(self, method.slice(1, method.length));
-				}
-				else {
-					self[method].apply(self);			
-				}
+			if (i == 0 && !window[sector]) {
+				window[sector] = {};
+				ns = window[sector];
 			}
+			else {
+				ns = (ns[sector] ? ns[sector] : {});
+			}
+	    }
 
-			delete this.Main;
-			return (ns = this);
+		var self = this;
+		var methods = (typeof APP.overrides[ns] == "undefined") ? 
+			params.plan : APP.overrides[ns];
+
+		for(method in methods) {
+			if(Object.prototype.toString.call(method) == "[object Array]") {
+				self[method[0]].apply(self, method.slice(1, method.length));
+			}
+			else {
+				self[method].apply(self);			
+			}
 		}
+
+		delete this.Main;
+		return (ns = this);
 	}
-})();
+};
 
 // --- APPLICATION CODE ----------------------------------------------
 
@@ -58,7 +59,7 @@ var APP = (typeof APP != "undefined") ? APP : (function() {
 			APP.exec.call(this, {
 			/* some sugar to take care of namespacing, execution-context and code orginization. */
 
-				ns: "myNS.foo", /* the namespace that this code structure should be stored in. */
+				ns: "myNS.foobar.bazz", /* the namespace that this code structure should be stored in. */
 
 				plan: [ /* functions from this structure that are to be executed. */
 
