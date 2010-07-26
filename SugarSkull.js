@@ -8,11 +8,19 @@ var APP = (typeof APP != "undefined") ? APP : {
 
     exec: function(params) {
 
-        var strNS = params.ns;
-        var ns = {};
-        var sectors = strNS.split('.');
+        var strNS = params.ns
+            ,self = this
+            ,ns = {}
+            ,sectors = strNS.split('.')
+            ,methods
+            ,isArray = (function() { return Array.isArray || function(obj) {
+                return !!(obj && obj.concat && obj.unshift && !obj.callee);
+            }})();
 
-        for (var i = 0; i < sectors.length; i++) {
+        var i = 0
+            ,len = sectors.length;
+
+        for (i; i < sectors.length; i++) {
             var sector = sectors[i];
 
             if (i == 0 && !window[sector]) {
@@ -27,24 +35,37 @@ var APP = (typeof APP != "undefined") ? APP : {
         delete this.Main;
         eval(params.ns + " = this;"); // TODO: there may be a better way to do this assignment.
 
-        var self = this;
-        var methods = (typeof APP.overrides[ns] == "undefined") ?
+        methods = (typeof APP.overrides[ns] == "undefined") ?
             params.plan : APP.overrides[ns];
 
         for(method in methods) {
-            try {
-                if(Object.prototype.toString.call(methods[method]) == "[object Array]") {
-                    self[methods[method][0]].call(self, methods[method].slice(1, methods[method].length));
+
+            if(isArray(methods[method])) {
+
+                var params = methods[method].slice(1, methods[method].length)
+                    ,i=params.length
+                    ,sync = false;
+
+                for(; i>0; i--) {
+                    if(params[i] === "sync") {
+                        sync = true;
+                    }
                 }
-                else {
-                    self[methods[method]].call(self);
-                }
+
+                sync ? self[methods[method][0]].call(self, params) :
+                    (function(method) {
+                        setTimeout(function() {
+                            self[method[0]].call(self, method.slice(1, method.length));
+                        }, 1);
+                    })(methods[method]);
             }
-            catch(ex) {
-                var error = new Error();
-                error.name = "No such method";
-                error.message = "Execution-Plan method '"+methods[method]+"' not found.";
-                throw(error);
+            else {
+
+                (function(method) {
+                    setTimeout(function() {
+                        self[method].call(self);
+                    }, 1);
+                })(methods[method])
             }
         }
     }
