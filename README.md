@@ -30,3 +30,7 @@ SugarSkull applies itself to an object literal and...
  - Isolation of intention (separates routing from implementations, allows you to organize your logic according to its purpose).
  - Code exclusion without interference.
  - Code portability.
+
+Version
+=======
+0.0.1(b)
