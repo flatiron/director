@@ -92,7 +92,7 @@ var SS = (typeof SS != "undefined") ? SS : {
     }
 
     delete this.Main;
-    eval(params.ns + " = this;"); // To-Do: there may be a better way to do this assignment.
+    params.ns = scope;
 
     firstMethods = (typeof SS.overrides[ns] == "undefined") ?
       params.first : SS.overrides[ns];
