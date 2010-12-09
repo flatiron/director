@@ -3,7 +3,7 @@ var SS = (typeof SS != "undefined") ? SS : {
   overrides: {},
 
   override: function(ns, first) {
-      overrides[ns] = first;
+    overrides[ns] = first;
   },
 
   router: {
@@ -14,38 +14,41 @@ var SS = (typeof SS != "undefined") ? SS : {
       var finishedRoutes = this.finishedRoutes;
       hash = hash.slice(1, hash.length).split("/");
 
-      for(name in namedRoutes) {
+      for(var name in namedRoutes) {
+        
+        if (namedRoutes.hasOwnProperty) {
 
-        var route = namedRoutes[name].route;
-        var match = false, finsihed = false;
+          var route = namedRoutes[name].route;
+          var match = false, finsihed = false;
   
-        for (var i=0; i < finishedRoutes.length; i++) {
-          if(name === finishedRoutes[i]) {
-            finsihed = true; break;
+          for (var i=0; i < finishedRoutes.length; i++) {
+            if(name === finishedRoutes[i]) {
+              finsihed = true; break;
+            }
           }
-        }
 
-        if(!finsihed && route) {
+          if(!finsihed && route) {
           
-          for (var i=0; i < route.length; i++) {
-            if(route[i] === hash[i] || route[i] === "*") {
-              match = true;
+            for (var r=0; r < route.length; r++) {
+              if(route[r] === hash[r] || route[r] === "*") {
+                match = true;
+              }
+              else {
+                match = false; break;
+              }
             }
-            else {
-              match = false; break;
-            }
-          }
 
-          if(match && route.length === hash.length) {
-            if(namedRoutes[name].once && namedRoutes[name].once === true) {
-              this.finishedRoutes.push(name);
+            if(match && route.length === hash.length) {
+              if(namedRoutes[name].once && namedRoutes[name].once === true) {
+                this.finishedRoutes.push(name);
+              }
+              namedRoutes[name].name = name;
+              return namedRoutes[name];
             }
-            namedRoutes[name].name = name;
-            return namedRoutes[name];
           }
-        }
-        else {
-          return namedRoutes["default"];
+          else {
+            return namedRoutes["default"];
+          }
         }
       }
 
@@ -61,14 +64,14 @@ var SS = (typeof SS != "undefined") ? SS : {
 
   exec: function(scope, params) {
 
-    var self = this
-        ,strNS = params.ns
-        ,ns = {}
-        ,sectors = strNS.split('.')
-        ,methods
-        ,isArray = (function() { return Array.isArray || function(obj) {
+    var self = this,
+        strNS = params.ns,
+        ns = {},
+        firstMethods,
+        sectors = strNS.split('.'),
+        isArray = (function() { return Array.isArray || function(obj) {
             return !!(obj && obj.concat && obj.unshift && !obj.callee);
-        }})();
+        }; })();
 
     this.router.namedRoutes = params.routes;
     this.router.onAllRoutes = params.onAllRoutes;
@@ -76,10 +79,10 @@ var SS = (typeof SS != "undefined") ? SS : {
 
     var i = 0, len = sectors.length;
 
-    for (i; i < sectors.length; i++) {
+    for (i; i < len; i++) {
       var sector = sectors[i];
 
-      if (i == 0 && !window[sector]) {
+      if (i === 0 && !window[sector]) {
         window[sector] = {};
         ns = window[sector];
       }
@@ -134,7 +137,7 @@ var SS = (typeof SS != "undefined") ? SS : {
 
       if(route) { // if the route is a match with the current hash.
         fireMethods(route.on, routeName);
-        if(route.leave) { r.leaveLastRoute = route.leave; };
+        if(route.leave) { r.leaveLastRoute = route.leave; }
       }
     });  
 
@@ -142,73 +145,73 @@ var SS = (typeof SS != "undefined") ? SS : {
 
   hashListener: { // original concept by Erik Arvidson
 
-    ie:		/MSIE/.test(navigator.userAgent),
-  	ieSupportBack:	true,
-  	hash:	document.location.hash,
+    ie:   /MSIE/.test(navigator.userAgent),
+    ieSupportBack:  true,
+    hash: document.location.hash,
 
-  	check:	function () {
-  		var h = document.location.hash;
-  		if (h != this.hash) {
-  			this.hash = h;
+    check:  function () {
+      var h = document.location.hash;
+      if (h != this.hash) {
+        this.hash = h;
 
-  			this.onHashChanged();
-  		}
-  	},
+        this.onHashChanged();
+      }
+    },
 
-  	Init:	function (fn) {
+    Init: function (fn) {
       
       this.onHashChanged = fn;
 
-  		// for IE we need the iframe state trick
-  		if (this.ie && this.ieSupportBack) {
-  			var frame = document.createElement("iframe");
-  			frame.id = "state-frame";
-  			frame.style.display = "none";
-  			document.body.SSendChild(frame);
-  			this.writeFrame("");
-  		}
+      // for IE we need the iframe state trick
+      if (this.ie && this.ieSupportBack) {
+        var frame = document.createElement("iframe");
+        frame.id = "state-frame";
+        frame.style.display = "none";
+        document.body.SSendChild(frame);
+        this.writeFrame("");
+      }
 
-  		var self = this;
+      var self = this;
 
-  		// IE
-  		if ("onpropertychange" in document && "attachEvent" in document) {
-  			document.attachEvent("onpropertychange", function () {
-  				if (event.propertyName == "location") {
-  					self.check();
-  				}
-  			});
-  		}
-  		// poll for changes of the hash
-  		window.setInterval(function () { self.check() }, 50);
-  	},
+      // IE
+      if ("onpropertychange" in document && "attachEvent" in document) {
+        document.attachEvent("onpropertychange", function () {
+          if (event.propertyName == "location") {
+            self.check();
+          }
+        });
+      }
+      // poll for changes of the hash
+      window.setInterval(function () { self.check(); }, 50);
+    },
 
-  	setHash: function (s) {
-  		// Mozilla always adds an entry to the history
-  		if (this.ie && this.ieSupportBack) {
-  			this.writeFrame(s);
-  		}
-  		document.location.hash = s;
-  	},
+    setHash: function (s) {
+      // Mozilla always adds an entry to the history
+      if (this.ie && this.ieSupportBack) {
+        this.writeFrame(s);
+      }
+      document.location.hash = s;
+    },
 
-  	getHash: function () {
-  		return document.location.hash;
-  	},
+    getHash: function () {
+      return document.location.hash;
+    },
 
-  	writeFrame:	function (s) {
-  		var f = document.getElementById("state-frame");
-  		var d = f.contentDocument || f.contentWindow.document;
-  		d.open();
-  		d.write("<script>window._hash = '" + s + "'; window.onload = parent.hashListener.syncHash;<\/script>");
-  		d.close();
-  	},
+    writeFrame: function (s) {
+      var f = document.getElementById("state-frame");
+      var d = f.contentDocument || f.contentWindow.document;
+      d.open();
+      d.write("<script>window._hash = '" + s + "'; window.onload = parent.hashListener.syncHash;<\/script>");
+      d.close();
+    },
 
-  	syncHash:	function () {
-  		var s = this._hash;
-  		if (s != document.location.hash) {
-  			document.location.hash = s;
-  		}
-  	},
+    syncHash: function () {
+      var s = this._hash;
+      if (s != document.location.hash) {
+        document.location.hash = s;
+      }
+    },
 
-  	onHashChanged:	function () {}
+    onHashChanged:  function () {}
   }
 };
