@@ -1,11 +1,5 @@
 var SS = (typeof SS != "undefined") ? SS : {
 
-  overrides: {},
-
-  override: function(ns, first) {
-    overrides[ns] = first;
-  },
-
   router: {
 
     getRoute: function(hash) {
@@ -20,7 +14,7 @@ var SS = (typeof SS != "undefined") ? SS : {
 
           var route = namedRoutes[name].route;
           var match = false, finsihed = false;
-  
+
           for (var i=0; i < finishedRoutes.length; i++) {
             if(name === finishedRoutes[i]) {
               finsihed = true; break;
@@ -67,7 +61,7 @@ var SS = (typeof SS != "undefined") ? SS : {
     var self = this,
         strNS = params.ns,
         ns = {},
-        firstMethods,
+        firstMethods = params.first,
         sectors = strNS.split('.'),
         isArray = (function() { return Array.isArray || function(obj) {
             return !!(obj && obj.concat && obj.unshift && !obj.callee);
@@ -92,9 +86,6 @@ var SS = (typeof SS != "undefined") ? SS : {
     }
 
     params.ns = scope;
-
-    firstMethods = (typeof SS.overrides[ns] == "undefined") ?
-      params.first : SS.overrides[ns];
 
     function fireMethods(methods, routeName) {
 
