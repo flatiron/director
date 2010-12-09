@@ -27,41 +27,68 @@
 
 									"fooRoute": {
 										route: ["home", "foo"], /* <String | Array> the route components */
-										on: "fnThree" /* <String | Array> function(s) to run on this primary route */
+										on: "fnFoo" /* <String | Array> function(s) to run on this primary route */
 									},
 									"barRoute": { /* a route with a regex */
 										route: ["home", "bar", "*"], /* anything after the second part of the hash/url */
-										once: true, /* <bool> should the functions for this route be only run once? */
-										leave: "fnThreeA", /* <String | Array> function(s) to run after this route is changed */																				
-										on: "fnFour"
+										leave: "fnBarLeave", /* <String | Array> function(s) to run after this route is changed */																				
+										on: "fnBar"
 									},
 									"bazzRoute": { /* a route with a regex */
 										route: ["about", "*", server], /* anything after the second part of the hash/url */
+										once: false, /* <bool> should the functions for this route be only run once? */
 										on: "fnFour"
+									},
+									"default": {
+										on: "fnDefault"
 									}
 
 								},
 
-								onAllRoutes: "fnOne", /* <String | Array> functions that are fired on all routes */
-								leaveAllRoutes: ["fnTwo", "fnThree"] /* <String | Array> functions that are fired when all routes are exited */
+								onAllRoutes: "fnAll", /* <String | Array> functions that are fired on all routes */
+								leaveAllRoutes: ["fnLeaveAll1", "fnLeaveAll2"] /* <String | Array> functions that are fired when all routes are exited */
 
 							});
 						},
 
 						/* implementations... */
+						
+						fnDefault: function() {
+							console.log("default route (no route match).");
+						},
+						
+						fnAll: function() {
+							console.log("called on all routes.");
+						},
+
+						fnLeaveAll1: function() {
+						  console.log("leave all routes (1).");
+						},
+						
+						fnLeaveAll2: function() {
+						  console.log("leave all routes (2).");
+						},
+						
+						fnFoo: function() {
+							console.log("home/foo route.");
+						},	
+						
+						fnBar: function() {
+							console.log("home/bar/* route.");
+						},
+						
+						fnBarLeave: function() {
+							console.log("leave home/bar/* route.");
+						},						
 
 						fnOne: function() {
-						  console.log("fnOne called.");
-						  console.dir(this); // the this context is the object literal.
+						  console.log("fnOne called. (also, dumping 'this')");
+						  console.dir(this); // the context is the object literal.
 						},
 
 						fnTwo: function(args) {
-							console.log("fnTwo called with(" + args[0] + ")");
-						},
-
-						fnThree: function() {
-						  console.log("fnThree called.");
-						},
+							console.log(args);
+						},												
 
 						fnThreeA: function() {
 						  console.log("fnThreeA called.");
@@ -74,7 +101,7 @@
 						fnFour: function(routeName) { 
 
 							// routeName always gets returned as the last parameter of a function that was called by a route.
-						  console.log("fnFour called with (" + routeName + ")");
+						  console.log("fnFour called from route (" + routeName + ")");
 
 						},
 

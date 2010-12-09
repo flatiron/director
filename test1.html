@@ -27,11 +27,14 @@
 									"a": {
 										route: ["a"],
 										once: true,
-										on: "fnThree"
+										on: "fnOne"
 									},
 									"b": {
 										route: ["b"],
-										on: "fnFour"
+										on: "fnTwo"
+									},
+									"default": {
+										on: "fnDefault"
 									}
 
 								}
@@ -41,19 +44,14 @@
 						/* implementations... */
 
 						fnOne: function(args) {
-						    console.log("fnOne called.");
+						  console.log("fnOne called.");
 						},
 
 						fnTwo: function() {
-						    console.log("fnTwo called.");
+						  console.log("fnTwo called.");
 						},
-
-						fnThree: function() {
-						    console.log("fnThree called.");
-						},
-
-						fnFour: function() {
-						    console.log("fnFour called.");
+						fnDefault: function() {
+							console.log("default");
 						}
 
           }

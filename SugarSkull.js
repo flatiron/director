@@ -25,7 +25,8 @@ var APP = (typeof APP != "undefined") ? APP : {
           }
         }
 
-        if(!finsihed) {
+        if(!finsihed && route) {
+          
           for (var i=0; i < route.length; i++) {
             if(route[i] === hash[i] || route[i] === "*") {
               match = true;
@@ -41,7 +42,10 @@ var APP = (typeof APP != "undefined") ? APP : {
             }
             namedRoutes[name].name = name;
             return namedRoutes[name];
-          }          
+          }
+        }
+        else {
+          return namedRoutes["default"];
         }
       }
 
@@ -49,7 +53,7 @@ var APP = (typeof APP != "undefined") ? APP : {
 
     finishedRoutes: [],
     namedRoutes: {},
-    exitMethods: [],
+    leaveLastRoute: [],
     leaveAllRoutes: [],
     onAllRoutes: []
 
@@ -66,7 +70,9 @@ var APP = (typeof APP != "undefined") ? APP : {
             return !!(obj && obj.concat && obj.unshift && !obj.callee);
         }})();
 
-    this.router.namedRoutes = params.routes;        
+    this.router.namedRoutes = params.routes;
+    this.router.onAllRoutes = params.onAllRoutes;
+    this.router.leaveAllRoutes = params.leaveAllRoutes;
 
     var i = 0, len = sectors.length;
 
@@ -85,7 +91,7 @@ var APP = (typeof APP != "undefined") ? APP : {
     delete this.Main;
     eval(params.ns + " = this;"); // To-Do: there may be a better way to do this assignment.
 
-    methods = (typeof APP.overrides[ns] == "undefined") ?
+    firstMethods = (typeof APP.overrides[ns] == "undefined") ?
       params.first : APP.overrides[ns];
 
     function fireMethods(methods, routeName) {
@@ -108,7 +114,7 @@ var APP = (typeof APP != "undefined") ? APP : {
       }
     }
 
-    fireMethods(methods);
+    fireMethods(firstMethods, "first");
 
     this.hashListener.Init(function() { 
       
@@ -117,16 +123,18 @@ var APP = (typeof APP != "undefined") ? APP : {
 
       var r = self.router;
       var route = r.getRoute(self.hashListener.hash);
+      
       var routeName = route.name;
 
       fireMethods(r.leaveAllRoutes, routeName);
-      fireMethods(r.exitMethods, routeName);
+      fireMethods(r.leaveLastRoute, routeName);
+      r.leaveLastRoute = [];
       
-      (typeof route.onAllRoutes != "undefined") ? fireMethods(route.onAllRoutes, routeName) : route.before = {};
+      if(r.onAllRoutes) { fireMethods(r.onAllRoutes, routeName); }
 
       if(route) { // if the route is a match with the current hash.
-        (typeof route.on != "undefined") ? fireMethods(route.on, routeName) : route.on;
-        (typeof route.leave != "undefined") ? r.exitMethods = route.leave : {};
+        fireMethods(route.on, routeName);
+        if(route.leave) { r.leaveLastRoute = route.leave; };
       }
     });  
 
