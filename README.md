@@ -27,6 +27,6 @@ SugarSkull applies itself to an object literal and...
 **SugarSkull tries to address the following issues with as few moving parts as possible...**
 
  - Clarification of the execution path.
- - Isolation of intention.
+ - Isolation of intention (separates routing from implementations, allows you to organize your logic according to its purpose).
  - Code exclusion without interference.
  - Code portability.
