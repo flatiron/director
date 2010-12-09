@@ -91,7 +91,6 @@ var SS = (typeof SS != "undefined") ? SS : {
       }
     }
 
-    delete this.Main;
     params.ns = scope;
 
     firstMethods = (typeof SS.overrides[ns] == "undefined") ?
