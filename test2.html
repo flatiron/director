@@ -5,66 +5,85 @@
         <script src="SugarSkull.js" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" charset="utf-8">
 
-        (function() {
+				(function() {
 
-            /* private */
+					var server = "production"; // this is just an arbitrary variable used in the example.
 
-                var test = null;
+					return {
 
-            /* public */ return {
+						Main: function() {
 
-                Main: function() {
+							APP.exec(this, { /* <Object> we caputre the context of the current object literal and explain what to do with its members */
 
-                    APP.exec.call(this, {
+								ns: "FOO.bar", /* <String> let's add this object literal to a namespace (doesn't overwrite adds on to existing objects) */
 
-                        ns: "myNS.foo.test", /* the full namespace for this code (wont overwrite) */
+								first: [ /* <Array> the names of functions from the object literal that we want to be executed immediately. */
 
-                        plan: [ /* an array of names of functions that will be executed. */
+									"fnOne", /* a function name from the object literal */
+									["fnTwo", 200] /* ...another function with some parameters, this can also be done in the route definitions. */
+								],
 
-                            "Init"
-                            ,["SetupPage", "get"]
-                            ,"BackgroundTask"
-                            ,"dart"
-                        ]
-                    });
-                },
+								routes: { /* a collection of named routes that can be called in an arbitrary fashion. */
 
-                Init: function() {
-                    test = this;
-                },
+									"fooRoute": {
+										route: ["home", "foo"], /* <String | Array> the route components */
+										on: "fnThree" /* <String | Array> function(s) to run on this primary route */
+									},
+									"barRoute": { /* a route with a regex */
+										route: ["home", "bar", "*"], /* anything after the second part of the hash/url */
+										once: true, /* <bool> should the functions for this route be only run once? */
+										leave: "fnThreeA", /* <String | Array> function(s) to run after this route is changed */																				
+										on: "fnFour"
+									},
+									"bazzRoute": { /* a route with a regex */
+										route: ["about", "*", server], /* anything after the second part of the hash/url */
+										on: "fnFour"
+									}
 
-                SetupPage: function(args) {
-                    this.widgets.one(args[0]);
-                    ///* same as... */// test.widgets.one(args[0]);
-                },
+								},
 
-                BackgroundTask: function() {
-                },
+								onAllRoutes: "fnOne", /* <String | Array> functions that are fired on all routes */
+								leaveAllRoutes: ["fnTwo", "fnThree"] /* <String | Array> functions that are fired when all routes are exited */
 
-                widgets: { // some kind of ui code.
-                    one: function(method) {
-                        document.write(test.DAL[method].somedata());
-                    },
-                    two: function() {
-                    },
-                    three: function() {
-                    }
-                },
+							});
+						},
 
-                DAL: { // data access layer.
-                    get: {
-                        somedata: function() {
-                            return "somedata";
-                        }
-                    },
-                    set: {
-                        somedata: function() {
-                            return "someotherdata";
-                        }
-                    }
-                }
+						/* implementations... */
 
-            }
+						fnOne: function() {
+						  console.log("fnOne called.");
+						  console.dir(this); // the this context is the object literal.
+						},
+
+						fnTwo: function(args) {
+							console.log("fnTwo called with(" + args[0] + ")");
+						},
+
+						fnThree: function() {
+						  console.log("fnThree called.");
+						},
+
+						fnThreeA: function() {
+						  console.log("fnThreeA called.");
+						},
+
+						fnThreeB: function() {
+						  console.log("fnThreeB called.");
+						},
+
+						fnFour: function(routeName) { 
+
+							// routeName always gets returned as the last parameter of a function that was called by a route.
+						  console.log("fnFour called with (" + routeName + ")");
+
+						},
+
+						fnFive: function() {
+						  console.log("fnFive called.");						    
+						}
+
+          }
+
         })().Main();
 
         </script>

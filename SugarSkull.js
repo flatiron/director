@@ -1,72 +1,206 @@
 var APP = (typeof APP != "undefined") ? APP : {
 
-    overrides: {},
+  overrides: {},
 
-    override: function(ns, plan) {
-        overrides[ns] = plan;
+  override: function(ns, first) {
+      overrides[ns] = first;
+  },
+
+  router: {
+
+    getRoute: function(hash) {
+
+      var namedRoutes = this.namedRoutes;
+      var finishedRoutes = this.finishedRoutes;
+      hash = hash.slice(1, hash.length).split("/");
+
+      for(name in namedRoutes) {
+
+        var route = namedRoutes[name].route;
+        var match = false, finsihed = false;
+  
+        for (var i=0; i < finishedRoutes.length; i++) {
+          if(name === finishedRoutes[i]) {
+            finsihed = true; break;
+          }
+        }
+
+        if(!finsihed) {
+          for (var i=0; i < route.length; i++) {
+            if(route[i] === hash[i] || route[i] === "*") {
+              match = true;
+            }
+            else {
+              match = false; break;
+            }
+          }
+
+          if(match && route.length === hash.length) {
+            if(namedRoutes[name].once && namedRoutes[name].once === true) {
+              this.finishedRoutes.push(name);
+            }
+            namedRoutes[name].name = name;
+            return namedRoutes[name];
+          }          
+        }
+      }
+
     },
 
-    exec: function(params) {
+    finishedRoutes: [],
+    namedRoutes: {},
+    exitMethods: [],
+    leaveAllRoutes: [],
+    onAllRoutes: []
 
-        var strNS = params.ns
-            ,self = this
-            ,ns = {}
-            ,sectors = strNS.split('.')
-            ,methods
-            ,isArray = (function() { return Array.isArray || function(obj) {
-                return !!(obj && obj.concat && obj.unshift && !obj.callee);
-            }})();
+  },
 
-        var i = 0
-            ,len = sectors.length;
+  exec: function(scope, params) {
 
-        for (i; i < sectors.length; i++) {
-            var sector = sectors[i];
+    var self = this
+        ,strNS = params.ns
+        ,ns = {}
+        ,sectors = strNS.split('.')
+        ,methods
+        ,isArray = (function() { return Array.isArray || function(obj) {
+            return !!(obj && obj.concat && obj.unshift && !obj.callee);
+        }})();
 
-            if (i == 0 && !window[sector]) {
-                window[sector] = {};
-                ns = window[sector];
-            }
-            else {
-                ns = ns[sector] = (ns[sector] ? ns[sector] : {});
-            }
-        }
+    this.router.namedRoutes = params.routes;        
 
-        delete this.Main;
-        eval(params.ns + " = this;"); // TODO: there may be a better way to do this assignment.
+    var i = 0, len = sectors.length;
 
-        methods = (typeof APP.overrides[ns] == "undefined") ?
-            params.plan : APP.overrides[ns];
+    for (i; i < sectors.length; i++) {
+      var sector = sectors[i];
 
-        for(method in methods) {
-
-            if(isArray(methods[method])) {
-
-                var params = methods[method].slice(1, methods[method].length)
-                    ,i=params.length
-                    ,sync = false;
-
-                for(; i>0; i--) {
-                    if(params[i] === "sync") {
-                        sync = true;
-                    }
-                }
-
-                sync ? self[methods[method][0]].call(self, params) :
-                    (function(method) {
-                        setTimeout(function() {
-                            self[method[0]].call(self, method.slice(1, method.length));
-                        }, 1);
-                    })(methods[method]);
-            }
-            else {
-
-                (function(method) {
-                    setTimeout(function() {
-                        self[method].call(self);
-                    }, 1);
-                })(methods[method])
-            }
-        }
+      if (i == 0 && !window[sector]) {
+        window[sector] = {};
+        ns = window[sector];
+      }
+      else {
+        ns = ns[sector] = (ns[sector] ? ns[sector] : {});
+      }
     }
+
+    delete this.Main;
+    eval(params.ns + " = this;"); // To-Do: there may be a better way to do this assignment.
+
+    methods = (typeof APP.overrides[ns] == "undefined") ?
+      params.first : APP.overrides[ns];
+
+    function fireMethods(methods, routeName) {
+
+      if(isArray(methods)) {
+        for (var i=0; i < methods.length; i++) {
+          
+          if(isArray(methods[i])) { // could be an array of function names with parameters.
+            var params = methods[i].slice(1, methods[i].length);
+            if(routeName) { params.push(routeName); }
+            scope[methods[i][0]].call(scope, params);            
+          }
+          else { // could be an array of function names
+            scope[methods[i]].call(scope, routeName);
+          }
+        }
+      }
+      else { // could just be a function name
+        scope[methods].call(scope, routeName);
+      }
+    }
+
+    fireMethods(methods);
+
+    this.hashListener.Init(function() { 
+      
+      // To-Do: Rather than Init accepting a function it should push a function into an array of functions that are called by the 
+      // onHashChanged event so that exec can be called multiple times within the same file and not overwrite.
+
+      var r = self.router;
+      var route = r.getRoute(self.hashListener.hash);
+      var routeName = route.name;
+
+      fireMethods(r.leaveAllRoutes, routeName);
+      fireMethods(r.exitMethods, routeName);
+      
+      (typeof route.onAllRoutes != "undefined") ? fireMethods(route.onAllRoutes, routeName) : route.before = {};
+
+      if(route) { // if the route is a match with the current hash.
+        (typeof route.on != "undefined") ? fireMethods(route.on, routeName) : route.on;
+        (typeof route.leave != "undefined") ? r.exitMethods = route.leave : {};
+      }
+    });  
+
+  },
+
+  hashListener: { // original concept by Erik Arvidson
+
+    ie:		/MSIE/.test(navigator.userAgent),
+  	ieSupportBack:	true,
+  	hash:	document.location.hash,
+
+  	check:	function () {
+  		var h = document.location.hash;
+  		if (h != this.hash) {
+  			this.hash = h;
+
+  			this.onHashChanged();
+  		}
+  	},
+
+  	Init:	function (fn) {
+      
+      this.onHashChanged = fn;
+
+  		// for IE we need the iframe state trick
+  		if (this.ie && this.ieSupportBack) {
+  			var frame = document.createElement("iframe");
+  			frame.id = "state-frame";
+  			frame.style.display = "none";
+  			document.body.appendChild(frame);
+  			this.writeFrame("");
+  		}
+
+  		var self = this;
+
+  		// IE
+  		if ("onpropertychange" in document && "attachEvent" in document) {
+  			document.attachEvent("onpropertychange", function () {
+  				if (event.propertyName == "location") {
+  					self.check();
+  				}
+  			});
+  		}
+  		// poll for changes of the hash
+  		window.setInterval(function () { self.check() }, 50);
+  	},
+
+  	setHash: function (s) {
+  		// Mozilla always adds an entry to the history
+  		if (this.ie && this.ieSupportBack) {
+  			this.writeFrame(s);
+  		}
+  		document.location.hash = s;
+  	},
+
+  	getHash: function () {
+  		return document.location.hash;
+  	},
+
+  	writeFrame:	function (s) {
+  		var f = document.getElementById("state-frame");
+  		var d = f.contentDocument || f.contentWindow.document;
+  		d.open();
+  		d.write("<script>window._hash = '" + s + "'; window.onload = parent.hashListener.syncHash;<\/script>");
+  		d.close();
+  	},
+
+  	syncHash:	function () {
+  		var s = this._hash;
+  		if (s != document.location.hash) {
+  			document.location.hash = s;
+  		}
+  	},
+
+  	onHashChanged:	function () {}
+  }
 };

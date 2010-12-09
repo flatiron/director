@@ -5,42 +5,59 @@
         <script src="SugarSkull.js" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" charset="utf-8">
 
-         (function() {
+				(function() {
 
-            /* private */
+					return {
 
-                /* code... */
+						Main: function() {
 
-            /* public */ return {
+							APP.exec(this, {
 
-                Main: function() {
+								ns: "FOO.bar",
 
-                    APP.exec.call(this, {
+								first: [
 
-                        ns: "myNS.foobar.bazz", /* the full namespace for this code (wont overwrite) */
+									"fnOne",
+									"fnTwo"
 
-                        plan: [ /* an array of names of functions that will be executed. */
+								],
 
-                            ["UnitOne", "foo", 13, function() {}] /* sample parameters */
-                            ,"UnitTwo"
-                            ,"UnitThree"
-                        ]
-                    });
-                },
+								routes: {
 
-                UnitOne: function(args) {
-                    /* code... */
-                },
+									"a": {
+										route: ["a"],
+										once: true,
+										on: "fnThree"
+									},
+									"b": {
+										route: ["b"],
+										on: "fnFour"
+									}
 
-                UnitTwo: function() {
-                    /* code... */
-                },
+								}
+							});
+						},
 
-                UnitThree: function() {
-                    /* code... */
-                }
+						/* implementations... */
 
-            }
+						fnOne: function(args) {
+						    console.log("fnOne called.");
+						},
+
+						fnTwo: function() {
+						    console.log("fnTwo called.");
+						},
+
+						fnThree: function() {
+						    console.log("fnThree called.");
+						},
+
+						fnFour: function() {
+						    console.log("fnFour called.");
+						}
+
+          }
+
         })().Main();
 
         </script>
