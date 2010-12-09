@@ -1,6 +1,7 @@
 
 <img src="https://github.com/hij1nx/SugarSkull/raw/master/sugarskull.png"></img>
-              
+A little bit of sugar for the skeleton of your app...
+
 What
 ====
 
