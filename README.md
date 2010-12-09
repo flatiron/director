@@ -1,6 +1,6 @@
 
-<img src="sugarskull.png"></img>
-
+<img src="https://github.com/hij1nx/SugarSkull/raw/master/sugarskull.png"></img>
+              
 What
 ====
 
