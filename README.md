@@ -28,5 +28,5 @@ SugarSkull applies itself to an object literal and...
 
  - Clarification of the execution path.
  - Isolation of intention.
- - Component exclusion without interference.
- - Component portability.
+ - Code exclusion without interference.
+ - Code portability.
