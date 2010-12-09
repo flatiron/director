@@ -1,4 +1,4 @@
-var APP = (typeof APP != "undefined") ? APP : {
+var SS = (typeof SS != "undefined") ? SS : {
 
   overrides: {},
 
@@ -91,8 +91,8 @@ var APP = (typeof APP != "undefined") ? APP : {
     delete this.Main;
     eval(params.ns + " = this;"); // To-Do: there may be a better way to do this assignment.
 
-    firstMethods = (typeof APP.overrides[ns] == "undefined") ?
-      params.first : APP.overrides[ns];
+    firstMethods = (typeof SS.overrides[ns] == "undefined") ?
+      params.first : SS.overrides[ns];
 
     function fireMethods(methods, routeName) {
 
@@ -164,7 +164,7 @@ var APP = (typeof APP != "undefined") ? APP : {
   			var frame = document.createElement("iframe");
   			frame.id = "state-frame";
   			frame.style.display = "none";
-  			document.body.appendChild(frame);
+  			document.body.SSendChild(frame);
   			this.writeFrame("");
   		}
 
