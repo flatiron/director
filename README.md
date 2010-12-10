@@ -7,7 +7,7 @@ What
 
 SugarSkull is a SUPER tiny (~3.4k minified) client side router. SugarSkull is simple. It's not a jack-knife. It's meant to serve one of
 two purposes; 1) very simple routing. 2) a starting point for REALLY big projects where you need a custom solution from end to end. 
-If you dont know much about client-side routing check out sammy.js.
+For a full featured client-side routing that looks more familiar check out sammy.js.
 
 How
 ===
