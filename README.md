@@ -7,7 +7,7 @@ SugarSkull is a SUPER tiny client side router.
 A client side router provides state management. What? A route is a URL. A state is the 
 active data and appearance of the application. So when the url changes, the router performs some
 work and then the application mutates, but doesn't have to reload the page. This is especially 
-great for making web sites feel more responsive, like desktop apps.<br/><br/>
+great for making web sites feel more responsive, like desktop apps.
 
 How
 ===
@@ -18,7 +18,6 @@ support all browsers. More specifically...
 We divide the url into two parts. First the server-side (everything before the '#'), and then
 the client-side (everything after the '#'). The second part is called the HashRoute.
 The hash route looks like this...
-<br/>
 <img src="https://github.com/hij1nx/SugarSkull/raw/master/img/hashRoute.png" width="598" height="113" alt="HashRoute">
 <br/>
 Sugarskull keeps track of what happens to the url, if it changes, we fire off some function(s) that you have specified.
