@@ -4,19 +4,16 @@ What
 
 SugarSkull is a SUPER tiny client side router.
 
-About
-=====
-
 A client side router provides state management. What? A route is a URL. A state is the 
 active data and appearance of the application. So when the url changes, the router performs some
 work and then the application mutates, but doesn't have to reload the page. This is especially 
 great for making web sites feel more responsive, like desktop apps.<br/><br/>
 
-SugarSkull uses <b>HTML5 pushState</b> and falls back to older techniques to 
-support all browsers.
-
 How
 ===
+
+SugarSkull uses <b>HTML5 pushState</b> and falls back to older techniques to 
+support all browsers. More specifically...
 
 We divide the url into two parts. First the server-side (everything before the '#'), and then
 the client-side (everything after the '#'). The second part is called the HashRoute.
