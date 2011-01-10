@@ -1,0 +1,174 @@
+
+/* 
+ * the following class selectors are used to hide and show router-contexts.
+ *
+ */
+
+.router-context {
+	display: none;
+}
+
+.router-context.selected {
+	display: block;
+}
+
+
+/*
+ * all the stuff below this line just makes the demo look nice.
+ *
+ */
+
+@font-face { 
+	font-family: 'MonoNumber'; src: url('./DroidSansMono.ttf'); src: url('./DroidSansMono.ttf') format('truetype'); 
+}
+
+body {
+	font-family: 'MonoNumber';
+}
+
+code .keyword              { color: #326d9f; font-weight: bold; }
+code .string, code .regexp { color: green; }
+code .class, code .special { color: #326d9f; }
+code .number               { color: red; }
+code .comment              { color: gray; font-style: italic; }
+
+.red {
+	color: red;
+}
+
+#background {
+	position: absolute;
+	overflow: hidden;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+
+	background: #eeeeee; /* old browsers */
+	background: -moz-linear-gradient(top, #fff 0%, #E5E5E5 100%); /* firefox */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fff), color-stop(100%,#E5E5E5)); /* webkit */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fff', endColorstr='#E5E5E5',GradientType=0 ); /* ie */
+}
+
+h1 {
+	color: #ddd;
+	font-size: 40px;
+	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);	
+}
+
+h2 {
+	font-size: 20px;
+	color: #bbb;
+	margin-top: -20px;
+	text-shadow: none;
+}
+
+h3 {
+	margin: 0px;
+	font-weight: 900;
+}
+
+pre {
+	color: #000;
+	font-size: 10px;
+	border: 1px solid #ddd;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;	
+	font-family: 'Courier New';
+	margin: 10px;
+	background-color: #eaeaea;
+	padding: 10px;
+}
+
+#content {
+	text-align: left;
+	position: relative;
+	height: 300px;
+	width: 700px;
+
+	color: #666;
+	background-color: #fff;
+	
+	border: 1px solid #e6e6e6;
+	overflow: hidden;
+	
+	-moz-box-shadow: 0px 3px 6px #aaa;
+	-webkit-box-shadow: 0px 3px 6px #aaa;
+	box-shadow: 0px 3px 6px #aaa;	
+	
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+}
+
+#notfound {
+	display: none;
+	font-size: 10px;
+	text-align: center;
+	padding: 20px;
+	position: absolute;
+	right: 50px;
+	top: 80px;
+	width: 250px;
+
+	color: #fff;
+	background-color: #000;
+	
+	opacity: 0.8;
+	overflow: hidden;
+	
+	-moz-box-shadow: 0px 3px 6px #aaa;
+	-webkit-box-shadow: 0px 3px 6px #aaa;
+	box-shadow: 0px 3px 6px #aaa;	
+	
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+}
+
+#route-name {
+	color: red;
+}
+
+.content {
+	position: absolute;
+	top: 70px;
+	left: 10px;
+	right: 10px;
+	bottom: 10px;
+	overflow: auto;
+}
+
+#menu {
+	position: relative;
+	top: 6px;
+	border-bottom: 1px solid #e6e6e6;
+	
+	height: 50px;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff', endColorstr='#e6e6e6'); /*  IE */
+	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#e6e6e6)); /* Webkit browsers */
+	background: -moz-linear-gradient(top,  #fff,  #e6e6e6); /* Firefox 3.6+ */	
+}
+
+.tab {
+	display: inline-block;
+	margin: 10px 20px 20px 10px;
+	padding: 14px 10px 10px 10px;
+	text-decoration: none;
+	color: #515151;
+	outline: none;
+}
+
+.tab:hover {
+	text-decoration: underline;
+}
+
+.tab.selected {
+	padding: 10px 10px 10px 10px;	
+	position: relative;
+  -moz-border-radius-topleft: 4px;  
+  -moz-border-radius-topright: 4px;  
+  -webkit-border-top-left-radius: 4px;
+  -webkit-border-top-right-radius: 4px;
+	border: 1px solid #e6e6e6;
+	border-bottom: none;
+	background-color: #fff;
+}

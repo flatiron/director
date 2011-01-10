@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+      <title>Sugar Skull Demo 1</title>
+		  <link rel="stylesheet" href="css/demo.css" type="text/css" media="screen" title="no title" charset="utf-8">
+    </head>
+
+    <body>
+			<div id="background">
+				<center>
+
+					<h1>Sugar Skull</h1>
+					<h2>Client Side Router</h2>
+
+					<div id="content">
+						<div id="menu">
+							<a href="#about" id="tab1" class="tab selected">About</a>
+							<a href="#how" id="tab2" class="tab">How it works</a>
+							<a href="#why" id="tab3" class="tab">Why</a>
+							<a href="#demoExplanation" id="tab4" class="tab">This Demo</a>
+						</div>
+
+						<!-- 
+
+							The following anchor tags are used to contain blocks of markup that
+							will be shown or hidden based on the current router-context.
+
+						-->
+
+						<div id="about" class="router-context selected">
+							<div class="content">
+								A client side router provides state management. What? A route is a URL. A state is the 
+								active data and appearance of the application. So when the url changes, the router performs some
+								work and then the application mutates, but doesn't have to reload the page. This is especially 
+								great for making web sites feel more responsive, like desktop apps.<br/><br/>
+								
+								SugarSkull uses <b>HTML5 pushState</b> and falls back to older techniques to 
+								support all browsers.
+								<br/><br/>
+								Click <a href="#foobar">here</a> to try to enter a route that does not exist.
+							</div>
+						</div>
+				
+						<div id="how" class="router-context">
+							<div class="content">
+								We divide the url into two parts. First the server-side (everything before the '<span class="red">#</span>'), and then
+								the client-side (everything after the '<span class="red">#</span>'). The second part is called the HashRoute.
+								The hash route looks like this...
+								<br/><br/>
+								<center>
+								<img src="img/hashRoute.jpg" width="598" height="113" alt="HashRoute">
+								</center>
+								We keep track of what happens to the url, if it changes, we fire off some function(s) that you have specified.
+							</div>
+						</div>
+				
+						<div id="why" class="router-context">
+							<div class="content">
+								<b>Single-page apps</b> reduce unnecessary page-reloads, and enhance the overall user experience with responsiveness. 
+								But with this technique comes many <b>edge cases</b>.
+								<br/><br/>
+								For example, let's say a route want's to show some new content. Content relative only to other routes needs to 
+								hide, but each route's functions shouldn't have to duplicate the code that manages this. What about when leaving 
+								a route or when leaving all routes, you may want to preform some cleanup. etc. etc.
+								<br/><br/>
+								SugarSkull addresses a long list of edge cases with a very simple API.
+								<br/><br/>
+								<b>This demo</b> illustrates how you can build
+								single pages apps quickly and easily.
+							</div>
+						</div>
+						
+						<div id="demoExplanation" class="router-context">
+							<div class="content">
+								<h3>Whats happening in this demo</h3>
+								<ul>
+									<li>bookmark a 'page', go back to it, and see the state restored.</li>
+									<li>route can have many parts <a href=""></a></li>
+								</ul>
+								<h3>Simple Configuration</h3>
+								Configuration is done through an object literal
+								<pre><code>
+var router = SS.router(this, {
+
+	"#about": { // a RegExp
+
+		on: ["about"]
+	},
+
+	"#how": { // ([a-zA-Z0-9_\-]+)
+		on: ["how"]
+	},
+
+	"#why": {
+		on: ["why"]
+	},
+
+	"#demoExplanation": {
+		on: ["demo"]
+	},				
+
+     // there are a few optional methods for convenience, they 
+
+	notfound: {
+
+	  // you can define a function anywhere and refer to it here with its function name or you
+	  // can specify a string that represents a function name which belongs to the hostObject
+	  // (the object that is specified as the first parameter of the router). No other methods are
+	  // fired if this the route is 'not found'.
+
+		on: [notFound] 
+	},
+
+	beforeall: {
+	  on: ["beforeall"]
+	},
+
+	afterall: {
+	  on: ["afterall"]
+	},				
+
+     leaveall: {
+       on: ["leaveall"]
+     }
+
+});
+								</code></pre>
+							</div>
+						</div>
+				
+					</div>
+				</center>
+				
+				<div class=".router-context" id="notfound">
+					The route, <span id="route-name"></span> was requested, but it was not found.
+				</div>
+				
+			</div>
+			
+      <script src="js/lib/SS.js" type="text/javascript" charset="utf-8"></script>
+      <script src="js/demo.js" type="text/javascript" charset="utf-8"></script>			
+
+			<!-- this is a code highlighter used in the demo, it's not required -->
+			<script src="js/lib/vendor/hi.js"></script>
+
+    </body>
+</html>
+
