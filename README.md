@@ -9,6 +9,8 @@ active data and appearance of the application. So when the url changes, the rout
 work and then the application mutates, but doesn't have to reload the page. This is especially 
 great for making web sites feel more responsive, like desktop apps.
 
+checkout a demo <a href="http://hij1nx.github.com/SugarSkull/">here</a>.
+
 How
 ===
 
