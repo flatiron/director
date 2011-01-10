@@ -2,7 +2,7 @@
 What
 ====
 
-SugarSkull is a SUPER tiny (~3.4k minified) client side router.
+SugarSkull is a SUPER tiny client side router.
 
 About
 =====
@@ -21,9 +21,10 @@ How
 We divide the url into two parts. First the server-side (everything before the '#'), and then
 the client-side (everything after the '#'). The second part is called the HashRoute.
 The hash route looks like this...
-<br/><br/>
+<br/>
 <img src="https://github.com/hij1nx/SugarSkull/raw/master/img/hashRoute.png" width="598" height="113" alt="HashRoute">
-We keep track of what happens to the url, if it changes, we fire off some function(s) that you have specified.
+<br/>
+Sugarskull keeps track of what happens to the url, if it changes, we fire off some function(s) that you have specified.
 
 SugarSkull applies itself to an object literal and...
 
@@ -31,9 +32,13 @@ SugarSkull applies itself to an object literal and...
 
  - Uses HTML5 but falls back to other techniques to support older browsers.
  - Bookmarking support.
- - On-Route. Uses the location hash to route to functions in your object literal.
- - After-Route. List functions to fire from the object literal when leaving a particular route.
+
+ - On-Route. A list of functions to fire when the route is hit.
+ - After-Route. A list of functions to fire when leaving a particular route.
  - Run-Once! Specify if the functions should be fired only once.
+
+ - After-All-Routes. A list of functions to fire when leaving a particular route.
+ - On-All-Routes. A list of functions to fire when leaving a particular route.
 
 **SugarSkull tries to address the following issues with as few moving parts as possible...**
 
