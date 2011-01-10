@@ -22,7 +22,7 @@ We divide the url into two parts. First the server-side (everything before the '
 the client-side (everything after the '#'). The second part is called the HashRoute.
 The hash route looks like this...
 <br/><br/>
-<img src="https://github.com/hij1nx/SugarSkull/raw/master/img/hashRoute.jpg" width="598" height="113" alt="HashRoute">
+<img src="https://github.com/hij1nx/SugarSkull/raw/master/img/hashRoute.png" width="598" height="113" alt="HashRoute">
 We keep track of what happens to the url, if it changes, we fire off some function(s) that you have specified.
 
 SugarSkull applies itself to an object literal and...
