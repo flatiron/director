@@ -1,7 +1,7 @@
 
 var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
 
-  version: '2.0',
+  version: '0.2.0',
 
   router: function() {
 
