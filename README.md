@@ -19,7 +19,7 @@ support all browsers. More specifically...
 
 We divide the url into two parts. First the server-side (everything before the '#'), and then
 the client-side (everything after the '#'). The second part is called the HashRoute.
-The hash route looks like this...
+The hash route looks like this...<br/>
 <img src="https://github.com/hij1nx/SugarSkull/raw/master/img/hashRoute.png" width="598" height="113" alt="HashRoute">
 <br/>
 Sugarskull keeps track of what happens to the url, if it changes, we fire off some function(s) that you have specified.

@@ -4,13 +4,14 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
   version: '0.2.0',
 
   router: function() {
-
     var self = this, 
         first = false, 
         hasFirstRoute = false, 
+        state = {},        
         hostObject, 
-        routes, 
-        onleave;
+        routes,
+        onleave,
+        compatMode = true;
 
     if(arguments.length > 1) { // a hostObject is not required.
       hostObject = arguments[0];
@@ -22,7 +23,7 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
 
     this.retired = {};
     this.routes = routes;
-    
+
     function explodeHash() {
       var h = document.location.hash;
       return h.slice(1, h.length).split("/");
@@ -41,43 +42,53 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
         else {
           throw new Error("exec: method not found on route '" + route + "'.");
         }
-        
+
       }
     }
     
     function execRoute(routes, route) {
-
-      if(new RegExp(route).test(window.location.hash) && !self.retired[route]) {
       
+      var h = document.location.hash;
+      h = h.slice(1, h.length);
+      
+      if(new RegExp(route).test(h) && !self.retired[route]) {
+
+        if(routes[route].state) {
+          self.state = routes[route].state;
+        }
+
         if(routes[route].once === true) {
           self.retired[route] = true;
         }
         else if(routes[route].once) {
           execMethods(routes[route].once, route);
         }
-      
+
         if(routes[route].on) {
           execMethods(routes[route].on, route);
         }
-      
+
         onleave = routes[route].onleave || null;
-      
+
       }
     }
-    
-    function verifyCurrentRoute() {
+
+    function verifyCurrentRoute() { // verify that there is a matching route.
+
+      var h = document.location.hash;
+      h.slice(1, h.length);
+      
       for(var route in routes) {
-        if (routes.hasOwnProperty && route == window.location.hash) {
+        if (routes.hasOwnProperty && new RegExp(route).test(h)) {
           return true;
         }
       }
       return false;
     }
-    
-    function eventRoute() {
 
+    function eventRoute() {
       var routes = self.routes;
-      
+  
       if(!verifyCurrentRoute() && routes.notfound) {
         execMethods(routes.notfound.on);
         return;
@@ -101,7 +112,7 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
           execRoute(routes, route);
         }
       }
-
+      
       if(routes.afterall) {
         execMethods(routes.afterall.on); // methods to be fired after every route.
       }      
@@ -114,8 +125,8 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
     for(var route in routes) {
       if (routes.hasOwnProperty) {
         if(routes[route].first) {
-          SS.hashListener.setHash(route);
-          SS.hashListener.check();
+          SS.hashListener.setHash(routes[route].first);
+          SS.hashListener.onHashChanged();
           hasFirstRoute = true;
           break;
         }
@@ -132,6 +143,10 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
     first = false;    
 
     return {
+      
+      getState: function() {
+        return self.state;
+      },
       
       getRoute: function(v) {
 
@@ -202,7 +217,10 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
 
     Init: function (fn) {
 
-      if('onhashchange' in window && 
+      if(window.history.pushState) {
+        compatMode == false;
+      } 
+      else if('onhashchange' in window && 
           ( document.documentMode === undefined || document.documentMode > 7 )) { 
         // support for Modern Browsers
         window.onhashchange = fn;
