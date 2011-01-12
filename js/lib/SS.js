@@ -7,7 +7,7 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
     var self = this, 
         first = false, 
         hasFirstRoute = false, 
-        state = {},        
+        state = {},
         hostObject, 
         routes,
         onleave,
@@ -21,7 +21,7 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
       routes = arguments[0];
     }
 
-    this.retired = {};
+    this.retired = [];
     this.routes = routes;
 
     function explodeHash() {
@@ -33,19 +33,24 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
 
       for (var i=0; i < methods.length; i++) {
 
-        if(hostObject && typeof methods[i] == "string") {
-          hostObject[methods[i]].call(hostObject);
+        if(!self.retired[methods[i]]) {
+          if(hostObject && typeof methods[i] == "string") {
+            if(hostObject[methods[i]].call(hostObject) == 404) {
+              return 404;
+            };
+          }
+          else if(typeof methods[i] != "string"){
+            if(methods[i]() == 404) {
+              return 404;
+            };
+          }
+          else {
+            throw new Error("exec: method not found on route '" + route + "'.");
+          }          
         }
-        else if(typeof methods[i] != "string"){
-          methods[i]();
-        }
-        else {
-          throw new Error("exec: method not found on route '" + route + "'.");
-        }
-
       }
     }
-    
+
     function execRoute(routes, route) {
       
       var h = document.location.hash;
@@ -61,6 +66,8 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
           self.retired[route] = true;
         }
         else if(routes[route].once) {
+
+          delete self.retired[route].once;
           execMethods(routes[route].once, route);
         }
 
@@ -119,13 +126,12 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
 
     } 
 
-
     SS.hashListener.Init(eventRoute); // support for older browsers
 
     for(var route in routes) {
       if (routes.hasOwnProperty) {
-        if(routes[route].first) {
-          SS.hashListener.setHash(routes[route].first);
+        if(routes[route].start) {
+          SS.hashListener.setHash(routes[route].start);
           SS.hashListener.onHashChanged();
           hasFirstRoute = true;
           break;
@@ -146,6 +152,10 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
       
       getState: function() {
         return self.state;
+      },
+      
+      getRetired: function() {
+        return self.retired;
       },
       
       getRoute: function(v) {
@@ -217,8 +227,8 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
 
     Init: function (fn) {
 
-      if(window.history.pushState) {
-        compatMode == false;
+      if(window.____ /* window.history.pushState */) {
+        //compatMode == false;
       } 
       else if('onhashchange' in window && 
           ( document.documentMode === undefined || document.documentMode > 7 )) { 

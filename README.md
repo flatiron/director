@@ -17,26 +17,27 @@ How
 SugarSkull uses <b>HTML5 pushState</b> and falls back to older techniques to 
 support all browsers. More specifically...
 
-We divide the url into two parts. First the server-side (everything before the '#'), and then
-the client-side (everything after the '#'). The second part is called the HashRoute.
+If a browser supports HTML pushState, then the physical part of the URL changes, this is nice for the user
+because it's very readable. if not, we divide the url into two parts. First the server-side (everything 
+before the '#'), and then the client-side (everything after the '#'). The second part is called the HashRoute.
 The hash route looks like this...<br/>
 <img src="https://github.com/hij1nx/SugarSkull/raw/master/img/hashRoute.png" width="598" height="113" alt="HashRoute">
 <br/>
 Sugarskull keeps track of what happens to the url, if it changes, we fire off some function(s) that you have specified.
 
-SugarSkull applies itself to an object literal and...
-
 **Easy client-side routing!**
 
- - Uses HTML5 but falls back to other techniques to support older browsers.
+ - Uses HTML5 pushState but falls back to other techniques to support older browsers.
  - Bookmarking support.
 
  - On-Route. A list of functions to fire when the route is hit.
  - After-Route. A list of functions to fire when leaving a particular route.
- - Run-Once! Specify if the functions should be fired only once.
+ - Run-Once! Specify if the functions should be fired only once for a particular route.
+ - Retire a whole route, view retired routes, and bring routes out of retirement.
 
  - After-All-Routes. A list of functions to fire when leaving a particular route.
  - On-All-Routes. A list of functions to fire when leaving a particular route.
+
 
 **SugarSkull tries to address the following issues with as few moving parts as possible...**
 
