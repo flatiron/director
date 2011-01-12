@@ -2,6 +2,7 @@
 var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
 
   version: '0.2.0',
+  mode: 'compatibility',
 
   router: function() {
     var self = this, 
@@ -10,8 +11,7 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
         state = {},
         hostObject, 
         routes,
-        onleave,
-        compatMode = true;
+        onleave;
 
     if(arguments.length > 1) { // a hostObject is not required.
       hostObject = arguments[0];
@@ -24,25 +24,21 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
     this.retired = [];
     this.routes = routes;
 
-    function explodeHash() {
-      var h = document.location.hash;
-      return h.slice(1, h.length).split("/");
+    function explodeURL() {
+      var v = SS.mode == 'modern' ? document.location.pathname : document.location.hash;
+      return v.slice(1, v.length).split("/");
     }
-    
+
     function execMethods(methods, route) {
 
       for (var i=0; i < methods.length; i++) {
 
         if(!self.retired[methods[i]]) {
           if(hostObject && typeof methods[i] == "string") {
-            if(hostObject[methods[i]].call(hostObject) == 404) {
-              return 404;
-            };
+            hostObject[methods[i]].call(hostObject);
           }
           else if(typeof methods[i] != "string"){
-            if(methods[i]() == 404) {
-              return 404;
-            };
+            methods[i]();
           }
           else {
             throw new Error("exec: method not found on route '" + route + "'.");
@@ -93,7 +89,12 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
       return false;
     }
 
-    function eventRoute() {
+    function eventRoute(event) {
+      
+      if(event) {
+        state = event.state;
+      }
+      
       var routes = self.routes;
   
       if(!verifyCurrentRoute() && routes.notfound) {
@@ -126,13 +127,13 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
 
     } 
 
-    SS.hashListener.Init(eventRoute); // support for older browsers
+    SS.listener.Init(eventRoute); // support for older browsers
 
     for(var route in routes) {
       if (routes.hasOwnProperty) {
         if(routes[route].start) {
-          SS.hashListener.setHash(routes[route].start);
-          SS.hashListener.onHashChanged();
+          SS.listener.setStateOrHash(state, route, routes[route].start);
+          SS.listener.fire();
           hasFirstRoute = true;
           break;
         }
@@ -143,7 +144,7 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
       execMethods(routes.notfound.on);
     }
     else if(!hasFirstRoute && window.location.hash.length > 0) {
-      SS.hashListener.onHashChanged();
+      SS.listener.fire();
     }
 
     first = false;    
@@ -165,35 +166,35 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
         // else returns an array which represents the current hash.
 
         if(typeof v == "number") {
-          return explodeHash()[v];
+          return explodeURL()[v];
         }
         else if(typeof v == "string"){
-          var h = explodeHash();
+          var h = explodeURL();
           return h.indexOf(v);
         }
         else {
-          return explodeHash();
+          return explodeURL();
         }
       },
 
       setRoute: function(v, qty, val) {
           
-        var hash = explodeHash();
+        var url = explodeURL();
         
         if(typeof v == "string") {
-          hash = [v];
+          url = [v];
         }
         else if(v !== false && qty !== false && val !== false) {
-          hash.splice(v, qty, val);
+          url.splice(v, qty, val);
         }
         else if(v !== false && qty !== false) {
-          hash.splice(v, qty);
+          url.splice(v, qty);
         }
         else {
           throw new Error("setRoute: not enough args.")
         }
         
-        SS.hashListener.setHash(hash.join("/"));
+        SS.listener.setStateOrHash(self.state, v || val, url.join("/"));
         return hash;
                       
       },
@@ -210,45 +211,54 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
     
   },
 
-  hashListener: { // original concept by Erik Arvidson
+  listener: { 
 
-    ie: /MSIE/.test(navigator.userAgent),
-    ieSupportBack:  true,
     hash: document.location.hash,
-    nativeHash: true,
 
-    check:  function () {
+    check:  function () { // only used for 'compatibility' or 'legacy'.
       var h = document.location.hash;
       if (h != this.hash) {
         this.hash = h;
         this.onHashChanged();
       }
     },
+    
+    fire: function() {
+      if(SS.mode = 'modern') {
+        window.onpopstate();
+      }
+      else if(SS.mode = 'compatibility') {
+        window.onhashchange();
+      }
+      else {
+        this.onHashChanged();
+      }
+    },
 
     Init: function (fn) {
 
-      if(window.____ /* window.history.pushState */) {
-        //compatMode == false;
+      var self = this;
+
+      if(window.history && window.history.pushState) {
+
+        SS.mode = 'modern';
+        window.onpopstate = fn
       } 
       else if('onhashchange' in window && 
-          ( document.documentMode === undefined || document.documentMode > 7 )) { 
-        // support for Modern Browsers
+          (document.documentMode === undefined || document.documentMode > 7)) { 
+
         window.onhashchange = fn;
       }
-      else {
+      else { // IE support, based on a concept by Erik Arvidson ...
 
-        // for IE we need the iframe state trick
-        if (this.ie && this.ieSupportBack) {
-          var frame = document.createElement('iframe');
-          frame.id = 'state-frame';
-          frame.style.display = 'none';
-          document.body.appendChild(frame);
-          this.writeFrame('');
-        }
+        SS.mode = 'legacy';
 
-        var self = this;
+        var frame = document.createElement('iframe');
+        frame.id = 'state-frame';
+        frame.style.display = 'none';
+        document.body.appendChild(frame);
+        this.writeFrame('');
 
-         // IE
         if ('onpropertychange' in document && 'attachEvent' in document) {
           document.attachEvent('onpropertychange', function () {
             if (event.propertyName == 'location') {
@@ -256,39 +266,41 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
             }
           });
         }
-                   
+
         this.onHashChanged = fn;
-        this.nativeHash = false;        
       }
 
-      if(!this.nativeHash) {
+      if(SS.mode != 'modern') {
         // poll for changes of the hash
         window.setInterval(function () { self.check(); }, 50);        
       }
     },
 
-    setHash: function (s) {
+    setStateOrHash: function (o, t, s) {
+
+      if(SS.mode == 'modern') {
+        window.history.pushState(o, t, s);
+        return this;
+      }
+
       // Mozilla always adds an entry to the history
-      if (this.ie && this.ieSupportBack) {
+      if (SS.mode == 'legacy') {
         this.writeFrame(s);
       }
+
       document.location.hash = s;
       return this;
     },
 
-    getHash: function () {
-      return document.location.hash;
-    },
-
-    writeFrame: function (s) {
+    writeFrame: function (s) { // IE support...
       var f = document.getElementById('state-frame');
       var d = f.contentDocument || f.contentWindow.document;
       d.open();
-      d.write("<"+"script>window._hash = '" + s + "'; window.onload = parent.hashListener.syncHash;<\/"+"script>");
+      d.write("<"+"script>window._hash = '" + s + "'; window.onload = parent.listener.syncHash;<\/"+"script>");
       d.close();
     },
 
-    syncHash: function () {
+    syncHash: function () { // IE support...
       var s = this._hash;
       if (s != document.location.hash) {
         document.location.hash = s;
