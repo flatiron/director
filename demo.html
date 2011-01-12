@@ -12,14 +12,13 @@
 
 					<h1>Sugarskull</h1>
 					<h2>Client Side Router</h2>
-<img src="img/sugarskull.png" width="41" height="46" alt="Sugarskull">					
-<br/><br/>
+					<br/><br/>
 					<div id="content">
 						<div id="menu">
-							<a href="#about" id="tab1" class="tab selected">About</a>
-							<a href="#how" id="tab2" class="tab">How it works</a>
-							<a href="#why" id="tab3" class="tab">Why</a>
-							<a href="#demoExplanation" id="tab4" class="tab">This Demo</a>
+							<a href="#about" id="tab1" class="setRoute tab selected">About</a>
+							<a href="#how" id="tab2" class="setRoute tab">How it works</a>
+							<a href="#why" id="tab3" class="setRoute tab">Why</a>
+							<a href="#demoExplanation" id="tab4" class="setRoute tab">This Demo</a>
 						</div>
 
 						<!-- 
@@ -84,20 +83,20 @@
 								<pre><code>
 var router = SS.router(this, {
 
-	"#about": { // a RegExp
+	"about": { // a RegExp
 
 		on: ["about"]
 	},
 
-	"#how": { // ([a-zA-Z0-9_\-]+)
+	"how": { // ([a-zA-Z0-9_\-]+)
 		on: ["how"]
 	},
 
-	"#why": {
+	"why": {
 		on: ["why"]
 	},
 
-	"#demoExplanation": {
+	"demoExplanation": {
 		on: ["demo"]
 	},				
 
@@ -140,7 +139,8 @@ var router = SS.router(this, {
 			</div>
 			
       <script src="js/lib/SS.js" type="text/javascript" charset="utf-8"></script>
-      <script src="js/demo.js" type="text/javascript" charset="utf-8"></script>			
+      <script src="js/lib/vendor/jquery-1.4.4.min.js" type="text/javascript" charset="utf-8"></script>
+			<script src="js/demo.js" type="text/javascript" charset="utf-8"></script>			
 
 			<!-- this is a code highlighter used in the demo, it's not required -->
 			<script src="js/lib/vendor/hi.js"></script>

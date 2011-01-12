@@ -1,31 +1,18 @@
 
 (function() {
 
-  // NOTE! All of the following methods use pure javascript. jQuery could do a lot of this 
-  // in much fewer lines of code, but i wanted to package these examples without jQuery.
-  // 
-
   function selectContext(tabSelector, contentSelector) {
-    
-    // A function to show certain things when a route is entered.
-    
-	  document.querySelectorAll(contentSelector)[0].style.display = "block";
-	  document.querySelectorAll(tabSelector)[0].className = "tab selected";
+
+	  $(contentSelector).show();
+	  $(tabSelector).addClass('selected');
   }
   
   function notFound() {
     
     // A function to get fired when a route can not be found.
     
-    document.querySelectorAll('#route-name')[0].innerHTML = window.location.hash;
-	  
-    var el = document.querySelectorAll('#notfound')[0];
-    el.style.display = "block";
-    
-    setTimeout(function() {
-      el.style.display = "none";
-    }, 5000);    
-    
+    $('#route-name').text(window.location.href);
+    $('#notfound').fadeIn().delay(4000).fadeOut();
   }
   
   var router;
@@ -40,23 +27,23 @@
 
 			router = SS.router(this, {
 
-				"#about": { // a RegExp
+				'about': { // a RegExp
 
-					on: ["about"],
+					on: ['about'],
 					state: { visited: false }
 
 				},
 
-				"#how": { // ([a-zA-Z0-9_\-]+)
-					on: ["how"]
+				'how': { // ([a-zA-Z0-9_\-]+)
+					on: ['how']
 				},
 
-				"#why": {
-					on: ["why"]
+				'why': {
+					on: ['why']
 				},
 				
-				"#demoExplanation": {
-					on: ["demo"]
+				'demoExplanation': {
+					on: ['demo']
 				},				
 
         // there are a few optional methods for convenience, they 
@@ -72,15 +59,15 @@
 				},
 
 				beforeall: {
-				  on: ["beforeall"]
+				  on: ['beforeall']
 				},
 				
 				afterall: {
-				  on: ["afterall"]
+				  on: ['afterall']
 				},				
 				
         leaveall: {
-          on: ["leaveall"]
+          on: ['leaveall']
         }
 
 			});
@@ -90,43 +77,44 @@
 		/* implementations... */
 
 		about: function() {
-		  selectContext("#tab1", "#about");
+		  selectContext('#tab1', '#about');
 		},
 
 		how: function() {
-		  selectContext("#tab2", "#how");
+		  selectContext('#tab2', '#how');
 		},
 
 		why: function() {
-		  selectContext("#tab3", "#why");
+		  selectContext('#tab3', '#why');
 		},
 		
 		demo: function() {
-		  selectContext("#tab4", "#demoExplanation");
-		},		
-		
-		beforeall: function() {
-    
-      // this just finds all the elements with the 'router-context' class and hides them.
-      
-      var contexts = document.querySelectorAll(".router-context");
-      
-      for (var i=0; i < contexts.length; i++) {
-        contexts[i].style.display = "none";
-      }
-      
-      // this removes the 'selected' class from demo tabs.
-      
-      var tabs = document.querySelectorAll(".tab");
-      
-      for (var i=0; i < contexts.length; i++) {
-        tabs[i].className = "tab";
-      }
-      
+		  selectContext('#tab4', '#demoExplanation');
 		},
-		
+
+		beforeall: function() {
+
+      // this just finds all the elements with the 'router-context' class and hides them.
+
+      $(".router-context").hide();
+
+      // this removes the 'selected' class from demo tabs.
+
+      $(".tab").removeClass("selected");
+
+		},
+	
 		afterall: function() {},
-    leaveall: function() {}
+    leaveall: function() {},
+  
+    selectContext: function(tabSelector, contentSelector) {
+
+      // A function to show certain things when a route is entered.
+
+  	  if(tabSelector) { $(tabSelector).addClass("selected"); }
+  	  if(contentSelector) { $(contentSelector).show(); }    	  
+
+    }
   }
 
 })().Main();

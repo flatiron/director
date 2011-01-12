@@ -4,11 +4,11 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
   mode: 'compatibility',
 
   router: function() {
-    var self = this, 
-        first = false, 
-        hasFirstRoute = false, 
+    var self = this,
+        first = false,
+        hasFirstRoute = false,
         state = {},
-        hostObject, 
+        hostObject,
         routes,
         onleave;
 
@@ -48,10 +48,10 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
 
     function execRoute(routes, route) {
       
-      var h = document.location.hash;
-      h = h.slice(1, h.length);
+      var v = self.mode == 'compatibility' ? document.location.hash : document.location.pathname;
+      v.slice(1, v.length);
       
-      if(new RegExp(route).test(h) && !self.retired[route]) {
+      if(new RegExp(route).test(v) && !self.retired[route]) {
 
         if(routes[route].state) {
           self.state = routes[route].state;
@@ -77,11 +77,11 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
 
     function verifyCurrentRoute() { // verify that there is a matching route.
 
-      var h = document.location.hash;
-      h.slice(1, h.length);
-      
+      var v = self.mode == 'compatibility' ? document.location.hash : document.location.pathname;
+      v.slice(1, v.length);
+
       for(var route in routes) {
-        if (routes.hasOwnProperty && new RegExp(route).test(h)) {
+        if (routes.hasOwnProperty && new RegExp(route).test(v)) {
           return true;
         }
       }
@@ -176,6 +176,7 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
         }
 
         SS.listener.setStateOrHash(self.state || {}, v || val, url.join("/"));
+        SS.listener.fire();
         return url;
                       
       },
@@ -221,6 +222,26 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
       var self = this;
 
       if(window.history && window.history.pushState) {
+        
+        var links = document.querySelectorAll("a");
+
+        for (var i=0; i < links.length; i++) {
+
+          if(links[i].href.indexOf("#") !== -1 && links[i].className.indexOf("setRoute") != -1) {
+
+            links[i].addEventListener('click', function(e) {
+              window.history.pushState(
+                {}, 
+                this.firstChild.nodeValue, 
+                "/" + this.href.substr((this.href.indexOf("#")+1), this.href.length)
+              );
+              window.onpopstate();
+              return e.preventDefault();
+            });
+
+          }
+        }
+        
         window.onpopstate = fn;
         return SS.mode = 'modern';
       } 
@@ -255,7 +276,7 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
         // poll for changes of the hash
         window.setInterval(function () { self.check(); }, 50);        
       }
-      return true;
+      return SS.mode;
     },
 
     setStateOrHash: function (v, t, s) {
