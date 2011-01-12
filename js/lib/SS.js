@@ -1,4 +1,3 @@
-
 var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
 
   version: '0.2.0',
@@ -90,13 +89,13 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
     }
 
     function eventRoute(event) {
-      
-      if(event) {
+
+      var routes = self.routes;
+
+      if(event && event.state) {
         state = event.state;
       }
-      
-      var routes = self.routes;
-  
+
       if(!verifyCurrentRoute() && routes.notfound) {
         execMethods(routes.notfound.on);
         return;
@@ -120,37 +119,19 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
           execRoute(routes, route);
         }
       }
-      
+
       if(routes.afterall) {
         execMethods(routes.afterall.on); // methods to be fired after every route.
       }      
 
-    } 
-
-    SS.listener.Init(eventRoute); // support for older browsers
-
-    for(var route in routes) {
-      if (routes.hasOwnProperty) {
-        if(routes[route].start) {
-          SS.listener.setStateOrHash(state, route, routes[route].start);
-          SS.listener.fire();
-          hasFirstRoute = true;
-          break;
-        }
-      }
     }
 
-    if(!verifyCurrentRoute() && routes.notfound) {
-      execMethods(routes.notfound.on);
-    }
-    else if(!hasFirstRoute && window.location.hash.length > 0) {
-      SS.listener.fire();
-    }
+    SS.listener.init(eventRoute); // support for older browsers
 
-    first = false;    
+    first = false;
 
     return {
-      
+
       getState: function() {
         return self.state;
       },
@@ -191,11 +172,11 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
           url.splice(v, qty);
         }
         else {
-          throw new Error("setRoute: not enough args.")
+          throw new Error("setRoute: not enough args.");
         }
-        
-        SS.listener.setStateOrHash(self.state, v || val, url.join("/"));
-        return hash;
+
+        SS.listener.setStateOrHash(self.state || {}, v || val, url.join("/"));
+        return url;
                       
       },
 
@@ -215,19 +196,19 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
 
     hash: document.location.hash,
 
-    check:  function () { // only used for 'compatibility' or 'legacy'.
+    check:  function () {
       var h = document.location.hash;
       if (h != this.hash) {
         this.hash = h;
-        this.onHashChanged();
+        SS.mode == 'compatibility' ? window.onhashchange() : this.onHashChanged();
       }
     },
     
     fire: function() {
-      if(SS.mode = 'modern') {
+      if(SS.mode == 'modern') {
         window.onpopstate();
       }
-      else if(SS.mode = 'compatibility') {
+      else if(SS.mode == 'compatibility') {
         window.onhashchange();
       }
       else {
@@ -235,23 +216,21 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
       }
     },
 
-    Init: function (fn) {
+    init: function (fn) {
 
       var self = this;
 
       if(window.history && window.history.pushState) {
-
-        SS.mode = 'modern';
-        window.onpopstate = fn
+        window.onpopstate = fn;
+        return SS.mode = 'modern';
       } 
       else if('onhashchange' in window && 
           (document.documentMode === undefined || document.documentMode > 7)) { 
 
         window.onhashchange = fn;
+        SS.mode = 'compatibility';        
       }
       else { // IE support, based on a concept by Erik Arvidson ...
-
-        SS.mode = 'legacy';
 
         var frame = document.createElement('iframe');
         frame.id = 'state-frame';
@@ -268,18 +247,21 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
         }
 
         this.onHashChanged = fn;
+        SS.mode = 'legacy';
       }
 
       if(SS.mode != 'modern') {
+        
         // poll for changes of the hash
         window.setInterval(function () { self.check(); }, 50);        
       }
+      return true;
     },
 
-    setStateOrHash: function (o, t, s) {
+    setStateOrHash: function (v, t, s) {
 
       if(SS.mode == 'modern') {
-        window.history.pushState(o, t, s);
+        window.history.pushState(v, t, s);
         return this;
       }
 
