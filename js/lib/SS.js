@@ -6,7 +6,6 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
   router: function() {
     var self = this,
         first = false,
-        hasFirstRoute = false,
         state = {},
         hostObject,
         routes,
@@ -47,23 +46,40 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
     }
 
     function execRoute(routes, route) {
-      
+
       var v = self.mode == 'compatibility' ? document.location.hash : document.location.pathname;
       v.slice(1, v.length);
-      
-      if(new RegExp(route).test(v) && !self.retired[route]) {
+
+      var exp = new RegExp(route).exec(v);
+      exp.shift();
+
+      if(exp.length > 0 && !self.retired[route]) {
 
         if(routes[route].state) {
           self.state = routes[route].state;
+        }
+
+        for(var i=1; i < exp.length; i++) { // capture group defs...
+          var matchGroup = routes[route][i];
+          if(!isNaN(matchGroup*1)) {
+            for(var potentialMatch in matchGroup) {
+              if (matchGroup.hasOwnProperty(potentialMatch)) {
+                
+                // to-do...
+                if(potentialMatch === exp[i]) {
+                
+                }
+              }
+            }
+          }
         }
 
         if(routes[route].once === true) {
           self.retired[route] = true;
         }
         else if(routes[route].once) {
-
-          delete self.retired[route].once;
           execMethods(routes[route].once, route);
+          delete routes[route].once;
         }
 
         if(routes[route].on) {
@@ -81,7 +97,7 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
       v.slice(1, v.length);
 
       for(var route in routes) {
-        if (routes.hasOwnProperty && new RegExp(route).test(v)) {
+        if (routes.hasOwnProperty(route) && new RegExp(route).test(v)) {
           return true;
         }
       }
@@ -115,7 +131,7 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
       }
 
       for(var route in routes) {
-        if (routes.hasOwnProperty) {
+        if (routes.hasOwnProperty(route)) {
           execRoute(routes, route);
         }
       }
@@ -135,11 +151,11 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
       getState: function() {
         return self.state;
       },
-      
+
       getRetired: function() {
         return self.retired;
       },
-      
+
       getRoute: function(v) {
 
         // if v == number, returns the value at that index of the hash.
@@ -176,7 +192,6 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
         }
 
         SS.listener.setStateOrHash(self.state || {}, v || val, url.join("/"));
-        SS.listener.fire();
         return url;
                       
       },
@@ -188,9 +203,8 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
       removeRoute: function() {
 
       }
-      
+
     };
-    
   },
 
   listener: { 
@@ -201,10 +215,10 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
       var h = document.location.hash;
       if (h != this.hash) {
         this.hash = h;
-        SS.mode == 'compatibility' ? window.onhashchange() : this.onHashChanged();
+        this.onHashChanged();
       }
     },
-    
+
     fire: function() {
       if(SS.mode == 'modern') {
         window.onpopstate();
@@ -222,10 +236,10 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
       var self = this;
 
       if(window.history && window.history.pushState) {
-        
+
         var links = document.querySelectorAll("a");
 
-        for (var i=0; i < links.length; i++) {
+        for(var i=0; i < links.length; i++) {
 
           if(links[i].href.indexOf("#") !== -1 && links[i].className.indexOf("setRoute") != -1) {
 
@@ -268,13 +282,9 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
         }
 
         this.onHashChanged = fn;
-        SS.mode = 'legacy';
-      }
-
-      if(SS.mode != 'modern') {
+        window.setInterval(function () { self.check(); }, 50);
         
-        // poll for changes of the hash
-        window.setInterval(function () { self.check(); }, 50);        
+        SS.mode = 'legacy';
       }
       return SS.mode;
     },

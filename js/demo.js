@@ -10,7 +10,6 @@
   function notFound() {
     
     // A function to get fired when a route can not be found.
-    
     $('#route-name').text(window.location.href);
     $('#notfound').fadeIn().delay(4000).fadeOut();
   }
@@ -42,7 +41,7 @@
 					on: ['why']
 				},
 				
-				'demoExplanation': {
+				'demo/?([a-zA-Z0-9_\-]+)?': {
 					on: ['demo']
 				},				
 
@@ -74,7 +73,7 @@
 
 		},
 
-		/* implementations... */
+		/* here are some functions that the router will call... */
 
 		about: function() {
 		  selectContext('#tab1', '#about');
@@ -89,17 +88,15 @@
 		},
 		
 		demo: function() {
-		  selectContext('#tab4', '#demoExplanation');
+		  selectContext('#tab4', '#demo');
 		},
 
 		beforeall: function() {
 
       // this just finds all the elements with the 'router-context' class and hides them.
-
       $(".router-context").hide();
 
       // this removes the 'selected' class from demo tabs.
-
       $(".tab").removeClass("selected");
 
 		},
@@ -110,7 +107,6 @@
     selectContext: function(tabSelector, contentSelector) {
 
       // A function to show certain things when a route is entered.
-
   	  if(tabSelector) { $(tabSelector).addClass("selected"); }
   	  if(contentSelector) { $(contentSelector).show(); }    	  
 

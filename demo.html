@@ -81,50 +81,57 @@
 								<h3>Simple Configuration</h3>
 								Configuration is done through an object literal
 								<pre><code>
+									
+// The router method takes two parameters. The first is a 'hostObject' (optional), which is a reference to an 
+// object that contains the some or all of the methods that you would like to execute at run-time. The second 
+// parameter is the router configuration. router config is 
+									
 var router = SS.router(this, {
 
-	"about": { // a RegExp
-
-		on: ["about"]
+	'about': {
+		on: ['about']
 	},
 
-	"how": { // ([a-zA-Z0-9_\-]+)
-		on: ["how"]
+	'how': { 
+		on: ['how']
 	},
 
-	"why": {
-		on: ["why"]
+	'why': {
+		on: ['why']
 	},
 
-	"demoExplanation": {
-		on: ["demo"]
-	},				
+	'demo/?([a-zA-Z0-9_\-]+)?': {
+		on: ['demo']
+	},
 
-     // there are a few optional methods for convenience, they 
+	// there are a few optional methods for convenience, they 
 
 	notfound: {
 
-	  // you can define a function anywhere and refer to it here with its function name or you
-	  // can specify a string that represents a function name which belongs to the hostObject
-	  // (the object that is specified as the first parameter of the router). No other methods are
-	  // fired if this the route is 'not found'.
+		// you can define a function anywhere and refer to it here with its function name or you
+		// can specify a string that represents a function name which belongs to the hostObject
+		// (the object that is specified as the first parameter of the router). No other methods are
+		// fired if this the route is 'not found'.
 
 		on: [notFound] 
 	},
 
 	beforeall: {
-	  on: ["beforeall"]
+		on: ['beforeall']
 	},
 
 	afterall: {
-	  on: ["afterall"]
+		on: ['afterall']
 	},				
 
-     leaveall: {
-       on: ["leaveall"]
-     }
+	leaveall: {
+		on: ['leaveall']
+	}
 
 });
+
+router.setRoute("about");
+
 								</code></pre>
 							</div>
 						</div>
