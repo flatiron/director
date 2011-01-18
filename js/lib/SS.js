@@ -45,48 +45,58 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
       }
     }
 
+    function routeFork(routes, route) {
+      if(routes[route].once === true) {
+        self.retired[route] = true;
+      }
+      else if(routes[route].once) {
+        execMethods(routes[route].once, route);
+        delete routes[route].once;
+      }
+
+      if(routes[route].on) {
+        execMethods(routes[route].on, route);
+      }
+
+      onleave = routes[route].onleave || null;
+    }
+
     function execRoute(routes, route) {
 
       var v = self.mode == 'compatibility' ? document.location.hash : document.location.pathname;
       v.slice(1, v.length);
 
       var exp = new RegExp(route).exec(v);
-      exp.shift();
 
-      if(exp.length > 0 && !self.retired[route]) {
+      if(exp && exp.length > 0 && !self.retired[route]) {
 
         if(routes[route].state) {
           self.state = routes[route].state;
         }
 
         for(var i=1; i < exp.length; i++) { // capture group defs...
-          var matchGroup = routes[route][i];
-          if(!isNaN(matchGroup*1)) {
-            for(var potentialMatch in matchGroup) {
-              if (matchGroup.hasOwnProperty(potentialMatch)) {
-                
-                // to-do...
-                if(potentialMatch === exp[i]) {
-                
+
+          if(String(i) in routes[route]) {
+
+            var matchGroup = routes[route][i];
+            for(var member in matchGroup) {
+              if (matchGroup.hasOwnProperty(member)) {
+
+                if(member === exp[i]) {
+
+                  if(matchGroup[member].state) {
+                    self.state = matchGroup[member].state;
+                  }
+
+                  routeFork(matchGroup, member);
+
                 }
               }
             }
           }
         }
 
-        if(routes[route].once === true) {
-          self.retired[route] = true;
-        }
-        else if(routes[route].once) {
-          execMethods(routes[route].once, route);
-          delete routes[route].once;
-        }
-
-        if(routes[route].on) {
-          execMethods(routes[route].on, route);
-        }
-
-        onleave = routes[route].onleave || null;
+        routeFork(routes, route);
 
       }
     }
