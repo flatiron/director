@@ -30,57 +30,80 @@ A hash route looks like this...<br/>
 <img src="https://github.com/hij1nx/SugarSkull/raw/master/img/hashRoute.png" width="598" height="113" alt="HashRoute" -->
 <br/>
 
-Configuration is done through an object literal
+The router takes two params, first a 'host-object' is optional. When it is provided, any string-literals
+in the route definitions refer to members of the host-object.<br/><br/>
+
+The second param is the configuration. You can also think of this as your router-design. It's an object literal 
+made up of regular expressions, and a few optional helper functions. Here are a few examples.
+
 <pre><code>
-var router = SS.router(this, {
+var someFunctions = {
+	f1: function(name) { console.log("hello my name is " + name); },
+	f2: function() { console.log("i " + (SS.getState().dangerous ? "am" : "am not") + " dangerous"); },
+	f3: function() { console.log("i am well behaved."); }
+};
 
-	'about': {
-		on: ['about']
-	},
+function f4() { console.log("i will only happen once"); }
 
-	'how': { 
-		on: ['how']
-	},
+var router = SS.router(someFunctions, {
 
-	'why': {
-		on: ['why']
-	},
+ 	'/^punks\\//': {
 
-	'demo/?([a-zA-Z0-9_\-]+)?': {
-		on: ['demo']
-	},
+ 	  on: ['f1'],
+ 		once: [f4],
 
-	// there are a few optional methods for convenience, they 
+ 	  '/johny[\\/]?/': {
+ 	    '/(\\w+)/': {
+ 	      on: [function(a) { console.log('johny ' + a); SS.getState().name = a; }],
+ 	    },
+ 	    on: ['f1', 'f2'],
+      state: { dangerous: true, name: 'Johny' }
+    },
 
-	notfound: {
+    '/john/': {
+      on: ['f1', 'f2'],
+      state: { dangerous: false, name 'John Doe' }
+    },
 
-		// you can define a function anywhere and refer to it here with its function name or you
-		// can specify a string that represents a function name which belongs to the hostObject
-		// (the object that is specified as the first parameter of the router). No other methods are
-		// fired if this the route is 'not found'.
-
-		on: [notFound] 
-	},
-
-	beforeall: {
-		on: ['beforeall']
-	},
-
-	afterall: {
-		on: ['afterall']
-	},				
-
-	leaveall: {
-		on: ['leaveall']
-	}
+    '/gg/': {
+      on: ['f1', 'f3'],
+      state: { dangerous: true, name 'G. G. Allen' }
+    }
+ 	}
 
 });
+
+
 </code></pre>
 
-**Easy client-side routing!**
 
- - Uses HTML5 pushState but falls back to other techniques to support older browsers.
- - Bookmarking support.
+API
+===
+
+**SS.router(host-object, config)**<br/>
+	Initial the router.<br/>
+	host-object (object, optional): an object containing methods to execute.
+	config (object, required): an object containing the router configuration.
+<br/>
+
+**SS.getState()**<br/>
+	Returns an object that is relative to the current route.<br/>
+<br/>	
+
+**SS.setRoute(value, n, string)**<br/>
+	Set the current route.<br/>
+	value ()
+<br/>
+
+**SS.getRoute([index])**<br/>
+	Returns an array that represents the current route.
+	If an index is provided, the url (or hash depending on HTML5 pushState support)
+	will be split into an array and the value at that index will be returned.
+<br/>
+	
+**SS.getRetired()**<br/>
+		Returns an array that shows which routes have been retired.
+<br/>
 
  - On-Route. A list of functions to fire when the route is hit.
  - After-Route. A list of functions to fire when leaving a particular route.
