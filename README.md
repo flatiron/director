@@ -1,81 +1,127 @@
 
-What
-====
+##What
 
-SugarSkull is a VERY small client side router.
+SugarSkull is a very small client side router that provides state management. What? A route 
+is a URL and a state is the active data and appearance of the application. So when the url 
+changes, the router performs a given task and then the application transforms, but doesn't 
+reload the page. This is especially great for making web sites feel more responsive, like desktop apps.
 
-A client side router provides state management. What? A route is a URL. A state is the 
-active data and appearance of the application. So when the url changes, the router performs 
-a given task and then the application mutates, but doesn't have to reload the page. This is 
-especially great for making web sites feel more responsive, like desktop apps.
+ - Basic glue for building single page apps.
+ - Helps clarify the code path.
+ - Isolates intention (designed to separate routing from application logic).
+ - Code exclusion without interference.
+ - Promotes code portability.
 
 checkout a demo <a href="http://hij1nx.github.com/SugarSkull/">here</a>.
+<br/>
 
-How
-===
+##How
 
 SugarSkull uses the <b>HTML5 pushState API</b> and polyfills to support older browsers.
-Sugarskull keeps track of what happens to the url, if the url changes, it fires off some function(s) 
+SugarSkull keeps track of what happens to the url, if the url changes, it fires off some function(s) 
 that you have specified in the configuration.
 
-
-For convenience, Sugarskull adds the ability to change the current route from an anchor tag. 
-Normally, clicking on an anchor with a hash-only value will set the location hash. By adding 
-the class "setRoute" to the tag, the url's path will change (but not reload the page).
-<br/>
 <!-- If a browser supports pushState, then the path of the URL changes, this is nice for the user
 because it's very readable. If not, we divide the url into two parts. First the server-side (everything 
 before the '#'), and then the client-side (everything after the '#'). The second part is called the HashRoute.
 A hash route looks like this...<br/>
 <img src="https://github.com/hij1nx/SugarSkull/raw/master/img/hashRoute.png" width="598" height="113" alt="HashRoute" -->
-<br/>
 
-The router takes two params, first a 'host-object' is optional. When it is provided, any string-literals
-in the route definitions refer to members of the host-object.<br/><br/>
+###Usage
 
-The second param is the configuration. You can also think of this as your router-design. It's an object literal 
-made up of regular expressions, and a few optional helper functions. Here are a few examples.
+The router takes two params...
 
+1) A host object (optional). When it is provided, any string-literals
+in the route definitions will refer to members of the host-object.<br/>
+2) Configuration. An object literal made up of nested regular expressions 
+that map to functions.
+
+**Example 1: an overly simplified router**
 <pre><code>
-var someFunctions = {
-	f1: function(name) { console.log("hello my name is " + name); },
-	f2: function() { console.log("i " + (SS.getState().dangerous ? "am" : "am not") + " dangerous"); },
-	f3: function() { console.log("i am well behaved."); }
-};
+var router = SS.router({
 
-function f4() { console.log("i will only happen once"); }
+  '/^bird/': { // the URL was either http://foo.com/bird (HTML5) or http://foo.com/index.html#bird
+    on: birdFunction // fire a function that you created called 'birdFunction'
+  },
 
-var router = SS.router(someFunctions, {
+  '/^dog/': {
+    on: dogFunction
+  },
 
- 	'/^punks\\//': {
-
- 	  on: ['f1'],
- 		once: [f4],
-
- 	  '/johny[\\/]?/': {
- 	    '/(\\w+)/': {
- 	      on: [function(a) { console.log('johny ' + a); SS.getState().name = a; }],
- 	    },
- 	    on: ['f1', 'f2'],
-      state: { dangerous: true, name: 'Johny' }
-    },
-
-    '/john/': {
-      on: ['f1', 'f2'],
-      state: { dangerous: false, name 'John Doe' }
-    },
-
-    '/gg/': {
-      on: ['f1', 'f3'],
-      state: { dangerous: true, name 'G. G. Allen' }
-    }
- 	}
+  '/^cat/': {
+    on: catFunction
+  }
 
 });
-
-
 </code></pre>
 
+**Example 2: various ways to declare functions and routes**
+<pre><code>
+(function() {
+
+  return {
+
+    Main: function() {
+
+      var router = SS.router(this, { // this example demonstrates a host object.
+
+        '/^dog/': {
+          on: 'dogFunction'
+        },
+
+        '/^cat/': {
+          on: 'catFunction'
+        }
+
+      });
+
+    },
+
+    dogFunction: function() {
+      // woof!
+    },
+
+    catFunction: function() {
+      // meow!
+    }
+
+  };
+
+})().Main();
+</code></pre>
+**Example 3: a more complex configuration**
+<pre><code>
+var router = SS.router(someObject, {
+
+  '/^animals\\//': {
+
+    on: sitOnStuff, // a method defined somewhere else
+    once: 'crapOnFloor', // method name called on hostobject
+
+    '/bird[\\/]?/': {
+ 	    '/(\\w+)/': {
+ 	      on: function() {}, // perhaps an inline function?
+      },
+ 	    on: ['f1', 'f2'], // a list of methods
+      state: { type: 'bird' } // the state object associated with the route
+    },
+
+    '/dog/': {
+      on: ['f1', 'f2'],
+      state: { type: 'k9' }
+    },
+
+    '/cat/': {
+      on: ['f1', 'f3'],
+      state: { type: 'feline' }
+    }
+ 	}
+  '/^mamals\\//': {
+    on: 'readDouglessAdams'
+  }
+    
+});
+</code></pre>
 
 API
 ===
@@ -114,13 +160,5 @@ API
  - On-All-Routes. A list of functions to fire when leaving a particular route.
 
 
-**SugarSkull tries to address the following issues with as few moving parts as possible...**
-
- - Clarification of the execution path.
- - Isolation of intention (separates routing from implementations, allows you to organize your logic according to its purpose).
- - Code exclusion without interference.
- - Promotes code portability.
-
-Version
-=======
-0.2.0(b)
+##Version
+0.2.3(b)
