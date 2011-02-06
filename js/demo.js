@@ -26,8 +26,8 @@
 
 			router = SS.router(this, {
 
-				'about': { // a RegExp
-
+				'/about/': { // a RegExp
+          name: 'about',
 					on: ['about'],
 					state: { visited: false }
 
@@ -86,7 +86,7 @@
 		why: function() {
 		  selectContext('#tab3', '#why');
 		},
-		
+
 		demo: function() {
 		  selectContext('#tab4', '#demo');
 		},
@@ -100,7 +100,7 @@
       $(".tab").removeClass("selected");
 
 		},
-	
+
 		afterall: function() {},
     leaveall: function() {},
   

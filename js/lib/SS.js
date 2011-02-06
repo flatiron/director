@@ -1,6 +1,6 @@
 var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
 
-  version: '0.2.3',
+  version: '0.2.0',
   mode: 'compatibility',
 
   router: function() {
@@ -27,18 +27,22 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
       return v.slice(1, v.length).split("/");
     }
 
+    function escapeRegExp(s) {
+      return s.replace(/([.*+?^${}()|[\]\/\\])/g, '\\$1');
+    }
+
     function execMethods(methods, route, values) {
       for (var i=0; i < methods.length; i++) {
 
         if(!self.retired[methods[i]]) {
-          if(hostObject && typeof methods[i] == "string") {
+          if(hostObject && hostObject[methods[i]] && typeof methods[i] == "string") {
             hostObject[methods[i]].apply(hostObject, values);
           }
           else if(typeof methods[i] != "string"){
             methods[i].apply(null, values);
           }
           else {
-            throw new Error("exec: method not found on route '" + route + "'.");
+            throw new Error("sugarskull: '"+methods[i]+"' method not found on route '" + route + "'.");
           }          
         }
       }
@@ -162,14 +166,14 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
       setRoute: function(v, qty, val) {
           
         var url = explodeURL();
-        
+
         if(typeof v == "string") {
           url = [v];
         }
-        else if(v !== false && qty !== false && val !== false) {
+        else if(v && qty && val) {
           url.splice(v, qty, val);
         }
-        else if(v !== false && qty !== false) {
+        else if(v && qty) {
           url.splice(v, qty);
         }
         else {
