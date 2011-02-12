@@ -1,25 +1,28 @@
 
 ##What
 
-SugarSkull is a very small client side router that provides state management. What? A route 
-is a URL and a state is the active data and appearance of the application. So when the url 
-changes, the router performs a given task and then the application transforms, but doesn't 
-reload the page. This is especially great for making web sites feel more responsive, like desktop apps.
+SugarSkull is an event emitter. It monitors the URL. When the URL changes, and it is a match to one defined in your router, it's associated functions are executed. Simple.
 
- - Basic glue for building single page apps.
- - Helps clarify the code path.
+<b>What can this do for your app?</b>
+
+ - Simple glue for building single page apps.
+ - Promotes code portability. 
  - Isolates intention (designed to separate routing from application logic).
+ - Helps clarify the code path. 
  - Code exclusion without interference.
- - Promotes code portability.
+ 
+<b>Compared to Sammy.js and Backbone.js</b>
+
+ - SugarSkull is declarative so it promotes the centralization of your router design.
+ - Sammy.js is jQuery dependent, modeled after a server side technology.
+ - Backbone has limited support for routing, sugar-skull is complementary.
 
 checkout a demo <a href="http://hij1nx.github.com/SugarSkull/">here</a>.
 <br/>
 
 ##How
 
-SugarSkull uses the <b>HTML5 pushState API</b> and polyfills to support older browsers.
-SugarSkull keeps track of what happens to the url, if the url changes, it fires off some function(s) 
-that you have specified in the configuration.
+SugarSkull uses the <b>HTML5 pushState API</b> and polyfills to support older browsers by using the url hash value.
 
 <!-- If a browser supports pushState, then the path of the URL changes, this is nice for the user
 because it's very readable. If not, we divide the url into two parts. First the server-side (everything 
@@ -41,21 +44,21 @@ that map to functions.
 var router = SS.router({
 
   '/^bird/': { // the URL was either http://foo.com/bird (HTML5) or http://foo.com/index.html#bird
-    on: birdFunction // fire a function that you created called 'birdFunction'
+    on: fly // fire a function that you created called 'birdFunction'
   },
 
   '/^dog/': {
-    on: dogFunction
+    on: bark
   },
 
   '/^cat/': {
-    on: catFunction
+    on: scratch
   }
 
 });
 </code></pre>
 
-**Example 2: various ways to declare functions and routes**
+**Example 2: alternate ways to design routers**
 <pre><code>
 (function() {
 
@@ -66,58 +69,66 @@ var router = SS.router({
       var router = SS.router(this, { // this example demonstrates a host object.
 
         '/^dog/': {
-          on: 'dogFunction'
+          on: ['bark', 'eat']
         },
 
         '/^cat/': {
-          on: 'catFunction'
+          on: ['meow', 'eat']
         }
 
       });
 
     },
 
-    dogFunction: function() {
+    bark: function() {
       // woof!
     },
 
-    catFunction: function() {
-      // meow!
+    meow: function() {
+      // mrrrow!
+    },
+    
+    eat: function() {
+      // yum!
     }
 
   };
 
 })().Main();
 </code></pre>
-**Example 3: a more complex configuration**
+**Example 3: a more complex router**
 <pre><code>
+  
+function walk() {};
+function swim() {};
+function talk() {};
+function species() { return SS.getRoute(2); };
+  
 var router = SS.router(someObject, {
 
-  '/^animals\\//': {
+  '/^animal\\//': {
 
-    on: sitOnStuff, // a method defined somewhere else
-    once: 'crapOnFloor', // method name called on hostobject
+    on: walk,
+    once: bar,
 
     '/bird[\\/]?/': {
  	    '/(\\w+)/': {
- 	      on: function() {}, // perhaps an inline function?
+ 	      on: species
       },
- 	    on: ['f1', 'f2'], // a list of methods
-      state: { type: 'bird' } // the state object associated with the route
+ 	    on: [eat, talk], 
+      state: { type: 'airborne' }
     },
 
-    '/dog/': {
-      on: ['f1', 'f2'],
-      state: { type: 'k9' }
-    },
-
-    '/cat/': {
-      on: ['f1', 'f3'],
-      state: { type: 'feline' }
+    '/fish/': {
+      on: [eat, swim],
+      state: { type: 'amphibias' }
     }
- 	}
-  '/^mamals\\//': {
-    on: 'readDouglessAdams'
+    
+ 	},
+ 	
+  '/^person\\//': {
+    on: [walk, talk, eat],
+    state: { type: '' }
   }
     
 });
