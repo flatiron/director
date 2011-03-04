@@ -1,7 +1,8 @@
-;var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
+var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
 
-  version: '0.2.1',
+  version: '0.2.0',
   mode: 'compatibility',
+  origin: location.href,
 
   router: function() {
     var self = this,
@@ -21,34 +22,43 @@
 
     this.retired = [];
     this.routes = routes;
-
+    
     function explodeURL() {
-      var v = SS.mode == 'modern' ? document.location.pathname : document.location.hash;
+      var v = document.location.hash;
       return v.slice(1, v.length).split("/");
     }
 
-    function escapeRegExp(s) {
-      return s.replace(/([.*+?^${}()|[\]\/\\])/g, '\\$1');
-    }
+    // function escapeRegExp(s) {
+    //   return s.replace(/([.*+?^${}()|[\]\/\\])/g, '\\$1');
+    // }
 
     function execMethods(methods, route, values) {
+      if(!methods) {
+        return fasle;
+      }
+
+      if(Object.prototype.toString.call(methods) !== '[object Array]') {
+        methods = [methods];
+      }
+
       for (var i=0; i < methods.length; i++) {
 
         if(!self.retired[methods[i]]) {
-          if(hostObject && hostObject[methods[i]] && typeof methods[i] == "string") {
+          if(hostObject && typeof methods[i] == "string") {
             hostObject[methods[i]].apply(hostObject, values);
           }
           else if(typeof methods[i] != "string"){
             methods[i].apply(null, values);
           }
           else {
-            throw new Error("sugarskull: '"+methods[i]+"' method not found on route '" + route + "'.");
+            throw new Error("exec: method not found on route '" + route + "'.");
           }          
         }
       }
     }
 
     function dispatch(routes, route, values) {
+
       if(routes[route].once === true) {
         self.retired[route] = true;
       }
@@ -65,16 +75,23 @@
     }
 
     function execRoute(routes, route) {
-      var v = self.mode == 'compatibility' ? document.location.hash : document.location.pathname;
+      
+      // var v = self.mode == 'compatibility' ? document.location.hash : document.location.pathname;
+      v = document.location.hash;
       v = v.slice(1);
       
-      execPartialRoute(routes, route, v);
+      execPartialRoute(routes, route, v, 0);
     }
 
-    function execPartialRoute(routes, route, target) {
-      var exp = new RegExp(route.substr(1, route.length - 2) + '(.*)?').exec(target);
-      if(exp && exp.length > 0 && !self.retired[route]) {
+    function execPartialRoute(routes, route, target, level) {
+      if (route[0] !== '/') {
+        return;
+      }
 
+      var prefix = level === 0 ? '^\\/' : '',
+          exp = new RegExp(prefix + route.slice(1) + '(.*)?').exec(target);
+      
+      if(exp && exp.length > 0 && !self.retired[route]) {
         // We've entered the route to start processing it
         if(routes[route].state) {
           self.state = routes[route].state;
@@ -91,7 +108,7 @@
             if (routes[route].hasOwnProperty(nestedRoute)) {
               if (nestedRoute.indexOf('/') === 0) {
                 // Recursive step
-                execPartialRoute(routes[route], nestedRoute, next);
+                execPartialRoute(routes[route], nestedRoute, next, ++level);
               }
             }
           }
@@ -131,69 +148,63 @@
 
     }
 
-    SS.listener.init(routingAgent); // support for older browsers
-
     first = false;
 
-    return {
+    this.init = function() {
+      SS.listener.init(routingAgent);
+      routingAgent(); 
+      return this;       
+    };
 
-      getState: function() {
-        return self.state;
-      },
+    this.getState = function() {
+      return self.state;
+    };
 
-      getRetired: function() {
-        return self.retired;
-      },
+    this.getRetired = function() {
+      return self.retired;
+    };
 
-      getRoute: function(v) {
+    this.getRoute = function(v) {
 
-        // if v == number, returns the value at that index of the hash.
-        // if v == string, returns the index at which it was found.
-        // else returns an array which represents the current hash.
+      // if v == number, returns the value at that index of the hash.
+      // if v == string, returns the index at which it was found.
+      // else returns an array which represents the current hash.
 
-        if(typeof v == "number") {
-          return explodeURL()[v];
-        }
-        else if(typeof v == "string"){
-          var h = explodeURL();
-          return h.indexOf(v);
-        }
-        else {
-          return explodeURL();
-        }
-      },
+      if(typeof v == "number") {
+        return explodeURL()[v];
+      }
+      else if(typeof v == "string"){
+        var h = explodeURL();
+        return h.indexOf(v);
+      }
+      else {
+        return explodeURL();
+      }
+    };
 
-      setRoute: function(v, qty, val) {
-          
-        var url = explodeURL();
+    this.setRoute = function(v, qty, val) {
 
-        if(typeof v == "string") {
-          url = [v];
-        }
-        else if(v && qty && val) {
-          url.splice(v, qty, val);
-        }
-        else if(v && qty) {
-          url.splice(v, qty);
-        }
-        else {
-          throw new Error("setRoute: not enough args.");
-        }
+      var url = explodeURL();
 
-        SS.listener.setStateOrHash(self.state || {}, v || val, url.join("/"));
-        return url;
-                      
-      },
-
-      createRoute: function() {
-
-      },
-
-      removeRoute: function() {
-
+      if(typeof v == "string") {
+        url = [v];
+      }
+      else if(v && qty && val) {
+        url.splice(v, qty, val);
+      }
+      else if(v && qty) {
+        url.splice(v, qty);
+      }
+      else {
+        throw new Error("setRoute: not enough args.");
       }
 
+      SS.listener.setHash(self.state || {}, v || val, url.join("/"));
+      return url;
+                    
     };
+
+    return this;
   },
 
   listener: { 
@@ -209,10 +220,7 @@
     },
 
     fire: function() {
-      if(SS.mode == 'modern') {
-        window.onpopstate();
-      }
-      else if(SS.mode == 'compatibility') {
+      if(SS.mode == 'compatibility') {
         window.onhashchange();
       }
       else {
@@ -224,31 +232,7 @@
 
       var self = this;
 
-      if(window.history && window.history.pushState) {
-
-        var links = document.querySelectorAll("a");
-
-        for(var i=0; i < links.length; i++) {
-
-          if(links[i].href.indexOf("#") !== -1 && links[i].className.indexOf("setRoute") != -1) {
-
-            links[i].addEventListener('click', function(e) {
-              window.history.pushState(
-                {}, 
-                this.firstChild.nodeValue, 
-                "/" + this.href.substr((this.href.indexOf("#")+1), this.href.length)
-              );
-              window.onpopstate();
-              return e.preventDefault();
-            });
-
-          }
-        }
-        
-        window.onpopstate = fn;
-        return SS.mode = 'modern';
-      } 
-      else if('onhashchange' in window && 
+      if('onhashchange' in window && 
           (document.documentMode === undefined || document.documentMode > 7)) { 
 
         window.onhashchange = fn;
@@ -278,12 +262,7 @@
       return SS.mode;
     },
 
-    setStateOrHash: function (v, t, s) {
-
-      if(SS.mode == 'modern') {
-        window.history.pushState(v, t, s);
-        return this;
-      }
+    setHash: function (v, t, s) {
 
       // Mozilla always adds an entry to the history
       if (SS.mode == 'legacy') {

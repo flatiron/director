@@ -93,9 +93,9 @@ pre {
 	border: 1px solid #e6e6e6;
 	overflow: hidden;
 	
-	-moz-box-shadow: 0px 3px 6px #aaa;
-	-webkit-box-shadow: 0px 3px 6px #aaa;
-	box-shadow: 0px 3px 6px #aaa;	
+	-moz-box-shadow: 0px 3px 16px #aaa;
+	-webkit-box-shadow: 0px 3px 16px #aaa;
+	box-shadow: 0px 3px 16px #aaa;	
 	
 	-webkit-border-radius: 6px;
 	-moz-border-radius: 6px;
@@ -149,6 +149,37 @@ pre {
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff', endColorstr='#e6e6e6'); /*  IE */
 	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#e6e6e6)); /* Webkit browsers */
 	background: -moz-linear-gradient(top,  #fff,  #e6e6e6); /* Firefox 3.6+ */	
+}
+
+.button {
+
+	display: inline-block;
+
+	height: 18px;
+	width: 100px;
+	color: #fff;
+	
+	padding-top: 2px;
+	margin-left: 10px;
+	text-decoration: none;
+
+	text-align: center;
+
+	cursor: pointer;
+	
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	
+	-moz-box-shadow: 0px 1px 1px #666;
+	-webkit-box-shadow: 0px 1px 1px #666;
+	box-shadow: 0px 1px 1px #666;	
+}
+
+.button.normal {
+	background: -moz-linear-gradient(top, #9E9E9E 0%, #717171 100%); /* firefox */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#9E9E9E), color-stop(100%,#717171)); /* webkit */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#9E9E9E', endColorstr='#717171',GradientType=0 ); /* ie */
 }
 
 .tab {

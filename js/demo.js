@@ -26,22 +26,27 @@
 
 			router = SS.router(this, {
 
-				'/about/': { // a RegExp
+				'/^about/': { // a RegExp
+				  
           name: 'about',
 					on: ['about'],
 					state: { visited: false }
 
 				},
 
-				'how': { // ([a-zA-Z0-9_\-]+)
+				'/^how/': { // ([a-zA-Z0-9_\-]+)
+
+     	    '/(\\w+)/': {
+     	      on: ['changecolor']
+          },
 					on: ['how']
 				},
 
-				'why': {
+				'/^why/': {
 					on: ['why']
 				},
 				
-				'demo/?([a-zA-Z0-9_\-]+)?': {
+				'/^demo/?([a-zA-Z0-9_\-]+)?/': {
 					on: ['demo']
 				},				
 
@@ -91,26 +96,19 @@
 		  selectContext('#tab4', '#demo');
 		},
 
+    changecolor: function() {
+      var bgcolor = router.getRoute(1);
+      $("#colorChangeTarget").css("color", bgcolor);
+    },
+
 		beforeall: function() {
-
-      // this just finds all the elements with the 'router-context' class and hides them.
       $(".router-context").hide();
-
-      // this removes the 'selected' class from demo tabs.
       $(".tab").removeClass("selected");
-
 		},
 
 		afterall: function() {},
-    leaveall: function() {},
-  
-    selectContext: function(tabSelector, contentSelector) {
-
-      // A function to show certain things when a route is entered.
-  	  if(tabSelector) { $(tabSelector).addClass("selected"); }
-  	  if(contentSelector) { $(contentSelector).show(); }    	  
-
-    }
+    leaveall: function() {}
+    
   }
 
 })().Main();

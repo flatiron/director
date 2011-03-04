@@ -18,7 +18,7 @@
 							<a href="#about" id="tab1" class="setRoute subscribe tab selected">About</a>
 							<a href="#how" id="tab2" class="setRoute tab">How it works</a>
 							<a href="#why" id="tab3" class="setRoute tab">Why</a>
-							<a href="#demoExplanation" id="tab4" class="setRoute tab">This Demo</a>
+							<a href="#demo" id="tab4" class="setRoute tab">This Demo</a>
 						</div>
 
 						<!-- 
@@ -44,14 +44,17 @@
 				
 						<div id="how" class="router-context">
 							<div class="content">
-								We divide the url into two parts. First the server-side (everything before the '<span class="red">#</span>'), and then
-								the client-side (everything after the '<span class="red">#</span>'). The second part is called the HashRoute.
-								The hash route looks like this...
+								We keep track of what happens to the url, if it changes, we compare the new URL against the defined routes. If there
+								is a match, we call the corresponding functions for that route.
 								<br/><br/>
-								<center>
-								<img src="img/hashRoute.png" width="598" height="113" alt="HashRoute">
-								</center>
-								We keep track of what happens to the url, if it changes, we fire off some function(s) that you have specified.
+								<div id="colorChangeTarget">Click some of these links and watch the URL change in concert with the UI.</div>
+								<br/>
+								<div id="testButtons">
+  								<a href="#how/red" class="setRoute button normal">Red</a>
+  								<a href="#how/blue" class="setRoute button normal">Blue</a>
+  								<a href="#how/green" class="setRoute button normal">Green</a>
+							  </div>
+								  
 							</div>
 						</div>
 				
@@ -71,7 +74,7 @@
 							</div>
 						</div>
 						
-						<div id="demoExplanation" class="router-context">
+						<div id="demo" class="router-context">
 							<div class="content">
 								<h3>Whats happening in this demo</h3>
 								<ul>
@@ -81,10 +84,6 @@
 								<h3>Simple Configuration</h3>
 								Configuration is done through an object literal
 								<pre><code>
-									
-// The router method takes two parameters. The first is a 'hostObject' (optional), which is a reference to an 
-// object that contains the some or all of the methods that you would like to execute at run-time. The second 
-// parameter is the router configuration. router config is 
 									
 var router = SS.router(this, {
 

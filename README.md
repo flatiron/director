@@ -1,7 +1,7 @@
 
 ##What
 
-SugarSkull is an event emitter. It monitors the URL. When the URL changes, and it is a match to one defined in your router, it's associated functions are executed. Simple.
+SugarSkull is client side router. It monitors the URL. When the URL changes, and it is a match to one defined in your router, it's associated functions are executed. Simple.
 
 <b>What can this do for your app?</b>
 
@@ -43,15 +43,15 @@ that map to functions.
 <pre><code>
 var router = SS.router({
 
-  '/^bird/': { // the URL was either http://foo.com/bird (HTML5) or http://foo.com/index.html#bird
-    on: fly // fire a function that you created called 'birdFunction'
+  '/bird': {
+    on: fly
   },
 
-  '/^dog/': {
+  '/dog': {
     on: bark
   },
 
-  '/^cat/': {
+  '/cat': {
     on: scratch
   }
 
@@ -68,16 +68,18 @@ var router = SS.router({
 
       var router = SS.router(this, { // this example demonstrates a host object.
 
-        '/^dog/': {
-          on: ['bark', 'eat']
+        '/dog': {
+          on: ['bark', 'eat'], // eat and bark.
+          '/fat': {
+            on: ['eat'] // eat a second time!
+          }
         },
 
-        '/^cat/': {
+        '/cat': {
           on: ['meow', 'eat']
         }
 
       });
-
     },
 
     bark: function() {
@@ -106,27 +108,27 @@ function species() { return SS.getRoute(2); };
   
 var router = SS.router(someObject, {
 
-  '/^animal\\//': {
+  '/animal': {
 
     on: walk,
     once: bar,
 
-    '/bird[\\/]?/': {
- 	    '/(\\w+)/': {
+    '/bird': {
+ 	    '/(\\w+)': {
  	      on: species
       },
  	    on: [eat, talk], 
       state: { type: 'airborne' }
     },
 
-    '/fish/': {
+    '/fish': {
       on: [eat, swim],
       state: { type: 'amphibias' }
     }
     
  	},
  	
-  '/^person\\//': {
+  '/person': {
     on: [walk, talk, eat],
     state: { type: '' }
   }
@@ -170,6 +172,22 @@ API
  - After-All-Routes. A list of functions to fire when leaving a particular route.
  - On-All-Routes. A list of functions to fire when leaving a particular route.
 
+# Credits
 
-##Version
-0.2.3(b)
+ - Author - hij1nx
+ - Contributors - Charlie Robbins
+
+# Version
+0.2.4(b)
+
+# Licence
+
+(The MIT License)
+
+Copyright (c) 2010 hij1nx <http://www.twitter.com/hij1nx>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
