@@ -198,24 +198,24 @@ API
 
 #### Constructor Methods
 
-##### `SS.router(config)` - Initialize the router, returns a new instance of the router.<br/>
+#### `SS.router(config)` - Initialize the router, returns a new instance of the router.<br/>
 @param {Object} config - An object literal representing the router configuration, aka: the routing table.<br/>
 
 #### Instance methods
 
-##### `getState()` - Returns the state object that is relative to the current route.
+#### `getState()` - Returns the state object that is relative to the current route.
 
-##### `getRoute([index])` - Returns the entire route or just a section of it.<br/>
+#### `getRoute([index])` - Returns the entire route or just a section of it.<br/>
 @param {Numner} index - The hash value is divided by forward slashes, each section then has an index, if this is provided, only that section of the route will be returned.<br/>
 
-##### `setRoute(route)` - Set the current route.<br/>
+#### `setRoute(route)` - Set the current route.<br/>
 @param {String} route - Supply a route value, such as `home/stats`.<br/>
   
-##### `setRoute(start, length)` - Remove from the current route.<br/>
+#### `setRoute(start, length)` - Remove from the current route.<br/>
 @param {Number} start - The position at which to start removing items.<br/>
 @param {Number} length - The number of items to remove from the route.<br/>
 
-##### `setRoute(index, value)` - Set the current route.<br/>
+#### `setRoute(index, value)` - Set the current route.<br/>
 @param {Number} index - The hash value is divided by forward slashes, each section then has an index.<br/>
 @param {String} value - The new value to assign the the position indicated by the first parameter.<br/>
 
@@ -225,14 +225,14 @@ API
 
 #### Available on all routes
 
-##### `on` - A function or array of functions to execute when the route is matched.<br/>
-##### `leave` - A function or array of functions to execute when leaving a particular route.<br/>
-##### `once` - A function or array of functions to execute only once for a particular route.<br/>
+#### `on` - A function or array of functions to execute when the route is matched.<br/>
+#### `leave` - A function or array of functions to execute when leaving a particular route.<br/>
+#### `once` - A function or array of functions to execute only once for a particular route.<br/>
 
 #### Available only at the top level of the router configuration
 
-##### `beforeall` - A function or array of functions to execute before any route is matched.<br/>
-##### `leaveall` - A function or array of functions to execute when leaving any route.<br/>
+#### `beforeall` - A function or array of functions to execute before any route is matched.<br/>
+#### `leaveall` - A function or array of functions to execute when leaving any route.<br/>
 
 # Credits
 
