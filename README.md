@@ -203,13 +203,12 @@ API
 	@param {Numner} index - The hash value is divided by forward slashes, each section then has an index, if this is provided, only that section of the route will be returned.
 
 **SS.setRoute(route)** - Set the current route.<br/>
-  @param {String} route - Supply a route value, such as `home/stats`.
+	@param {String} route - Supply a route value, such as `home/stats`.
   
 **SS.setRoute(start, length)** - Remove from the current route.<br/>
-  @param {Number} start - The position at which to start removing items.  
-  @param {Number} length - The number of items to remove from the route.
-  
- 
+	@param {Number} start - The position at which to start removing items.  
+	@param {Number} length - The number of items to remove from the route.
+
 **SS.setRoute(index, value)** - Set the current route.<br/>
 	@param {Number} index - The hash value is divided by forward slashes, each section then has an index.
 	@param {String} value - The new value to assign the the position indicated by the first parameter.
