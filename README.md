@@ -196,26 +196,30 @@ API
 
 ### Methods
 
+#### Constructor Methods
+
 `SS.router(config)` - Initialize the router, returns a new instance of the router.<br/>
 @param {Object} config - An object literal representing the router configuration, aka: the routing table.<br/>
 
-`<instance>.getState()` - Returns the state object that is relative to the current route.
+#### Instance methods
 
-`<instance>.getRoute([index])` - Returns the entire route or just a section of it.<br/>
+`getState()` - Returns the state object that is relative to the current route.
+
+`getRoute([index])` - Returns the entire route or just a section of it.<br/>
 @param {Numner} index - The hash value is divided by forward slashes, each section then has an index, if this is provided, only that section of the route will be returned.<br/>
 
-`<instance>.setRoute(route)` - Set the current route.<br/>
+`setRoute(route)` - Set the current route.<br/>
 @param {String} route - Supply a route value, such as `home/stats`.<br/>
   
-`<instance>.setRoute(start, length)` - Remove from the current route.<br/>
+`setRoute(start, length)` - Remove from the current route.<br/>
 @param {Number} start - The position at which to start removing items.<br/>
 @param {Number} length - The number of items to remove from the route.<br/>
 
-`<instance>.setRoute(index, value)` - Set the current route.<br/>
+`setRoute(index, value)` - Set the current route.<br/>
 @param {Number} index - The hash value is divided by forward slashes, each section then has an index.<br/>
 @param {String} value - The new value to assign the the position indicated by the first parameter.<br/>
 
-`<instance>.getRetired()` - Returns an array that shows which routes have been retired.
+`getRetired()` - Returns an array that shows which routes have been retired.
 
 ### Events
 
