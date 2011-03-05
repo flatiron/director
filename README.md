@@ -3,39 +3,111 @@
 
 SugarSkull is a client side URL router. It's the smallest amount of glue needed for building dynamic single page applications. 
 
+## Why?
+
+The HTML5 history API is NOT a replacement for using location.hash. It does not cater to a single-page apps. In fact, it is designed around the requirement that all pages should load without the ability to leverage Javascript. This is unfortunate for script-rich applications who's audience is well known. The HTML5 history API requires the URL to resolve to real assets on the server, and therefore can not be used as a superfluous state management mechanism. That's where SugarSkull comes in.
+
+Why not <i>backbone.js</i>? Backbone.js has limited support for this and covers a minute set of the cases for client side routing. What about <i>sammy.js</i>? Sammy.js is a jquery plugin that tries to emulate server side routing which introduces unnecessary concepts.
+
 ## How?
 
-SugarSkull monitors the URL. When the URL changes, and it is a match to one defined in your router table, the functions that are associated with that route are executed. checkout a demo of it working right <a href="http://hij1nx.github.com/SugarSkull/">here</a>.
+SugarSkull monitors the URL. When the URL changes, and it is a match to one defined in your router table, the functions that are associated with that route are executed. You could almost think of the URL as an event emitter. checkout a demo of it working right <a href="http://hij1nx.github.com/SugarSkull/">here</a>.
 
 More specifically the way this works is that we divide the url into two parts. First the server-side (everything 
-before the '#'), and then the client-side (everything after the '#'). The second part is called the HashRoute.
-A hash route looks like this...<br/>
+before the '#'), and then the client-side (everything after the '#'). The second part is the HashRoute.
+A hash route looks like this...<br/><br/>
 <img src="https://github.com/hij1nx/SugarSkull/raw/master/img/hashRoute.png" width="598" height="113" alt="HashRoute" -->
 
 ## Usage
 
 First, the router constructor accepts an object literal that will serve as the routing table. Optionally, it can also accept a second object literal that contains functions. The second option is useful when the functions to be called get defined or loaded after the router gets defined.
 
-### Example 1: an overly simplified router
-<pre><code>
-var router = SS.router({
+### A trivial demonstration
 
-  '/bird': {
-    on: fly
-  },
+    var router = SS.router({
 
-  '/dog': {
-    on: bark
-  },
+      '/dog': {
+        on: bark
+      },
 
-  '/cat': {
-    on: scratch
-  }
+      '/cat': {
+        on: meow
+      }
 
-});
-</code></pre>
+    });
 
-### Example 2: alternate ways to design routers
+In the above code, the object literal contains a set of key/value pairs. The keys represent each potential part of the URL. The values contain instructions about what to do when there is an actual match. `bark` and `meow` are two functions that you have defined in your code.
+
+### More complex URLs
+
+    var router = SS.router({
+
+      '/dog': {
+        '/angry': {
+          on: growl
+        }
+        on: bark
+      },
+
+      '/cat': {
+        '/saton': {
+          on: freakout
+        }
+        on: meow
+      }
+
+    });
+    
+Above we have a case where the URL's are prepared to be more complex. As you can see, nesting the key/value pairs will achieve this.
+
+### The arrangement of logic.
+
+    var router = SS.router({
+
+      '/dog': {
+        '/angry': {
+          on: [growl, freakout]
+        }
+        on: bark
+      },
+
+      '/cat': {
+        '/squish': {
+          on: freakout
+        }
+        on: meow
+      }
+
+    });
+
+Above we have a case where both `/dog/angry` and `cat/squsih` will execute `freakout`. Hence the `on` property will support an array which can execute many functions when there is a URL match.
+
+### Special Cases
+
+    var router = SS.router({
+
+      '/dog': {
+        '/angry': {
+          on: 'growl',
+          once: 'zap'
+        }
+        on: bark
+      },
+
+      '/cat': {
+        '/saton': {
+          on: 'freakout'
+        }
+        on: meow
+      }
+
+    });
+    
+In some cases, you may want to fire a function once. For instance a signin or advertisement is a good use case. In addition to the `on` property there is a `once` property for this purpose.
+
+
+
+### Alternate ways to design routers
 <pre><code>
 (function() {
 
