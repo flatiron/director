@@ -232,7 +232,7 @@ API
 
 # Credits
 
-Author - hij1nx
+Author - hij1nx<br/>
 Contributors - Charlie Robbins
 
 # Version
