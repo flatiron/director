@@ -1,10 +1,8 @@
-
-
-        
 var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
 
   version: '0.2.0',
   mode: 'compatibility',
+  origin: location.href,
 
   router: function(routes, hostObject) {
     var self = this,
@@ -283,5 +281,4 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
 
     onHashChanged:  function () {}
   }
-
 };

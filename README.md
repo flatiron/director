@@ -27,7 +27,7 @@ First, the router constructor accepts an object literal that will serve as the r
 
 ### A trivial demonstration
 
-    var router = SS.router({
+    var router = new SS.router({
 
       '/dog': {
         on: bark
@@ -43,7 +43,7 @@ In the above code, the object literal contains a set of key/value pairs. The key
 
 ### More complex URLs
 
-    var router = SS.router({
+    var router = new SS.router({
 
       '/dog': {
         '/angry': {
@@ -65,7 +65,7 @@ Above we have a case where the URL's are prepared to be more complex. As you can
 
 ### Providing Callbacks
 
-    var router = SS.router({
+    var router = new SS.router({
 
       '/dog': {
         '/angry': {
@@ -87,7 +87,7 @@ Above we have a case where both `/dog/angry` and `cat/squsih` will execute `frea
 
 ### Special events
 
-    var router = SS.router({
+    var router = new SS.router({
 
       '/dog': {
         '/angry': {
@@ -110,7 +110,7 @@ In some cases, you may want to fire a function once. For instance a signin or ad
 
 ### More special events
 
-    var router = SS.router({
+    var router = new SS.router({
 
       '/dog': {
         on: bark
@@ -130,7 +130,7 @@ It is common to need a particular function to fire every time a route is matched
 
 ### Providing some state.
 
-    var router = SS.router({
+    var router = new SS.router({
 
       '/dog': {
         on: bark,
@@ -157,7 +157,7 @@ It is possible to attach state to any segment of the router, so in our case abov
 
         Main: function() {
 
-          var router = SS.router({
+          var router = new SS.router({
 
             '/dog': {
               on: ['bark', 'eat'], // eat and bark.
