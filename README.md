@@ -63,7 +63,7 @@ In the above code, the object literal contains a set of key/value pairs. The key
     
 Above we have a case where the URL's are prepared to be more complex. As you can see, nesting the key/value pairs will achieve this.
 
-### The arrangement of logic
+### Providing Callbacks
 
     var router = SS.router({
 
@@ -194,16 +194,18 @@ Above, a host-object is provided to the router, this provides a way to organize 
 API
 ===
 
-**SS.router(config, [host-object])**
-	Initialize the router.
-	@param {Object} config - An object containing the router configuration.
-	@param {Object} host-object - An object containing methods to execute.	
+**SS.router(config)**
+
+Initialize the router.
+	@param {Object} config - An object literal representing the router configuration, aka: the routing table.
 
 **SS.getState()**
-	Returns an object that is relative to the current route.
+
+Returns the state object that is relative to the current route.
 
 **SS.getRoute([index])**
-	Returns the entire route or just a section of it.
+
+Returns the entire route or just a section of it.
 	@param {Numner} index - The hash value is divided by forward slashes, each section then has an index, if this is provided, only that section of the route will be returned.
 
 **SS.setRoute(route)**
