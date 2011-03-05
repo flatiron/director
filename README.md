@@ -194,26 +194,26 @@ Above, a host-object is provided to the router, this provides a way to organize 
 API
 ===
 
-**SS.router(config)** - Initialize the router.<br/>
+**SS.router(config)** - Initialize the router, returns a router object.<br/>
 	@param {Object} config - An object literal representing the router configuration, aka: the routing table.
 
-**SS.getState()** - Returns the state object that is relative to the current route.
+**&lt;instance&gt;.getState()** - Returns the state object that is relative to the current route.
 
-**SS.getRoute([index])** - Returns the entire route or just a section of it.<br/>
+**&lt;instance&gt;.getRoute([index])** - Returns the entire route or just a section of it.<br/>
 	@param {Numner} index - The hash value is divided by forward slashes, each section then has an index, if this is provided, only that section of the route will be returned.
 
-**SS.setRoute(route)** - Set the current route.<br/>
+**&lt;instance&gt;.setRoute(route)** - Set the current route.<br/>
 	@param {String} route - Supply a route value, such as `home/stats`.
   
-**SS.setRoute(start, length)** - Remove from the current route.<br/>
+**&lt;instance&gt;.setRoute(start, length)** - Remove from the current route.<br/>
 	@param {Number} start - The position at which to start removing items.  
 	@param {Number} length - The number of items to remove from the route.
 
-**SS.setRoute(index, value)** - Set the current route.<br/>
+**&lt;instance&gt;.setRoute(index, value)** - Set the current route.<br/>
 	@param {Number} index - The hash value is divided by forward slashes, each section then has an index.
 	@param {String} value - The new value to assign the the position indicated by the first parameter.
 
-**SS.getRetired()** - Returns an array that shows which routes have been retired.
+**&lt;instance&gt;.getRetired()** - Returns an array that shows which routes have been retired.
 
  - On-Route. A list of functions to fire when the route is hit.
  - After-Route. A list of functions to fire when leaving a particular route.
