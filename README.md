@@ -14,7 +14,7 @@ Why not <i>backbone.js</i>? Backbone.js has limited support for this and covers 
 
 ## How?
 
-SugarSkull monitors the URL. When the URL changes, and it is a match to one defined in your router table, the functions that are associated with that route are executed. You could almost think of the URL as an event emitter. checkout a demo of it working right <a href="http://hij1nx.github.com/SugarSkull/">here</a>.
+SugarSkull monitors the URL. When the URL changes, and it is a match to one defined in your router table, the functions that are associated with that route are executed. You could almost think of the URL as an event emitter.
 
 More specifically the way this works is that we divide the url into two parts. First the server-side (everything 
 before the '#'), and then the client-side (everything after the '#'). The second part is the HashRoute.
@@ -227,7 +227,7 @@ API
 
 #### `on` - A function or array of functions to execute when the route is matched.<br/>
 #### `leave` - A function or array of functions to execute when leaving a particular route.<br/>
-#### `once` - A function or array of functions to execute only once for a particular route.<br/>
+#### `once` - A function or array of functions to execute only once for a particular route.<br/><br/>
 
 #### Available only at the top level of the router configuration<br/><br/>
 
