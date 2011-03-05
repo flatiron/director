@@ -85,7 +85,7 @@ Above we have a case where the URL's are prepared to be more complex. As you can
 
 Above we have a case where both `/dog/angry` and `cat/squsih` will execute `freakout`. Hence the `on` property will support an array which can execute many functions when there is a URL match.
 
-### Special Cases
+### Special events
 
     var router = SS.router({
 
@@ -108,7 +108,48 @@ Above we have a case where both `/dog/angry` and `cat/squsih` will execute `frea
     
 In some cases, you may want to fire a function once. For instance a signin or advertisement is a good use case. In addition to the `on` property there is a `once` property for this purpose.
 
-### Alternate ways to design routers
+### More special events
+
+    var router = SS.router({
+
+      '/dog': {
+        on: bark
+      },
+
+      '/cat': {
+        on: meow
+      }
+      
+      beforeall: function() {},
+      leaveall: function() {},
+      notfound: function() {}
+
+    });
+    
+It is common to need a particular function to fire every time a route is matched, no mater what route it is. In this case `beforeall` can be defined at the top level of the router definition. Similarly, `leaveall` will be fired when leaving all routs, and `notfound` will be fired when none of the routes can be matched against the user's request.
+
+### Providing some state.
+
+    var router = SS.router({
+
+      '/dog': {
+        on: bark,
+        state: { needy: true, fetch: 'possibly' }
+      },
+
+      '/cat': {
+        '/hungry': {
+          state: { needy: true, frantic: true }
+        },
+        on: meow,
+        state: { needy: false, fetch: 'unlikely' }
+      }
+
+    });
+
+It is possible to attach state to any segment of the router, so in our case above if `/dog` is reached, the current state will be set to `{ needy: true, fetch: 'possibly' }`. Each nested section will merge into and overwrite the current state. So in the case where the router matches `/cat/hungry`, the state will become `{ needy: true, fetch: 'unlikely', frantic: true }`.
+
+### Alternate ways to design routing tables.
 
     (function() {
 
@@ -155,24 +196,32 @@ API
 
 **SS.router(config, [host-object])**
 	Initialize the router.
-	@param {Object} config - an object containing the router configuration.
-	@param {Object} host-object - an object containing methods to execute.	
+	@param {Object} config - An object containing the router configuration.
+	@param {Object} host-object - An object containing methods to execute.	
 
 **SS.getState()**
 	Returns an object that is relative to the current route.
 
-**SS.setRoute(value, index, string)**
-	Set the current route.<br/>
-	@param {String} value - 
-	@param {Number} index
-
 **SS.getRoute([index])**
-	Returns an array that represents the current route.
-	If an index is provided, the url (or hash depending on HTML5 pushState support)
-	will be split into an array and the value at that index will be returned.
-	
+	Returns the entire route or just a section of it.
+	@param {Numner} index - The hash value is divided by forward slashes, each section then has an index, if this is provided, only that section of the route will be returned.
+
+**SS.setRoute(route)**
+  Set the current route.
+  @param {String} route - Supply a route value, such as `home/stats`.
+  
+**SS.setRoute(start, length)**
+  Remove from the current route.
+  @param {Number} start - The position at which to start removing items.  
+  @param {Number} length - The number of items to remove from the route.
+
+**SS.setRoute(index, value)**
+	Set the current route.<br/>
+	@param {Number} index - The hash value is divided by forward slashes, each section then has an index.
+	@param {String} value - The new value to assign the the position indicated by the first parameter.
+
 **SS.getRetired()**<br/>
-		Returns an array that shows which routes have been retired.
+	Returns an array that shows which routes have been retired.
 
  - On-Route. A list of functions to fire when the route is hit.
  - After-Route. A list of functions to fire when leaving a particular route.
