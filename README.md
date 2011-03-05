@@ -196,14 +196,14 @@ API
 
 ### Methods
 
-#### Constructor Methods
+#### Constructor Methods<br/>
 
 #### `SS.router(config)` - Initialize the router, returns a new instance of the router.<br/>
 @param {Object} config - An object literal representing the router configuration, aka: the routing table.<br/>
 
-#### Instance methods
+#### Instance methods<br/>
 
-#### `getState()` - Returns the state object that is relative to the current route.
+#### `getState()` - Returns the state object that is relative to the current route.<br/>
 
 #### `getRoute([index])` - Returns the entire route or just a section of it.<br/>
 @param {Numner} index - The hash value is divided by forward slashes, each section then has an index, if this is provided, only that section of the route will be returned.<br/>
@@ -223,13 +223,13 @@ API
 
 ### Events
 
-#### Available on all routes
+#### Available on all routes<br/>
 
 #### `on` - A function or array of functions to execute when the route is matched.<br/>
 #### `leave` - A function or array of functions to execute when leaving a particular route.<br/>
 #### `once` - A function or array of functions to execute only once for a particular route.<br/>
 
-#### Available only at the top level of the router configuration
+#### Available only at the top level of the router configuration<br/>
 
 #### `beforeall` - A function or array of functions to execute before any route is matched.<br/>
 #### `leaveall` - A function or array of functions to execute when leaving any route.<br/>
