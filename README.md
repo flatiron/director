@@ -194,7 +194,9 @@ Above, a host-object is provided to the router, this provides a way to organize 
 API
 ===
 
-**SS.router(config)** - Initialize the router, returns a router object.<br/>
+### Methods
+
+**SS.router(config)** - Initialize the router, returns a new router object.<br/>
 	@param {Object} config - An object literal representing the router configuration, aka: the routing table.
 
 **&lt;instance&gt;.getState()** - Returns the state object that is relative to the current route.
@@ -215,18 +217,23 @@ API
 
 **&lt;instance&gt;.getRetired()** - Returns an array that shows which routes have been retired.
 
- - On-Route. A list of functions to fire when the route is hit.
- - After-Route. A list of functions to fire when leaving a particular route.
- - Run-Once! Specify if the functions should be fired only once for a particular route.
- - Retire a whole route, view retired routes, and bring routes out of retirement.
+### Events
 
- - After-All-Routes. A list of functions to fire when leaving a particular route.
- - On-All-Routes. A list of functions to fire when leaving a particular route.
+#### Available on all routes
+
+**on** - A function or array of functions to execute when the route is matched.
+**leave** - A function or array of functions to execute when leaving a particular route.
+**once** - A function or array of functions to execute only once for a particular route.
+
+#### Available only at the top level of the router configuration
+
+**beforeall** - A function or array of functions to execute before any route is matched.
+**leaveall** - A function or array of functions to execute when leaving any route.
 
 # Credits
 
- - Author - hij1nx
- - Contributors - Charlie Robbins
+Author - hij1nx
+Contributors - Charlie Robbins
 
 # Version
 0.2.4(b)
