@@ -1,45 +1,22 @@
 
-##What
+## What?
 
-SugarSkull is client side router. It monitors the URL. When the URL changes, and it is a match to one defined in your router, it's associated functions are executed. Simple.
+SugarSkull is a client side URL router. It's the smallest amount of glue needed for building dynamic single page applications. 
 
-<b>What can this do for your app?</b>
+## How?
 
- - Simple glue for building single page apps.
- - Promotes code portability. 
- - Isolates intention (designed to separate routing from application logic).
- - Helps clarify the code path. 
- - Code exclusion without interference.
- 
-<b>Compared to Sammy.js and Backbone.js</b>
+SugarSkull monitors the URL. When the URL changes, and it is a match to one defined in your router table, the functions that are associated with that route are executed. checkout a demo of it working right <a href="http://hij1nx.github.com/SugarSkull/">here</a>.
 
- - SugarSkull is declarative so it promotes the centralization of your router design.
- - Sammy.js is jQuery dependent, modeled after a server side technology.
- - Backbone has limited support for routing, sugar-skull is complementary.
-
-checkout a demo <a href="http://hij1nx.github.com/SugarSkull/">here</a>.
-<br/>
-
-##How
-
-SugarSkull uses the <b>HTML5 pushState API</b> and polyfills to support older browsers by using the url hash value.
-
-<!-- If a browser supports pushState, then the path of the URL changes, this is nice for the user
-because it's very readable. If not, we divide the url into two parts. First the server-side (everything 
+More specifically the way this works is that we divide the url into two parts. First the server-side (everything 
 before the '#'), and then the client-side (everything after the '#'). The second part is called the HashRoute.
 A hash route looks like this...<br/>
 <img src="https://github.com/hij1nx/SugarSkull/raw/master/img/hashRoute.png" width="598" height="113" alt="HashRoute" -->
 
-###Usage
+## Usage
 
-The router takes two params...
+First, the router constructor accepts an object literal that will serve as the routing table. Optionally, it can also accept a second object literal that contains functions. The second option is useful when the functions to be called get defined or loaded after the router gets defined.
 
-1) A host object (optional). When it is provided, any string-literals
-in the route definitions will refer to members of the host-object.<br/>
-2) Configuration. An object literal made up of nested regular expressions 
-that map to functions.
-
-**Example 1: an overly simplified router**
+### Example 1: an overly simplified router
 <pre><code>
 var router = SS.router({
 
@@ -58,7 +35,7 @@ var router = SS.router({
 });
 </code></pre>
 
-**Example 2: alternate ways to design routers**
+### Example 2: alternate ways to design routers
 <pre><code>
 (function() {
 
@@ -98,7 +75,7 @@ var router = SS.router({
 
 })().Main();
 </code></pre>
-**Example 3: a more complex router**
+### Example 3: a more complex router
 <pre><code>
   
 function walk() {};

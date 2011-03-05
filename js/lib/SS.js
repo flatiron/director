@@ -1,24 +1,17 @@
+
+
+        
 var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
 
   version: '0.2.0',
   mode: 'compatibility',
   origin: location.href,
 
-  router: function() {
+  router: function(routes, hostObject) {
     var self = this,
         first = false,
         state = {},
-        hostObject,
-        routes,
         onleave;
-
-    if(arguments.length > 1) { // a hostObject is not required.
-      hostObject = arguments[0];
-      routes = arguments[1];
-    }
-    else {
-      routes = arguments[0];
-    }
 
     this.retired = [];
     this.routes = routes;
