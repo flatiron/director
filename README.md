@@ -208,7 +208,7 @@ API
 **SS.setRoute(start, length)** - Remove from the current route.
   @param {Number} start - The position at which to start removing items.  
   @param {Number} length - The number of items to remove from the route.
-
+ 
 **SS.setRoute(index, value)** - Set the current route.
 	@param {Number} index - The hash value is divided by forward slashes, each section then has an index.
 	@param {String} value - The new value to assign the the position indicated by the first parameter.
