@@ -153,31 +153,26 @@ Above, a host-object is provided to the router, this provides a way to organize 
 API
 ===
 
-**SS.router(config, [host-object])**<br/>
-	Initialize the router.<br/>
+**SS.router(config, [host-object])**
+	Initialize the router.
 	@param {Object} config - an object containing the router configuration.
 	@param {Object} host-object - an object containing methods to execute.	
-<br/>
 
-**SS.getState()**<br/>
-	Returns an object that is relative to the current route.<br/>
-<br/>	
+**SS.getState()**
+	Returns an object that is relative to the current route.
 
-**SS.setRoute(value, index, string)**<br/>
+**SS.setRoute(value, index, string)**
 	Set the current route.<br/>
 	@param {String} value - 
 	@param {Number} index
-<br/>
 
-**SS.getRoute([index])**<br/>
+**SS.getRoute([index])**
 	Returns an array that represents the current route.
 	If an index is provided, the url (or hash depending on HTML5 pushState support)
 	will be split into an array and the value at that index will be returned.
-<br/>
 	
 **SS.getRetired()**<br/>
 		Returns an array that shows which routes have been retired.
-<br/>
 
  - On-Route. A list of functions to fire when the route is hit.
  - After-Route. A list of functions to fire when leaving a particular route.
