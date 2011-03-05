@@ -1,3 +1,4 @@
+![Alt text](https://github.com/hij1nx/RSAN/raw/master/img/sugarskull.png)<br/>
 
 ## What?
 
@@ -60,7 +61,7 @@ In the above code, the object literal contains a set of key/value pairs. The key
     
 Above we have a case where the URL's are prepared to be more complex. As you can see, nesting the key/value pairs will achieve this.
 
-### The arrangement of logic.
+### The arrangement of logic
 
     var router = SS.router({
 
