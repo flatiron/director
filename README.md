@@ -149,7 +149,7 @@ It is common to need a particular function to fire every time a route is matched
 
 It is possible to attach state to any segment of the router, so in our case above if `/dog` is reached, the current state will be set to `{ needy: true, fetch: 'possibly' }`. Each nested section will merge into and overwrite the current state. So in the case where the router matches `/cat/hungry`, the state will become `{ needy: true, fetch: 'unlikely', frantic: true }`.
 
-### Alternate ways to design routing tables.
+### Alternate ways to associate functions with routes.
 
     (function() {
 
@@ -198,8 +198,9 @@ API
 
 #### Constructor Methods<br/><br/>
 
-#### `SS.router(config)` - Initialize the router, returns a new instance of the router.<br/>
+#### `SS.router(config, hostObject)` - Initialize the router, returns a new instance of the router.<br/>
 @param {Object} config - An object literal representing the router configuration, aka: the routing table.<br/>
+@param {Object} hostObject - An object literal representing the router configuration, aka: the routing table.<br/>
 
 #### Instance methods<br/><br/>
 
