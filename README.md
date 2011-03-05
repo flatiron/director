@@ -221,14 +221,14 @@ API
 
 #### Available on all routes
 
-**on** - A function or array of functions to execute when the route is matched.
-**leave** - A function or array of functions to execute when leaving a particular route.
-**once** - A function or array of functions to execute only once for a particular route.
+**on** - A function or array of functions to execute when the route is matched.<br/>
+**leave** - A function or array of functions to execute when leaving a particular route.<br/>
+**once** - A function or array of functions to execute only once for a particular route.<br/>
 
 #### Available only at the top level of the router configuration
 
-**beforeall** - A function or array of functions to execute before any route is matched.
-**leaveall** - A function or array of functions to execute when leaving any route.
+**beforeall** - A function or array of functions to execute before any route is matched.<br/>
+**leaveall** - A function or array of functions to execute when leaving any route.<br/>
 
 # Credits
 
