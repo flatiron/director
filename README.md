@@ -6,6 +6,8 @@ SugarSkull is a client side URL router. It's the smallest amount of glue needed 
 
 ## Why?
 
+Storing the some state of an application in the URL allows the URL of the application to be passed between users and bookmarked, it also allows the back and forward buttons to keep track of changes to the UI.
+
 The HTML5 history API is NOT a replacement for using location.hash. It does not cater to a single-page apps. In fact, it is designed around the requirement that all pages should load without the ability to leverage Javascript. This is unfortunate for script-rich applications who's audience is well known. The HTML5 history API requires the URL to resolve to real assets on the server, and therefore can not be used as a superfluous state management mechanism. That's where SugarSkull comes in.
 
 Why not <i>backbone.js</i>? Backbone.js has limited support for this and covers a minute set of the cases for client side routing. What about <i>sammy.js</i>? Sammy.js is a jquery plugin that tries to emulate server side routing which introduces unnecessary concepts.
@@ -106,102 +108,65 @@ Above we have a case where both `/dog/angry` and `cat/squsih` will execute `frea
     
 In some cases, you may want to fire a function once. For instance a signin or advertisement is a good use case. In addition to the `on` property there is a `once` property for this purpose.
 
-
-
 ### Alternate ways to design routers
-<pre><code>
-(function() {
 
-  return {
+    (function() {
 
-    Main: function() {
+      return {
 
-      var router = SS.router(this, { // this example demonstrates a host object.
+        Main: function() {
 
-        '/dog': {
-          on: ['bark', 'eat'], // eat and bark.
-          '/fat': {
-            on: ['eat'] // eat a second time!
-          }
+          var router = SS.router({
+
+            '/dog': {
+              on: ['bark', 'eat'], // eat and bark.
+              '/fat': {
+                on: ['eat'] // eat a second time!
+              }
+            },
+
+            '/cat': {
+              on: ['meow', 'eat']
+            }
+
+          }, this);
         },
 
-        '/cat': {
-          on: ['meow', 'eat']
+        bark: function() {
+          // woof!
+        },
+
+        meow: function() {
+          // mrrrow!
+        },
+    
+        eat: function() {
+          // yum!
         }
 
-      });
-    },
+      };
 
-    bark: function() {
-      // woof!
-    },
+    })().Main();
 
-    meow: function() {
-      // mrrrow!
-    },
-    
-    eat: function() {
-      // yum!
-    }
-
-  };
-
-})().Main();
-</code></pre>
-### Example 3: a more complex router
-<pre><code>
-  
-function walk() {};
-function swim() {};
-function talk() {};
-function species() { return SS.getRoute(2); };
-  
-var router = SS.router(someObject, {
-
-  '/animal': {
-
-    on: walk,
-    once: bar,
-
-    '/bird': {
- 	    '/(\\w+)': {
- 	      on: species
-      },
- 	    on: [eat, talk], 
-      state: { type: 'airborne' }
-    },
-
-    '/fish': {
-      on: [eat, swim],
-      state: { type: 'amphibias' }
-    }
-    
- 	},
- 	
-  '/person': {
-    on: [walk, talk, eat],
-    state: { type: '' }
-  }
-    
-});
-</code></pre>
+Above, a host-object is provided to the router, this provides a way to organize methods which may defined or loaded after the router is configured.
 
 API
 ===
 
-**SS.router(host-object, config)**<br/>
-	Initial the router.<br/>
-	host-object (object, optional): an object containing methods to execute.
-	config (object, required): an object containing the router configuration.
+**SS.router(config, [host-object])**<br/>
+	Initialize the router.<br/>
+	@param {Object} config - an object containing the router configuration.
+	@param {Object} host-object - an object containing methods to execute.	
 <br/>
 
 **SS.getState()**<br/>
 	Returns an object that is relative to the current route.<br/>
 <br/>	
 
-**SS.setRoute(value, n, string)**<br/>
+**SS.setRoute(value, index, string)**<br/>
 	Set the current route.<br/>
-	value ()
+	@param {String} value - 
+	@param {Number} index
 <br/>
 
 **SS.getRoute([index])**<br/>
