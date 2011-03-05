@@ -1,4 +1,4 @@
-![Alt text](https://github.com/hij1nx/RSAN/raw/master/img/sugarskull.png)<br/>
+![Alt text](https://github.com/hij1nx/SugarSkull/raw/master/img/sugarskull.png)<br/>
 
 ## What?
 
