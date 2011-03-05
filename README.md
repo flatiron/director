@@ -196,39 +196,39 @@ API
 
 ### Methods
 
-**SS.router(config)** - Initialize the router, returns a new router object.<br/>
+`SS.router(config)` - Initialize the router, returns a new router object.<br/>
 	@param {Object} config - An object literal representing the router configuration, aka: the routing table.
 
-**&lt;instance&gt;.getState()** - Returns the state object that is relative to the current route.
+`&lt;instance&gt;.getState()` - Returns the state object that is relative to the current route.
 
-**&lt;instance&gt;.getRoute([index])** - Returns the entire route or just a section of it.<br/>
+`&lt;instance&gt;.getRoute([index])` - Returns the entire route or just a section of it.<br/>
 	@param {Numner} index - The hash value is divided by forward slashes, each section then has an index, if this is provided, only that section of the route will be returned.
 
-**&lt;instance&gt;.setRoute(route)** - Set the current route.<br/>
+`&lt;instance&gt;.setRoute(route)` - Set the current route.<br/>
 	@param {String} route - Supply a route value, such as `home/stats`.
   
-**&lt;instance&gt;.setRoute(start, length)** - Remove from the current route.<br/>
+`&lt;instance&gt;.setRoute(start, length)` - Remove from the current route.<br/>
 	@param {Number} start - The position at which to start removing items.  
 	@param {Number} length - The number of items to remove from the route.
 
-**&lt;instance&gt;.setRoute(index, value)** - Set the current route.<br/>
+`&lt;instance&gt;.setRoute(index, value)` - Set the current route.<br/>
 	@param {Number} index - The hash value is divided by forward slashes, each section then has an index.
 	@param {String} value - The new value to assign the the position indicated by the first parameter.
 
-**&lt;instance&gt;.getRetired()** - Returns an array that shows which routes have been retired.
+`&lt;instance&gt;.getRetired()` - Returns an array that shows which routes have been retired.
 
 ### Events
 
 #### Available on all routes
 
-**on** - A function or array of functions to execute when the route is matched.<br/>
-**leave** - A function or array of functions to execute when leaving a particular route.<br/>
-**once** - A function or array of functions to execute only once for a particular route.<br/>
+`on` - A function or array of functions to execute when the route is matched.<br/>
+`leave` - A function or array of functions to execute when leaving a particular route.<br/>
+`once` - A function or array of functions to execute only once for a particular route.<br/>
 
 #### Available only at the top level of the router configuration
 
-**beforeall** - A function or array of functions to execute before any route is matched.<br/>
-**leaveall** - A function or array of functions to execute when leaving any route.<br/>
+`beforeall` - A function or array of functions to execute before any route is matched.<br/>
+`leaveall` - A function or array of functions to execute when leaving any route.<br/>
 
 # Credits
 
@@ -236,7 +236,7 @@ Author - hij1nx<br/>
 Contributors - Charlie Robbins
 
 # Version
-0.2.4(b)
+0.2.5
 
 # Licence
 
