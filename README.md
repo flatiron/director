@@ -204,11 +204,13 @@ API
 
 #### Constructor Methods<br/><br/>
 
-#### `SS.router(config, hostObject)` - Initialize the router, returns a new instance of the router.<br/>
+#### `SS.router(config, hostObject)` - Returns a new instance of the router.<br/>
 @param {Object} config - An object literal representing the router configuration, aka: the routing table.<br/>
 @param {Object} hostObject - An object literal representing the router configuration, aka: the routing table.<br/>
 
 #### Instance methods<br/><br/>
+
+#### `init()` - Initialize the router, start listening for changes to the URL.<br/><br/>
 
 #### `getState()` - Returns the state object that is relative to the current route.<br/><br/>
 
