@@ -56,16 +56,16 @@ In the above code, the object literal contains a set of key/value pairs. The key
 
 Above we have a case where the URL's are prepared to be more complex. As you can see, nesting the key/value pairs will achieve this.
 
-var router = new SS.router({
+    var router = new SS.router({
 
-  '/dog': {
-    '/(\\w+)': {
-      on: function(emotion) {}
-    }
-    on: bark
-  }
+      '/dog': {
+        '/(\\w+)': {
+          on: function(emotion) {}
+        }
+        on: bark
+      }
 
-});
+    });
 
 In the above code, you'll notice that you can also use regular expressions inside the URLs. The capture groups from the regular expressions are then sent to the functions as parameters, one after the other (a, b, c, etc).
 
