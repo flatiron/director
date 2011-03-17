@@ -88,8 +88,6 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
       var prefix = level === 0 ? '^\\/' : '',
           exp = new RegExp(prefix + route.slice(1) + '(.*)?').exec(target);
       
-      console.log(exp)
-      
       if(exp && exp.length > 0 && !self.retired[route]) {
         // We've entered the route to start processing it
         if(routes[route].state) {
