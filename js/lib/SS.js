@@ -1,8 +1,7 @@
 var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
 
-  version: '0.2.0',
+  version: '0.2.5',
   mode: 'compatibility',
-  origin: location.href,
 
   router: function(routes, hostObject) {
     var self = this,
@@ -15,6 +14,7 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
     
     function explodeURL() {
       var v = document.location.hash;
+      if(v[1] == '/') { v=v.substr(1, v.length); } // if the first char is a '/', kill it.
       return v.slice(1, v.length).split("/");
     }
 
@@ -23,8 +23,9 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
     // }
 
     function execMethods(methods, route, values) {
+
       if(!methods) {
-        return fasle;
+        return false;
       }
 
       if(Object.prototype.toString.call(methods) !== '[object Array]') {
@@ -49,19 +50,25 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
 
     function dispatch(routes, route, values) {
 
-      if(routes[route].once === true) {
+      var r = routes[route];
+
+      if(typeof r === 'string' || !!(r && r.constructor && r.call && r.apply)) {      
+        execMethods(r, route, values);
+      }
+
+      if(r.once === true) {
         self.retired[route] = true;
       }
-      else if(routes[route].once) {
-        execMethods(routes[route].once, route, values);
-        delete routes[route].once;
+      else if(r.once) {
+        execMethods(r.once, route, values);
+        delete r.once;
       }
 
-      if(routes[route].on) {
-        execMethods(routes[route].on, route, values);
+      if(r.on) {
+        execMethods(r.on, route, values);
       }
 
-      onleave = routes[route].onleave || null;
+      onleave = r.onleave || null;
     }
 
     function execRoute(routes, route) {
@@ -80,6 +87,8 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
 
       var prefix = level === 0 ? '^\\/' : '',
           exp = new RegExp(prefix + route.slice(1) + '(.*)?').exec(target);
+      
+      console.log(exp)
       
       if(exp && exp.length > 0 && !self.retired[route]) {
         // We've entered the route to start processing it
@@ -113,16 +122,21 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
         state = event.state;
       }
 
-      if(routes.beforeall) {
-        execMethods(routes.beforeall.on); // methods to be fired before every route.
+      if(routes.before) {
+        execMethods(routes.before.on || routes.before); // methods to be fired before every route.
       }
 
-      if(routes.leaveall && !first) {
-        execMethods(routes.leaveall.on); // methods to be fired when leaving every route.
+      if(routes.leave && !first) {
+        execMethods(routes.leave.on || routes.leave); // methods to be fired when leaving every route.
       }
+      
+      if(routes.once) {
+        execMethods(routes.once);
+        delete routes.once;
+      }      
 
-      if(self.onleave) {
-        execMethods(self.onleave); // fire the current 'onleave-route' method.
+      if(self.leave) {
+        execMethods(self.leave); // fire the current 'onleave-route' method.
         self.onleave = null; // only fire it once.
       }
 
@@ -132,8 +146,8 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
         }
       }
 
-      if(routes.afterall) {
-        execMethods(routes.afterall.on); // methods to be fired after every route.
+      if(routes.after) {
+        execMethods(routes.after.on || routes.after); // methods to be fired after every route.
       }      
 
     }
@@ -172,24 +186,21 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
       }
     };
 
-    this.setRoute = function(v, qty, val) {
+    this.setRoute = function(i, v, val) {
 
       var url = explodeURL();
 
-      if(typeof v == "string") {
-        url = [v];
+      if(typeof i === 'number' && typeof v === 'string') {
+        url[i] = v;
       }
-      else if(v && qty && val) {
-        url.splice(v, qty, val);
-      }
-      else if(v && qty) {
-        url.splice(v, qty);
+      else if(typeof val === 'string') {
+        url.splice(i, v, s);
       }
       else {
-        throw new Error("setRoute: not enough args.");
+        url = [i];
       }
 
-      SS.listener.setHash(self.state || {}, v || val, url.join("/"));
+      SS.listener.setHash(url.join("/"));
       return url;
                     
     };
@@ -252,14 +263,14 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
       return SS.mode;
     },
 
-    setHash: function (v, t, s) {
+    setHash: function (s) {
 
       // Mozilla always adds an entry to the history
       if (SS.mode == 'legacy') {
         this.writeFrame(s);
       }
-
-      document.location.hash = s;
+      console.log(s)
+      document.location.hash = (s[0] === '/') ? s : '/' + s;
       return this;
     },
 
@@ -281,4 +292,5 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
 
     onHashChanged:  function () {}
   }
+
 };

@@ -12,6 +12,8 @@ The HTML5 history API is NOT a replacement for using location.hash. It does not 
 
 Why not <i>backbone.js</i>? Backbone.js has limited support for this and covers a minute set of the cases for client side routing. What about <i>sammy.js</i>? Sammy.js is a jquery plugin that tries to emulate server side routing which introduces unnecessary concepts.
 
+Are single page apps a problem for SEO? Yes and No. SugarSkull is meant for script-heavy web-apps, you can use it for script-heavy web-sites, but learn how google and other search engines crawl and index pages before you decide on anything.
+
 ## How?
 
 SugarSkull monitors the URL. When the URL changes, and it is a match to one defined in your router table, the functions that are associated with that route are executed. You could almost think of the URL as an event emitter.
@@ -29,13 +31,8 @@ First, the router constructor accepts an object literal that will serve as the r
 
     var router = new SS.router({
 
-      '/dog': {
-        on: bark
-      },
-
-      '/cat': {
-        on: meow
-      }
+      '/dog': bark,
+      '/cat': meow
 
     });
 
@@ -48,20 +45,20 @@ In the above code, the object literal contains a set of key/value pairs. The key
       '/dog': {
         '/angry': {
           on: growl
-        }
+        },
         on: bark
       }
 
     });
 
-Above we have a case where the URL's are prepared to be more complex. As you can see, nesting the key/value pairs will achieve this.
+Above is a case where the URL's are more complex. Routes can have many events and properties, `on`, `before`, `after`, etc. 
 
     var router = new SS.router({
 
       '/dog': {
         '/(\\w+)': {
-          on: function(emotion) {}
-        }
+          on: function(urlPathPart) {}
+        },
         on: bark
       }
 
