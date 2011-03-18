@@ -6,12 +6,20 @@
       .die { display: none; }
     </style>
 
+
+    <!-- use jquery for the demo -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+
+    <!-- include the lib -->
     <script src="js/lib/SS.js" type="text/javascript" charset="utf-8"></script>
+    
+    <!-- never put your script in your html file unless its a demo =) -->    
     <script type="text/javascript" charset="utf-8">
 
+      // when ready...
       $(function() {
 
+        // create some simple functions...
         function red(someParam) {
           $('.die').hide();
 
