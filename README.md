@@ -2,15 +2,15 @@
 
 ## What?
 
-SugarSkull is a client side URL router. It's the smallest amount of glue needed for building dynamic single page applications. 
+SugarSkull is a client side URL router. It's the smallest amount of glue needed for building dynamic single page applications. Not a jquery plugin, no dependencies.
 
 ## Why?
 
-Storing the some state of an application in the URL allows the URL of the application to be passed between users and bookmarked, it also allows the back and forward buttons to keep track of changes to the UI.
+Storing the state of an application in the URL allows the URL of the application to be passed between users and bookmarked, it also allows the back and forward buttons to keep track of changes to the UI.
 
 The HTML5 history API is NOT a replacement for using location.hash. It does not cater to a single-page apps. In fact, it is designed around the requirement that all pages should load without the ability to leverage Javascript. This is unfortunate for script-rich applications who's audience is well known. The HTML5 history API requires the URL to resolve to real assets on the server, and therefore can not be used as a superfluous state management mechanism. That's where SugarSkull comes in.
 
-Why not <i>backbone.js</i>? Backbone.js has limited support for this and covers a minute set of the cases for client side routing. What about <i>sammy.js</i>? Sammy.js is a jquery plugin that tries to emulate server side routing which introduces unnecessary concepts.
+Why not <i>backbone.js</i>? Backbone.js has limited support for this and covers a minute set of the cases for client side routing, it promotes a one to one relationship of routes to logic. What about <i>sammy.js</i>? Sammy.js is a jquery plugin that tries to emulate server side routing which introduces unnecessary concepts.
 
 Are single page apps a problem for SEO? Yes and No. SugarSkull is meant for script-heavy web-apps, you can use it for script-heavy web-sites, but learn how google and other search engines crawl and index pages before you decide on anything.
 
