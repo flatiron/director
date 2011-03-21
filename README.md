@@ -121,15 +121,16 @@ In some cases, you may want to fire a function once. For instance a signin or ad
 
       '/cat': {
         on: meow
+        leave: function() {}
       }
-      
-      beforeall: function() {},
-      leaveall: function() {},
+
+      before: function() {},
+      leave: function() {},
       notfound: function() {}
 
     });
-    
-It is common to need a particular function to fire every time a route is matched, no mater what route it is. In this case `beforeall` can be defined at the top level of the router definition. Similarly, `leaveall` will be fired when leaving all routs, and `notfound` will be fired when none of the routes can be matched against the user's request.
+
+It is common to need a particular function to fire every time a route is matched, no mater what route it is. In this case `before` can be defined at the top level of the router definition. Similarly, `leave` will be fired when leaving all routs, and `notfound` will be fired when none of the routes can be matched against the user's request.
 
 ### Providing some state.
 
@@ -237,8 +238,8 @@ API
 
 #### Available only at the top level of the router configuration<br/><br/>
 
-#### `beforeall` - A function or array of functions to execute before any route is matched.<br/>
-#### `leaveall` - A function or array of functions to execute when leaving any route.<br/>
+#### `before` - A function or array of functions to execute before any route is matched.<br/>
+#### `leave` - A function or array of functions to execute when leaving any route.<br/>
 
 # Credits
 
