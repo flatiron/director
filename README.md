@@ -6,9 +6,9 @@ SugarSkull is a client side URL router. It's the smallest amount of glue needed 
 
 ## Why?
 
-Storing the state of an application in the URL allows the URL of the application to be passed between users and bookmarked, it also allows the back and forward buttons to keep track of changes to the UI.
+Storing the state of an application in the URL allows the URL of the application to be emailed, bookmarked or copy/pasted. When the URL is visited it recaptures the state of the application. A client side router will also notify the browser about changes to the page, so even if the page does not reload, the back/forward buttons will still give the illusion of navigation.
 
-The HTML5 history API is NOT a replacement for using location.hash. It does not cater to a single-page apps. In fact, it is designed around the requirement that all pages should load without the ability to leverage Javascript. This is unfortunate for script-rich applications who's audience is well known. The HTML5 history API requires the URL to resolve to real assets on the server, and therefore can not be used as a superfluous state management mechanism. That's where SugarSkull comes in.
+The HTML5 history API is NOT a replacement for using location.hash. It does not cater to a single-page apps. In fact, it is designed around the requirement that all pages should load without the ability to leverage Javascript. This is unfortunate for script-rich applications who's audience is 'well-known'. The HTML5 history API requires the URL to resolve to real assets on the server, and therefore can not be used as a superfluous state management mechanism.
 
 Why not <i>backbone.js</i>? Backbone.js has limited support for this and covers a minute set of the cases for client side routing, it promotes a one to one relationship of routes to logic. What about <i>sammy.js</i>? Sammy.js is a jquery plugin that tries to emulate server side routing which introduces unnecessary concepts.
 
