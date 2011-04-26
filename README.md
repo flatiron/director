@@ -29,17 +29,19 @@ First, the router constructor accepts an object literal that will serve as the r
 
 ### A trivial demonstration
 
+```javascript
     var router = new SS.router({
 
       '/dog': bark,
       '/cat': meow
 
     });
+```
 
 In the above code, the object literal contains a set of key/value pairs. The keys represent each potential part of the URL. The values contain instructions about what to do when there is an actual match. `bark` and `meow` are two functions that you have defined in your code.
 
 ### More complex URLs
-
+```javascript
     var router = new SS.router({
 
       '/dog': {
@@ -50,9 +52,11 @@ In the above code, the object literal contains a set of key/value pairs. The key
       }
 
     });
+```
 
 Above is a case where the URL's are more complex. Routes can have many events and properties, `on`, `before`, `after`, etc. 
 
+```javascript
     var router = new SS.router({
 
       '/dog': {
@@ -63,11 +67,12 @@ Above is a case where the URL's are more complex. Routes can have many events an
       }
 
     });
+```
 
 In the above code, you'll notice that you can also use regular expressions inside the URLs. The capture groups from the regular expressions are then sent to the functions as parameters, one after the other (a, b, c, etc).
 
 ### Providing Callbacks
-
+```javascript
     var router = new SS.router({
 
       '/dog': {
@@ -85,11 +90,13 @@ In the above code, you'll notice that you can also use regular expressions insid
       }
 
     });
+```
 
 Above we have a case where both `/dog/angry` and `cat/squsih` will execute `freakout`. Hence the `on` property will support an array which can execute many functions when there is a URL match.
 
 ### Special events
 
+```javascript
     var router = new SS.router({
 
       '/dog': {
@@ -108,11 +115,13 @@ Above we have a case where both `/dog/angry` and `cat/squsih` will execute `frea
       }
 
     });
-    
+```
+
 In some cases, you may want to fire a function once. For instance a signin or advertisement is a good use case. In addition to the `on` property there is a `once` property for this purpose.
 
 ### More special events
 
+```javascript
     var router = new SS.router({
 
       '/dog': {
@@ -129,11 +138,13 @@ In some cases, you may want to fire a function once. For instance a signin or ad
       notfound: function() {}
 
     });
+```
 
 It is common to need a particular function to fire every time a route is matched, no mater what route it is. In this case `before` can be defined at the top level of the router definition. Similarly, `leave` will be fired when leaving all routs, and `notfound` will be fired when none of the routes can be matched against the user's request.
 
 ### Providing some state.
 
+```javascript
     var router = new SS.router({
 
       '/dog': {
@@ -150,9 +161,11 @@ It is common to need a particular function to fire every time a route is matched
       }
 
     });
+```
 
 It is possible to attach state to any segment of the router, so in our case above if `/dog` is reached, the current state will be set to `{ needy: true, fetch: 'possibly' }`. Each nested section will merge into and overwrite the current state. So in the case where the router matches `/cat/hungry`, the state will become `{ needy: true, fetch: 'unlikely', frantic: true }`.
 
+```javascript
 ### Alternate ways to associate functions with routes.
 
     (function() {
@@ -192,6 +205,7 @@ It is possible to attach state to any segment of the router, so in our case abov
       };
 
     })().Main();
+```
 
 Above, a host-object is provided to the router, this provides a way to organize methods which may defined or loaded after the router is configured.
 
