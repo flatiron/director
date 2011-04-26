@@ -8,9 +8,9 @@ SugarSkull is a client side URL router. It's the smallest amount of glue needed 
 
 Storing some information about the state of an application within the URL allows the URL of the application to be emailed, bookmarked or copied and pasted. When the URL is visited it restores the state of the application. A client side router will also notify the browser about changes to the page, so even if the page does not reload, the back/forward buttons will give the illusion of navigation.
 
-The HTML5 history API is NOT a replacement for using the location hash. The HTML5 history API requires that a URL resolves to real assets on the server. And is designed around the requirement that all pages *should* load without Javascript. SugarSkull targets script-rich applications who's audience is 'well-known'.
+The HTML5 history API isn't quite a replacement for using the location hash. The HTML5 history API requires that a URL resolves to real assets on the server. And is designed around the requirement that all pages *should* load without Javascript. SugarSkull targets script-rich applications who's audience is 'well-known'.
 
-SugarSkull enhances ***backbone.js***! It covers more cases and provides a more expressive way to define routes and associate logic with them. It's a lightweight alternative to ***sammy.js***, narrowly focused on routing.
+SugarSkull enhances ***backbone.js***! It covers more use cases and provides a more expressive way to define routes and associate logic with them. It's a lightweight alternative to ***sammy.js***, narrowly focused on routing.
 
 Are single page apps a problem for SEO? Yes and No. SugarSkull is meant for script-heavy web-apps, you can use it for web-sites, but learn how google and other search engines crawl and index pages before you decide on anything.
 
@@ -22,6 +22,9 @@ More specifically the way this works is that we divide the url into two parts. F
 before the '#'), and then the client-side (everything after the '#'). The second part is the HashRoute.
 A hash route looks like this...<br/><br/>
 <img src="https://github.com/hij1nx/SugarSkull/raw/master/img/hashRoute.png" width="598" height="113" alt="HashRoute" -->
+
+## Cross Browser
+Needs testing.
 
 ## Usage
 
@@ -258,7 +261,7 @@ API
 # Credits
 
 Author - hij1nx<br/>
-Contributors - Charlie Robbins
+Contributors - indexzero
 
 # Version
 0.2.5
