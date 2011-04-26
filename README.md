@@ -6,13 +6,13 @@ SugarSkull is a client side URL router. It's the smallest amount of glue needed 
 
 ## Why?
 
-Storing the state of an application in the URL allows the URL of the application to be emailed, bookmarked or copy/pasted. When the URL is visited it recaptures the state of the application. A client side router will also notify the browser about changes to the page, so even if the page does not reload, the back/forward buttons will still give the illusion of navigation.
+Storing some information about the state of an application within the URL allows the URL of the application to be emailed, bookmarked or copied and pasted. When the URL is visited it restores the state of the application. A client side router will also notify the browser about changes to the page, so even if the page does not reload, the back/forward buttons will give the illusion of navigation.
 
-The HTML5 history API is NOT a replacement for using location.hash. It does not cater to a single-page apps. In fact, it is designed around the requirement that all pages should load without the ability to leverage Javascript. This is unfortunate for script-rich applications who's audience is 'well-known'. The HTML5 history API requires the URL to resolve to real assets on the server, and therefore can not be used as a superfluous state management mechanism.
+The HTML5 history API is NOT a replacement for using the location hash. The HTML5 history API requires that a URL resolves to real assets on the server. And is designed around the requirement that all pages *should* load without Javascript. SugarSkull targets script-rich applications who's audience is 'well-known'.
 
-Why not <i>backbone.js</i>? Backbone.js has limited support for this and covers a minute set of the cases for client side routing, it promotes a one to one relationship of routes to logic. What about <i>sammy.js</i>? Sammy.js is a jquery plugin that tries to emulate server side routing which introduces unnecessary concepts.
+SugarSkull enhances ***backbone.js***! It covers more cases and provides a more expressive way to define routes and associate logic with them. It's a lightweight alternative to ***sammy.js***, narrowly focused on routing.
 
-Are single page apps a problem for SEO? Yes and No. SugarSkull is meant for script-heavy web-apps, you can use it for script-heavy web-sites, but learn how google and other search engines crawl and index pages before you decide on anything.
+Are single page apps a problem for SEO? Yes and No. SugarSkull is meant for script-heavy web-apps, you can use it for web-sites, but learn how google and other search engines crawl and index pages before you decide on anything.
 
 ## How?
 
@@ -165,9 +165,9 @@ It is common to need a particular function to fire every time a route is matched
 
 It is possible to attach state to any segment of the router, so in our case above if `/dog` is reached, the current state will be set to `{ needy: true, fetch: 'possibly' }`. Each nested section will merge into and overwrite the current state. So in the case where the router matches `/cat/hungry`, the state will become `{ needy: true, fetch: 'unlikely', frantic: true }`.
 
-```javascript
 ### Alternate ways to associate functions with routes.
 
+```javascript
     (function() {
 
       return {
