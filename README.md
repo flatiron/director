@@ -216,9 +216,9 @@ API
 
 #### Constructor Methods<br/><br/>
 
-#### `SS.router(config, hostObject)` - Returns a new instance of the router.<br/>
+#### `SS.router(config [, hostObject])` - Returns a new instance of the router.<br/>
 @param {Object} config - An object literal representing the router configuration, aka: the routing table.<br/>
-@param {Object} hostObject - An object literal representing the router configuration, aka: the routing table.<br/>
+@param {Object} hostObject - an object that contains function declarations for later use.<br/>
 
 #### Instance methods<br/><br/>
 
