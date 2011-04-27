@@ -1,9 +1,12 @@
-var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
+var SS = (typeof SS != 'undefined') ? SS : {
 
-  version: '0.2.5',
+  version: '0.2.6',
   mode: 'compatibility',
 
-  router: function(routes, hostObject) {
+  Router: function(routes, hostObject) {
+    
+    if(!(this instanceof SS.Router)) return new SS.Router(routes, hostObject);
+    
     var self = this,
         first = false,
         state = {},
@@ -17,10 +20,6 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
       if(v[1] == '/') { v=v.substr(1, v.length); } // if the first char is a '/', kill it.
       return v.slice(1, v.length).split("/");
     }
-
-    // function escapeRegExp(s) {
-    //   return s.replace(/([.*+?^${}()|[\]\/\\])/g, '\\$1');
-    // }
 
     function execMethods(methods, route, values) {
 
@@ -73,7 +72,6 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
 
     function execRoute(routes, route) {
       
-      // var v = self.mode == 'compatibility' ? document.location.hash : document.location.pathname;
       v = document.location.hash;
       v = v.slice(1);
       
@@ -113,7 +111,7 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
       }
     }
 
-    function routingAgent(event) {
+    function router(event) {
       var routes = self.routes;
 
       if(event && event.state) {
@@ -153,9 +151,9 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
     first = false;
 
     this.init = function() {
-      SS.listener.init(routingAgent);
-      routingAgent(); 
-      return this;       
+      SS.listener.init(router);
+      router();
+      return this;
     };
 
     this.getState = function() {
@@ -267,12 +265,12 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
       if (SS.mode == 'legacy') {
         this.writeFrame(s);
       }
-      console.log(s)
       document.location.hash = (s[0] === '/') ? s : '/' + s;
       return this;
     },
 
-    writeFrame: function (s) { // IE support...
+    writeFrame: function (s) { 
+      // IE support...
       var f = document.getElementById('state-frame');
       var d = f.contentDocument || f.contentWindow.document;
       d.open();
@@ -280,7 +278,8 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
       d.close();
     },
 
-    syncHash: function () { // IE support...
+    syncHash: function () { 
+      // IE support...
       var s = this._hash;
       if (s != document.location.hash) {
         document.location.hash = s;
@@ -290,5 +289,4 @@ var SS = (typeof SS != 'undefined') ? SS : { // SugarSkull
 
     onHashChanged:  function () {}
   }
-
 };
