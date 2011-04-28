@@ -201,7 +201,7 @@
     return this;
   };
 
-  var version = '0.2.6',
+  var version = '0.2.7',
       mode = 'compatibility',
       listener = { 
 
