@@ -279,7 +279,7 @@
       var f = document.getElementById('state-frame');
       var d = f.contentDocument || f.contentWindow.document;
       d.open();
-      d.write("<script>window._hash = '" + s + "'; window.onload = parent.listener.syncHash;<\/"+"script>");
+      d.write("<script>window._hash = '" + s + "'; window.onload = parent.listener.syncHash;<script>");
       d.close();
     },
 
