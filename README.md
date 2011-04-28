@@ -33,7 +33,7 @@ First, the router constructor accepts an object literal that will serve as the r
 ### A trivial demonstration
 
 ```javascript
-    var router = SS.Router({
+    var router = Router({
 
       '/dog': bark,
       '/cat': meow
@@ -45,7 +45,7 @@ In the above code, the object literal contains a set of key/value pairs. The key
 
 ### More complex URLs
 ```javascript
-    var router = SS.Router({
+    var router = Router({
 
       '/dog': {
         '/angry': {
@@ -60,7 +60,7 @@ In the above code, the object literal contains a set of key/value pairs. The key
 Above is a case where the URL's are more complex. Routes can have many events and properties, `on`, `before`, `after`, etc. 
 
 ```javascript
-    var router = SS.Router({
+    var router = Router({
 
       '/dog': {
         '/(\\w+)': {
@@ -76,7 +76,7 @@ In the above code, you'll notice that you can also use regular expressions insid
 
 ### Providing Callbacks
 ```javascript
-    var router = SS.Router({
+    var router = Router({
 
       '/dog': {
         '/angry': {
@@ -100,7 +100,7 @@ Above we have a case where both `/dog/angry` and `cat/squsih` will execute `frea
 ### Special events
 
 ```javascript
-    var router = SS.Router({
+    var router = Router({
 
       '/dog': {
         '/angry': {
@@ -125,7 +125,7 @@ In some cases, you may want to fire a function once. For instance a signin or ad
 ### More special events
 
 ```javascript
-    var router = SS.Router({
+    var router = Router({
 
       '/dog': {
         on: bark
@@ -148,7 +148,7 @@ It is common to need a particular function to fire every time a route is matched
 ### Providing some state.
 
 ```javascript
-    var router = SS.Router({
+    var router = Router({
 
       '/dog': {
         on: bark,
@@ -177,7 +177,7 @@ It is possible to attach state to any segment of the router, so in our case abov
 
         Main: function() {
 
-          var router = SS.Router({
+          var router = Router({
 
             '/dog': {
               on: ['bark', 'eat'], // eat and bark.
@@ -219,7 +219,7 @@ API
 
 #### Constructor Methods<br/><br/>
 
-#### `SS.router(config [, hostObject])` - Returns a new instance of the router.<br/>
+#### `Router(config [, hostObject])` - Returns a new instance of the router.<br/>
 @param {Object} config - An object literal representing the router configuration, aka: the routing table.<br/>
 @param {Object} hostObject - an object that contains function declarations for later use.<br/>
 

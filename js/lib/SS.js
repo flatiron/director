@@ -1,11 +1,8 @@
-var SS = (typeof SS != 'undefined') ? SS : {
+;(function() {
 
-  version: '0.2.6',
-  mode: 'compatibility',
-
-  Router: function(routes, hostObject) {
+  this.Router = function(routes, hostObject) {
     
-    if(!(this instanceof SS.Router)) return new SS.Router(routes, hostObject);
+    if(!(this instanceof Router)) return new Router(routes, hostObject);
     
     var self = this,
         first = false,
@@ -151,7 +148,7 @@ var SS = (typeof SS != 'undefined') ? SS : {
     first = false;
 
     this.init = function() {
-      SS.listener.init(router);
+      listener.init(router);
       router();
       return this;
     };
@@ -196,15 +193,17 @@ var SS = (typeof SS != 'undefined') ? SS : {
         url = [i];
       }
 
-      SS.listener.setHash(url.join("/"));
+      listener.setHash(url.join("/"));
       return url;
                     
     };
 
     return this;
-  },
+  };
 
-  listener: { 
+  var version = '0.2.6',
+      mode = 'compatibility',
+      listener = { 
 
     hash: document.location.hash,
 
@@ -217,7 +216,7 @@ var SS = (typeof SS != 'undefined') ? SS : {
     },
 
     fire: function() {
-      if(SS.mode == 'compatibility') {
+      if(mode == 'compatibility') {
         window.onhashchange();
       }
       else {
@@ -233,7 +232,7 @@ var SS = (typeof SS != 'undefined') ? SS : {
           (document.documentMode === undefined || document.documentMode > 7)) { 
 
         window.onhashchange = fn;
-        SS.mode = 'compatibility';        
+        mode = 'compatibility';        
       }
       else { // IE support, based on a concept by Erik Arvidson ...
 
@@ -254,15 +253,15 @@ var SS = (typeof SS != 'undefined') ? SS : {
         this.onHashChanged = fn;
         window.setInterval(function () { self.check(); }, 50);
         
-        SS.mode = 'legacy';
+        mode = 'legacy';
       }
-      return SS.mode;
+      return mode;
     },
 
     setHash: function (s) {
 
       // Mozilla always adds an entry to the history
-      if (SS.mode == 'legacy') {
+      if (mode == 'legacy') {
         this.writeFrame(s);
       }
       document.location.hash = (s[0] === '/') ? s : '/' + s;
@@ -288,5 +287,6 @@ var SS = (typeof SS != 'undefined') ? SS : {
     },
 
     onHashChanged:  function () {}
-  }
-};
+  };
+ 
+}).call(this);
