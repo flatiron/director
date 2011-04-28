@@ -1,18 +1,19 @@
 ;(function(window, undefined) {
 
+  var dloc = document.location;
+
   this.Router = function(routes, hostObject) {
-    
+
     if(!(this instanceof Router)) return new Router(routes, hostObject);
-    
+
     var self = this,
         first = false,
         state = {},
-        dloc = document.location,
         onleave;
 
     this.retired = [];
     this.routes = routes;
-    
+
     function explodeURL() {
       var v = dloc.hash;
       if(v[1] === '/') { v=v.slice(1); } // if the first char is a '/', kill it.

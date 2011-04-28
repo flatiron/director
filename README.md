@@ -261,7 +261,7 @@ API
 # Credits
 
 Author - hij1nx<br/>
-Contributors - indexzero
+Contributors - indexzero, jdalton
 
 # Version
 0.2.5
