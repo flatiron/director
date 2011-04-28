@@ -7,13 +7,14 @@
     var self = this,
         first = false,
         state = {},
+        dloc = document.location,
         onleave;
 
     this.retired = [];
     this.routes = routes;
     
     function explodeURL() {
-      var v = document.location.hash;
+      var v = dloc.hash;
       if(v[1] === '/') { v=v.slice(1); } // if the first char is a '/', kill it.
       return v.slice(1, v.length).split("/");
     }
@@ -69,7 +70,7 @@
 
     function execRoute(routes, route) {
       
-      v = document.location.hash;
+      v = dloc.hash;
       v = v.slice(1);
       
       execPartialRoute(routes, route, v, 0);
@@ -209,10 +210,10 @@
       mode = 'compatibility',
       listener = { 
 
-    hash: document.location.hash,
+    hash: dloc.hash,
 
     check:  function () {
-      var h = document.location.hash;
+      var h = dloc.hash;
       if (h != this.hash) {
         this.hash = h;
         this.onHashChanged();
@@ -268,7 +269,7 @@
       if (mode === 'legacy') {
         this.writeFrame(s);
       }
-      document.location.hash = (s[0] === '/') ? s : '/' + s;
+      dloc.hash = (s[0] === '/') ? s : '/' + s;
       return this;
     },
 
@@ -284,8 +285,8 @@
     syncHash: function () { 
       // IE support...
       var s = this._hash;
-      if (s != document.location.hash) {
-        document.location.hash = s;
+      if (s != dloc.hash) {
+        dloc.hash = s;
       }
       return this;
     },
