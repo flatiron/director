@@ -289,4 +289,4 @@
     onHashChanged:  function () {}
   };
  
-}).call(this);
+}).call(window);
