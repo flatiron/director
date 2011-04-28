@@ -1,4 +1,4 @@
-;(function() {
+;(function(window, undefined) {
 
   this.Router = function(routes, hostObject) {
     
@@ -14,7 +14,7 @@
     
     function explodeURL() {
       var v = document.location.hash;
-      if(v[1] == '/') { v=v.substr(1, v.length); } // if the first char is a '/', kill it.
+      if(v[1] === '/') { v=v.slice(1); } // if the first char is a '/', kill it.
       return v.slice(1, v.length).split("/");
     }
 
@@ -24,14 +24,14 @@
         return false;
       }
 
-      if(Object.prototype.toString.call(methods) !== '[object Array]') {
+      if(({}).toString.call(methods) !== '[object Array]') {
         methods = [methods];
       }
 
       for (var i=0; i < methods.length; i++) {
 
         if(!self.retired[methods[i]]) {
-          if(hostObject && typeof methods[i] == "string") {
+          if(hostObject && typeof methods[i] === "string") {
             hostObject[methods[i]].apply(hostObject, values);
           }
           else if(typeof methods[i] != "string"){
@@ -167,16 +167,20 @@
       // if v == string, returns the index at which it was found.
       // else returns an array which represents the current hash.
 
-      if(typeof v == "number") {
-        return explodeURL()[v];
+      var ret = v;
+
+      if(typeof v === "number") {
+        ret = explodeURL()[v];
       }
-      else if(typeof v == "string"){
+      else if(typeof v === "string"){
         var h = explodeURL();
-        return h.indexOf(v);
+        ret = h.indexOf(v);
       }
       else {
-        return explodeURL();
+        ret = explodeURL();
       }
+      
+      return ret;
     };
 
     this.setRoute = function(i, v, val) {
@@ -216,7 +220,7 @@
     },
 
     fire: function() {
-      if(mode == 'compatibility') {
+      if(mode === 'compatibility') {
         window.onhashchange();
       }
       else {
@@ -244,7 +248,7 @@
 
         if ('onpropertychange' in document && 'attachEvent' in document) {
           document.attachEvent('onpropertychange', function () {
-            if (event.propertyName == 'location') {
+            if (event.propertyName === 'location') {
               self.check();
             }
           });
@@ -261,7 +265,7 @@
     setHash: function (s) {
 
       // Mozilla always adds an entry to the history
-      if (mode == 'legacy') {
+      if (mode === 'legacy') {
         this.writeFrame(s);
       }
       document.location.hash = (s[0] === '/') ? s : '/' + s;
@@ -273,7 +277,7 @@
       var f = document.getElementById('state-frame');
       var d = f.contentDocument || f.contentWindow.document;
       d.open();
-      d.write("<"+"script>window._hash = '" + s + "'; window.onload = parent.listener.syncHash;<\/"+"script>");
+      d.write("<script>window._hash = '" + s + "'; window.onload = parent.listener.syncHash;<\/"+"script>");
       d.close();
     },
 
@@ -289,4 +293,4 @@
     onHashChanged:  function () {}
   };
  
-}).call(window);
+})(this);
