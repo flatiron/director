@@ -212,6 +212,9 @@ It is possible to attach state to any segment of the router, so in our case abov
 
 Above, a host-object is provided to the router, this provides a way to organize methods which may defined or loaded after the router is configured.
 
+### Using SugarSkull with backbone.
+SugarSkull can be a replacement for backbone controllers. 
+
 API
 ===
 
