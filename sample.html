@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+  <head>
+
+    <style type="text/css" media="screen">
+      .die { display: none; }
+    </style>
+
+
+    <!-- use jquery for the demo -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+
+    <!-- include the lib -->
+    <script src="js/lib/SS.js" type="text/javascript" charset="utf-8"></script>
+    
+    <!-- never put your script in your html file unless its a demo =) -->    
+    <script type="text/javascript" charset="utf-8">
+
+      // when ready...
+      $(function() {
+
+        // create some simple functions...
+        function red(someParam) {
+          $('.die').hide();
+
+          if(someParam) {
+            $('#number').text(someParam);
+          }
+
+          $('.die.red').show();          
+          $('*').css('color', 'red');
+        }
+
+        function blue() {
+          $('.die').hide();
+          $('.die.blue').show();
+          $('*').css('color', 'blue');
+        }
+
+        function hideShow(tabSelector, contentSelector) {
+      	  $(contentSelector).show();
+      	  $(tabSelector).addClass('selected');
+        }
+
+        var router = Router({
+          '/red': {
+            '/(\\w+)': {
+              on: red
+            },
+            on: red
+          },
+          '/blue': blue
+        });
+        
+        router.init();
+
+      });
+      
+    </script>
+    <title></title>
+  </head>
+  <body>
+    <br/>
+    <a href="#/red">die everything red.</a><br/>
+    <a href="#/red/9">die everything red and use formula 9.</a><br/>
+    <a href="#/red/7">die everything red and use formula 7.</a><br/>    
+    <a href="#/blue">die everything blue.</a><br/>
+        
+    <div class="red die">
+      <h1>Red die #<span id="number">7</span>!</h1>
+    </div>
+    
+    <div class="blue die">
+      <h1>Blue Die!</h1>
+    </div>    
+    
+  </body>
+</html>
