@@ -31,17 +31,16 @@
       }
 
       for (var i=0; i < methods.length; i++) {
+        if(self.retired[methods[i]]) continue;
 
-        if(!self.retired[methods[i]]) {
-          if(hostObject && typeof methods[i] === "string") {
-            hostObject[methods[i]].apply(hostObject, values);
-          }
-          else if(typeof methods[i] != "string"){
-            methods[i].apply(null, values);
-          }
-          else {
-            throw new Error("exec: method not found on route '" + route + "'.");
-          }          
+        if(hostObject && typeof methods[i] === "string") {
+          hostObject[methods[i]].apply(hostObject, values);
+        }
+        else if(typeof methods[i] != "string"){
+          methods[i].apply(null, values);
+        }
+        else {
+          throw new Error("exec: method not found on route '" + route + "'.");
         }
       }
     }
@@ -78,36 +77,32 @@
     }
 
     function execPartialRoute(routes, route, target, level) {
-      if (route[0] !== '/') {
-        return;
-      }
+      if (route[0] !== '/') return;
 
       var prefix = level === 0 ? '^\\/' : '',
           exp = new RegExp(prefix + route.slice(1) + '(.*)?').exec(target);
       
-      if(exp && exp.length > 0 && !self.retired[route]) {
-        // We've entered the route to start processing it
-        if(routes[route].state) {
-          self.state = routes[route].state;
-        }
+      if(!(exp && exp.length > 0 && !self.retired[route])) return
+				
+			// We've entered the route to start processing it
+			if(routes[route].state) {
+				self.state = routes[route].state;
+			}
 
-        var userGroups = exp.slice(1),
-            next = userGroups.pop();
-        
-        // Dispatch this route
-        dispatch(routes, route, userGroups);
+			var userGroups = exp.slice(1),
+					next = userGroups.pop();
+			
+			// Dispatch this route
+			dispatch(routes, route, userGroups);
 
-        if (typeof next === 'string' && next.length > 0) {
-          for (var nestedRoute in routes[route]) {
-            if (routes[route].hasOwnProperty(nestedRoute)) {
-              if (nestedRoute.indexOf('/') === 0) {
-                // Recursive step
-                execPartialRoute(routes[route], nestedRoute, next, ++level);
-              }
-            }
-          }
-        }
-      }
+			if (!(typeof next === 'string' && next.length > 0)) return
+				
+			for (var nestedRoute in routes[route]) {
+				if (routes[route].hasOwnProperty(nestedRoute) && nestedRoute.indexOf('/') === 0) {
+					// Recursive step
+					execPartialRoute(routes[route], nestedRoute, next, ++level);
+				}
+			}
     }
 
     function router(event) {
