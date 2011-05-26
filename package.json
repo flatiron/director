@@ -1,0 +1,14 @@
+{
+  "name": "SugarSkull",
+  "description": "A Client Side Router for Single Page Apps",
+  "version": "0.2.7",
+  "homepage": "http://twitter.com/hij1nx",
+  "authors": ["Hij1nx at Nodejitsu, @hij1nx"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hij1nx/SugarSkull.git"
+  },
+  "main": "./js/lib/SS.js",
+  "keywords": ["URL", "router", "client side"],
+  "ender": "./js/lib/ender.js"
+}
