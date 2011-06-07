@@ -34,10 +34,14 @@
 
         if(!self.retired[methods[i]]) {
           if(hostObject && typeof methods[i] === "string") {
-            hostObject[methods[i]].apply(hostObject, values);
+            if(hostObject[methods[i]].apply(hostObject, values) === false) {
+              return false;
+            };
           }
           else if(typeof methods[i] != "string"){
-            methods[i].apply(null, values);
+            if(methods[i].apply(null, values) === false) {
+              return false;
+            };
           }
           else {
             throw new Error("exec: method not found on route '" + route + "'.");
@@ -295,4 +299,4 @@
     onHashChanged:  function () {}
   };
  
-})(this);
+})(window);
