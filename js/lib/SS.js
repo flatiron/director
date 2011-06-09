@@ -8,10 +8,11 @@
 
     var self = this,
         state = {},
-        queue = [],
         onleave;
 
     this.routes = routes;
+    this.after = [];
+    this.queue = [];
 
     function explodeURL() {
       var v = dloc.hash;
@@ -39,47 +40,56 @@
 
       var type = ({}).toString.call(routes[rawRouteName]);
       var args = [hashSeg];
+      var store = rawRouteName === 'after' ? 'after' : 'queue';
 
       if (~type.indexOf('Function')) {
-        queue.unshift({ val: args, fn: routes[rawRouteName] });
+        self[store].unshift({ val: args, fn: routes[rawRouteName] });
       }
       else if (~type.indexOf('Array')) {
         for (var i=0, l = routes[route].length; i < l; i++) {
-          queue.unshift({ val: args, fn: routes[rawRouteName][i] });
+          self[store].unshift({ val: args, fn: routes[rawRouteName][i] });
         }
       }
       else if (~type.indexOf('String')) {
-        queue.unshift({ val: args, fn: hostObject[routes[rawRouteName]] });
+        self[store].unshift({ val: args, fn: hostObject[routes[rawRouteName]] });
       }
       else if (~type.indexOf('Object')) {
         return !!match;
       }
 
-      if (rawRouteName === 'once') {
+      if(rawRouteName === 'once') {
         routes[rawRouteName] = function() { return false; };
       }
 
       return false;
     }
 
+    function dispatch(src) {
+      for (var i=0, l = self[src].length; i < l; i++) {
+        
+        var listener = self[src].pop();
+        
+        if(listener.fn.apply(hostObject || null, listener.val) === false) {
+          self[src] = [];
+          return false;
+        }
+      }
+      return true;
+    }
+
     function router(event) {
 
       var routes = self.routes;
+      dispatch('after');
 
       for (var route in routes) {
-        
+
         if (routes.hasOwnProperty(route)) {       
           parseRoute(routes, route, dloc.hash.slice(1), 0);
         }
 
-        for (var i=0, l = queue.length; i < l; i++) {
-          
-          var listener = queue.pop();
-          
-          if(listener.fn.apply(hostObject || null, listener.val) === false) {
-            queue = [];
-            return;
-          }
+        if(!dispatch('queue')) {
+          return false;
         }
       }
     }
