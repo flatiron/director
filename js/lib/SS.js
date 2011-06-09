@@ -48,7 +48,7 @@
         self[store].unshift({ val: args, fn: routes[rawRouteName] });
       }
       else if (~type.indexOf('Array')) {
-        for (var i=0, l = routes[route].length; i < l; i++) {
+        for (var i=0, l = routes[rawRouteName].length; i < l; i++) {
           self[store].unshift({ val: args, fn: routes[rawRouteName][i] });
         }
       }
@@ -95,10 +95,8 @@
           if(!dispatch('queue')) {
             return false;
           }
-
         }
       }
-
     }
 
     this.init = function() {

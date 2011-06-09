@@ -20,39 +20,9 @@
 
       // when ready...
       $(function() {
-
-        //create some simple functions...
-        function red(someParam) {
-          console.log('fired red');
-           $('.die').hide();
-           
-           if(someParam) {
-             $('#number').text(someParam);
-           }
-                   
-           $('.die.red').show();
-           $('*').css('color', 'red');
-         }
-        
-         function blue() {
-           console.log('>> blue');
-         }
-         
-         function goo() {
-           console.log('>> goo');            
-         }         
-        
-         function hideShow(tabSelector, contentSelector) {
-                 $(contentSelector).show();
-                 $(tabSelector).addClass('selected');
-         }
-         
-         function green() {
-           console.log('>> green');
-         }
  
         var router = Router({
-          '/bla': function() { console.log('`/bla`'); },
+          '/bla': [function() { console.log('`/bla1`'); }, function() { console.log('`/bla2`')}],
           '/foo/bar': {
             '/goo': {
               on: function() { console.log('`/goo`'); return false; }
@@ -66,20 +36,8 @@
           '/bazz': {
             on: function() { console.log('`/bazz`'); },
             after: function() { console.log('did bazz.'); }
-          }
-          
-          
-          
-          
-          // ,
-          //           '/red': {
-          //             '/(\\w+)': {
-          //               on: red
-          //             },
-          //             on: red
-          //           },
-          //           '/blue': blue,
-          //           after: green
+          },
+          after: function() { console.log('`afterall`'); }
         });
 
         router.init();
