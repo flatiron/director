@@ -34,6 +34,8 @@
           parseRoute(routes[rawRouteName], routeSeg, hashSeg, ++level);
         }
       }
+      
+      return !!match
     }
 
     function parseOption(routes, rawRouteName, match, hashSeg) {
@@ -79,19 +81,24 @@
 
     function router(event) {
 
-      var routes = self.routes;
+      var routes = self.routes, match;
       dispatch('after');
 
       for (var route in routes) {
+        if (routes.hasOwnProperty(route)) {
 
-        if (routes.hasOwnProperty(route)) {       
-          parseRoute(routes, route, dloc.hash.slice(1), 0);
-        }
+          if(!parseRoute(routes, route, dloc.hash.slice(1), 0)) {
+            self.queue = [];
+            continue;
+          }
 
-        if(!dispatch('queue')) {
-          return false;
+          if(!dispatch('queue')) {
+            return false;
+          }
+
         }
       }
+
     }
 
     this.init = function() {

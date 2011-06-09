@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
   <head>
@@ -19,39 +21,67 @@
       // when ready...
       $(function() {
 
-        // create some simple functions...
+        //create some simple functions...
         function red(someParam) {
-          $('.die').hide();
-
-          if(someParam) {
-            $('#number').text(someParam);
-          }
-
-          $('.die.red').show();          
-          $('*').css('color', 'red');
-        }
-
-        function blue() {
-          $('.die').hide();
-          $('.die.blue').show();
-          $('*').css('color', 'blue');
-        }
-
-        function hideShow(tabSelector, contentSelector) {
-      	  $(contentSelector).show();
-      	  $(tabSelector).addClass('selected');
-        }
-
-        var router = Router({
-          '/red': {
-            '/(\\w+)': {
-              on: red
-            },
-            on: red
-          },
-          '/blue': blue
-        });
+          console.log('fired red');
+           $('.die').hide();
+           
+           if(someParam) {
+             $('#number').text(someParam);
+           }
+                   
+           $('.die.red').show();
+           $('*').css('color', 'red');
+         }
         
+         function blue() {
+           console.log('>> blue');
+         }
+         
+         function goo() {
+           console.log('>> goo');            
+         }         
+        
+         function hideShow(tabSelector, contentSelector) {
+                 $(contentSelector).show();
+                 $(tabSelector).addClass('selected');
+         }
+         
+         function green() {
+           console.log('>> green');
+         }
+ 
+        var router = Router({
+          '/bla': function() { console.log('`/bla`'); },
+          '/foo/bar': {
+            '/goo': {
+              on: function() { console.log('`/goo`'); return false; }
+            },
+            '/moo': { on: function() { console.log('`/moo`'); return false; } },
+            '/(\\w+)': {
+              once: function(a) { console.log("["+a+"]"); return false; }
+            },
+            on: function() { console.log('`/foo/bar`'); }
+          },
+          '/bazz': {
+            on: function() { console.log('`/bazz`'); },
+            after: function() { console.log('did bazz.'); }
+          }
+          
+          
+          
+          
+          // ,
+          //           '/red': {
+          //             '/(\\w+)': {
+          //               on: red
+          //             },
+          //             on: red
+          //           },
+          //           '/blue': blue,
+          //           after: green
+        });
+
         router.init();
 
       });
