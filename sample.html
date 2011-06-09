@@ -22,7 +22,9 @@
       $(function() {
  
         var router = Router({
+          
           '/bla': [function() { console.log('`/bla1`'); }, function() { console.log('`/bla2`')}],
+          '/foo': 'foo',
           '/foo/bar': {
             '/goo': {
               on: function() { console.log('`/goo`'); return false; }
@@ -38,6 +40,10 @@
             after: function() { console.log('did bazz.'); }
           },
           after: function() { console.log('`afterall`'); }
+        }, 
+        {
+          'foo': function() { console.log('foo!'); }
+          
         });
 
         router.init();
