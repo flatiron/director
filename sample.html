@@ -19,66 +19,39 @@
       // when ready...
       $(function() {
 
-        //create some simple functions...
+        // create some simple functions...
         function red(someParam) {
-          console.log('fired red');
-           $('.die').hide();
-           
-           if(someParam) {
-             $('#number').text(someParam);
-           }
-                   
-           $('.die.red').show();
-           $('*').css('color', 'red');
-         }
-        
-         function blue() {
-           console.log('>> blue');
-         }
-         
-         function goo() {
-           console.log('>> goo');            
-         }         
-        
-         function hideShow(tabSelector, contentSelector) {
-                 $(contentSelector).show();
-                 $(tabSelector).addClass('selected');
-         }
-         
-         function green() {
-           console.log('>> green');
-         }
- 
-        var router = Router({
-          '/foo/bar': {
-            '/goo': {
-              on: function() { console.log('`/goo`'); return false; }
-            },
-            '/moo': function() { console.log('`/moo`'); },
-            '/(\\w+)': {
-              once: function(a) { console.log("["+a+"]"); return false; }
-            },
-            on: function() { console.log('`/foo/bar`'); }
-          },
-          '/bazz': {
-            on: function() { console.log('`/bazz`'); },
-            after: function() { console.log('did bazz.'); }
-          }
-          
-          
-          
-          
-          // ,
-          //           '/red': {
-          //             '/(\\w+)': {
-          //               on: red
-          //             },
-          //             on: red
-          //           },
-          //           '/blue': blue,
-          //           after: green
-        });
+          $('.die').hide();
 
+          if(someParam) {
+            $('#number').text(someParam);
+          }
+
+          $('.die.red').show();          
+          $('*').css('color', 'red');
+        }
+
+        function blue() {
+          $('.die').hide();
+          $('.die.blue').show();
+          $('*').css('color', 'blue');
+        }
+
+        function hideShow(tabSelector, contentSelector) {
+      	  $(contentSelector).show();
+      	  $(tabSelector).addClass('selected');
+        }
+
+        var router = Router({
+          '/red': {
+            '/(\\w+)': {
+              on: red
+            },
+            on: red
+          },
+          '/blue': blue
+        });
+        
         router.init();
 
       });
