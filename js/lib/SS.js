@@ -1,4 +1,4 @@
-;!function(window, undefined) {
+;(function(window, undefined) {
 
   var dloc = document.location;
 
@@ -7,92 +7,142 @@
     if(!(this instanceof Router)) return new Router(routes, hostObject);
 
     var self = this,
+        first = false,
         state = {},
         onleave;
 
+    this.retired = [];
     this.routes = routes;
-    this.after = [];
-    this.queue = [];
 
     function explodeURL() {
       var v = dloc.hash;
-      if(v[1] === '/') { v=v.slice(1); }
+      if(v[1] === '/') { v=v.slice(1); } // if the first char is a '/', kill it.
       return v.slice(1, v.length).split("/");
     }
 
-    function parseRoute(routes, rawRouteName, hashSeg, level) {
+    function execMethods(methods, route, values) {
 
-      var prefix = level === 0 ? '^\\/' : '', match;
-
-      if (rawRouteName[0] === '/') {
-        match = new RegExp(prefix + rawRouteName.slice(1) + '(.*)?').exec(hashSeg);
-        hashSeg = match ? match[1] : hashSeg;
+      if(!methods) {
+        return false;
       }
 
-      if (parseOption(routes, rawRouteName, match, hashSeg) && hashSeg !== 'undefined') {
-        for(routeSeg in routes[rawRouteName]) {
-          parseRoute(routes[rawRouteName], routeSeg, hashSeg, ++level);
+      if(({}).toString.call(methods) !== '[object Array]') {
+        methods = [methods];
+      }
+
+      for (var i=0; i < methods.length; i++) {
+        if(self.retired[methods[i]]) continue;
+
+        if(hostObject && typeof methods[i] === "string") {
+          hostObject[methods[i]].apply(hostObject, values);
+        }
+        else if(typeof methods[i] != "string"){
+          methods[i].apply(null, values);
+        }
+        else {
+          throw new Error("exec: method not found on route '" + route + "'.");
         }
       }
     }
 
-    function parseOption(routes, rawRouteName, match, hashSeg) {
+    function dispatch(routes, route, values) {
 
-      var type = ({}).toString.call(routes[rawRouteName]);
-      var args = [hashSeg];
-      var store = rawRouteName === 'after' ? 'after' : 'queue';
+      var r = routes[route];
 
-      if (~type.indexOf('Function')) {
-        self[store].unshift({ val: args, fn: routes[rawRouteName] });
-      }
-      else if (~type.indexOf('Array')) {
-        for (var i=0, l = routes[route].length; i < l; i++) {
-          self[store].unshift({ val: args, fn: routes[rawRouteName][i] });
-        }
-      }
-      else if (~type.indexOf('String')) {
-        self[store].unshift({ val: args, fn: hostObject[routes[rawRouteName]] });
-      }
-      else if (~type.indexOf('Object')) {
-        return !!match;
+      if(typeof r === 'string' || !!(r && r.constructor && r.call && r.apply)) {      
+        execMethods(r, route, values);
       }
 
-      if(rawRouteName === 'once') {
-        routes[rawRouteName] = function() { return false; };
+      if(r.once === true) {
+        self.retired[route] = true;
+      }
+      else if(r.once) {
+        execMethods(r.once, route, values);
+        delete r.once;
       }
 
-      return false;
+      if(r.on) {
+        execMethods(r.on, route, values);
+      }
+
+      onleave = r.onleave || null;
     }
 
-    function dispatch(src) {
-      for (var i=0, l = self[src].length; i < l; i++) {
-        
-        var listener = self[src].pop();
-        
-        if(listener.fn.apply(hostObject || null, listener.val) === false) {
-          self[src] = [];
-          return false;
-        }
-      }
-      return true;
+    function execRoute(routes, route) {
+      
+      v = dloc.hash;
+      v = v.slice(1);
+      
+      execPartialRoute(routes, route, v, 0);
+    }
+
+    function execPartialRoute(routes, route, target, level) {
+      if (route[0] !== '/') return;
+
+      var prefix = level === 0 ? '^\\/' : '',
+          exp = new RegExp(prefix + route.slice(1) + '(.*)?').exec(target);
+      
+      if(!(exp && exp.length > 0 && !self.retired[route])) return
+
+			// We've entered the route to start processing it
+			if(routes[route].state) {
+				self.state = routes[route].state;
+			}
+
+			var userGroups = exp.slice(1),
+					next = userGroups.pop();
+
+			// Dispatch this route
+			dispatch(routes, route, userGroups);
+
+			if (!(typeof next === 'string' && next.length > 0)) return
+
+			for (var nestedRoute in routes[route]) {
+				if (routes[route].hasOwnProperty(nestedRoute) && nestedRoute.indexOf('/') === 0) {
+					// Recursive step
+					execPartialRoute(routes[route], nestedRoute, next, ++level);
+				}
+			}
     }
 
     function router(event) {
-
       var routes = self.routes;
-      dispatch('after');
 
-      for (var route in routes) {
+      if(event && event.state) {
+        state = event.state;
+      }
 
-        if (routes.hasOwnProperty(route)) {       
-          parseRoute(routes, route, dloc.hash.slice(1), 0);
-        }
+      if(routes.before) {
+        execMethods(routes.before.on || routes.before); // methods to be fired before every route.
+      }
 
-        if(!dispatch('queue')) {
-          return false;
+      if(routes.leave && !first) {
+        execMethods(routes.leave.on || routes.leave); // methods to be fired when leaving every route.
+      }
+      
+      if(routes.once) {
+        execMethods(routes.once);
+        delete routes.once;
+      }      
+
+      if(self.leave) {
+        execMethods(self.leave); // fire the current 'onleave-route' method.
+        self.onleave = null; // only fire it once.
+      }
+
+      for(var route in routes) {
+        if (routes.hasOwnProperty(route)) {
+          execRoute(routes, route);
         }
       }
+
+      if(routes.after) {
+        execMethods(routes.after.on || routes.after); // methods to be fired after every route.
+      }      
+
     }
+
+    first = false;
 
     this.init = function() {
       listener.init(router);
@@ -102,6 +152,10 @@
 
     this.getState = function() {
       return self.state;
+    };
+
+    this.getRetired = function() {
+      return self.retired;
     };
 
     this.getRoute = function(v) {
@@ -148,7 +202,7 @@
     return this;
   };
 
-  var version = '0.3.0',
+  var version = '0.2.7',
       mode = 'compatibility',
       listener = { 
 
@@ -236,4 +290,4 @@
     onHashChanged:  function () {}
   };
  
-}(window);
+})(this);
