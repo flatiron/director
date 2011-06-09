@@ -23,8 +23,10 @@ before the '#'), and then the client-side (everything after the '#'). The second
 A hash route looks like this...<br/><br/>
 <img src="https://github.com/hij1nx/SugarSkull/raw/master/img/hashRoute.png" width="598" height="113" alt="HashRoute" -->
 
-## Cross Browser
-Needs testing.
+## Compatibility
+- Ender.js Compatibile.
+- Needs Cross Browser testing.
+
 
 ## Usage
 
