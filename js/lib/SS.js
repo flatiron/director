@@ -63,6 +63,7 @@
 
       var isObject = type.indexOf('Object') !== -1;
       var isFunction = type.indexOf('Function') !== -1;
+      var isArray = type.indexOf('Array') !== -1;
 
       var add = self.recurse === false ? 'push' : 'unshift';
       var fn = null;
@@ -79,6 +80,11 @@
         if(isObject && fn) {
           self.on[add]({ fn: fn || route.once, val: partialpath });
           if(route.once) { route.once = nop; }
+        }
+        else if(isArray) {
+          for (var i=0, l = route.length; i < l; i++) {
+            self.on[add]({ fn: route[i], val: partialpath  });
+          }
         }
         else if(isFunction) {
           self.on[add]({ fn: route, val: partialpath });        

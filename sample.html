@@ -44,9 +44,8 @@
         '/(.*)?': { on: function word(a) { console.log('/e/regex (' + a + ')'); } },
         on: function eOn() { console.log('/e'); }
       },
+      '/f': [function f1() { console.log('/f-1'); }, function f2() { console.log('/f-2'); }]
     };
-
-
 
     window.onload = function() {
 

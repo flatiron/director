@@ -1,20 +1,20 @@
 ![Alt text](https://github.com/hij1nx/SugarSkull/raw/master/img/sugarskull.png)
 
-## What?
+# Synopsis
 
-SugarSkull is a client side URL router. It's the smallest amount of glue needed for building dynamic single page applications. Not a jquery plugin, no dependencies.
+SugarSkull is a client side URL router. It's the smallest amount of glue needed for building dynamic single page applications. Not a jquery plugin, and has no dependencies.
 
-## Why?
+# Motivation
 
 Storing some information about the state of an application within the URL allows the URL of the application to be emailed, bookmarked or copied and pasted. When the URL is visited it restores the state of the application. A client side router will also notify the browser about changes to the page, so even if the page does not reload, the back/forward buttons will give the illusion of navigation.
 
-The HTML5 history API isn't quite a replacement for using the location hash. The HTML5 history API requires that a URL resolves to real assets on the server. And is designed around the requirement that all pages *should* load without Javascript. SugarSkull targets script-rich applications who's audience is 'well-known'.
+The HTML5 history API isn't a replacement for using the location hash. The HTML5 history API requires that a URL resolves to real assets on the server. It is also designed around the requirement that all pages *should* load without Javascript. SugarSkull targets script-rich applications who's audience is well-known.
 
-SugarSkull enhances ***backbone.js***! It covers more use cases and provides a more expressive way to define routes and associate logic with them. It's a lightweight alternative to ***sammy.js***, narrowly focused on routing.
+SugarSkull can enhance ***backbone.js*** by replacing its controllers. It covers more use cases and provides a more expressive way to define routes and associate logic with them. It's a lightweight alternative to ***sammy.js***, narrowly focused on routing.
 
-Are single page apps a problem for SEO? Yes and No. SugarSkull is meant for script-heavy web-apps, you can use it for web-sites, but learn how google and other search engines crawl and index pages before you decide on anything.
+Is using a client side router a problem for SEO? Yes. If advertising is a requirement, you are probably building a "Web Page" and not a "Web Application". SugarSkull is meant for script-heavy Web Applications.
 
-## How?
+# Anatomy
 
 SugarSkull monitors the URL. When the URL changes, and it is a match to one defined in your router table, the functions that are associated with that route are executed. You could almost think of the URL as an event emitter.
 
@@ -28,103 +28,153 @@ A hash route looks like this...<br/><br/>
 - Needs Cross Browser testing.
 
 
-## Usage
+# Usage
 
-First, the router constructor accepts an object literal that will serve as the routing table. Optionally, it can also accept a second object literal that contains functions. The second option is useful when the functions to be called get defined or loaded after the router gets defined.
 
-### A trivial demonstration
+## Constructor
 
 ```javascript
-    var router = Router({
 
-      '/dog': bark,
-      '/cat': meow
+    Router(routes [, recurse, hostobject]);
 
-    });
 ```
 
-In the above code, the object literal contains a set of key/value pairs. The keys represent each potential part of the URL. The values contain instructions about what to do when there is an actual match. `bark` and `meow` are two functions that you have defined in your code.
+### routes (required) 
+An object literal that contains nested route definitions. A potentially nested set of key/value pairs. The keys in the object literal represent each potential part of the URL. The values in the object literal contain references to the functions that should be associated with them. *bark* and *meow* are two functions that you have defined in your code.
 
-### More complex URLs
 ```javascript
+
+  var routes = { // an object literal.
+
+    '/dog': bark, // a route which assigns the function `bark`.
+    '/cat': [meow, scratch] // a route which assigns the functions `meow` and `scratch`.
+  };
+
+  var router = Router(routes); // Instantiate the router.
+
+```
+
+
+### recurse (optional) 
+
+Can be assigned the value of `true`, `false` or `null`. The recurse option will determine how to fire the listeners that are associated with your routes. If this option is NOT specified or set to null, then only the listeners associated with an exact match will be fired.
+
+#### No recursion, with the URL /dog/angry
+
+```javascript
+
+  var routes = {
+
+    '/dog': {
+      '/angry': {
+        on: growl // this method will be fired.
+      },
+      on: bark
+    }
+  };
+
+  var router = Router(routes, null);
+
+```
+
+#### Recursion set to true, with the URL /dog/angry
+
+```javascript
+
+  var routes = {
+
+    '/dog': {
+      '/angry': {
+        on: growl // this method will be fired second.
+      },
+      on: bark // this method will be fired first.
+    }
+  };
+
+  var router = Router(routes, true);
+
+```
+
+#### Recursion set to false, with the URL /dog/angry
+
+```javascript
+
+  var routes = {
+
+    '/dog': {
+      '/angry': {
+        on: growl // this method will be fired first.
+      },
+      on: bark // this method will also be second.
+    }
+  };
+
+  var router = Router(routes, false);
+
+```
+
+#### Breaking out of recursion, with the URL /dog/angry
+
+```javascript
+
+  var routes = {
+
+    '/dog': {
+      '/angry': {
+        on: function() { return false; } // this method will be fired first.
+      },
+      on: bark // this method will not be fired.
+    }
+  };
+  
+  // this feature works in reverse with recursion set to true.
+
+  var router = Router(routes, false);
+
+```
+
+
+### hostobject (optional) 
+An object literal containing functions. If a host object is specified, your route definitions can provide string literals that represent the function names inside the host object. A host object can provide the means for better encapsulation and design.
+
+```javascript
+
     var router = Router({
 
-      '/dog': {
-        '/angry': {
-          on: growl
-        },
-        on: bark
+      '/moola': {
+        '/benny': 'hundred',
+        '/sawbuck': 'five'
       }
 
-    });
+    }, null, container);
+
+    var container = {
+      hundred: function() { return 100; },
+      five: function() { return 5; }
+    };
+
 ```
 
-Above is a case where the URL's are more complex. Routes can have many events and properties, `on`, `before`, `after`, etc. 
+## More complex URLs
+
+Routes can sometimes become very complex, `simple/:tokens` don't always suffice. SugarSkull supports regular expressions inside the route names. The values captured from the regular expressions are passed to your listener function.
 
 ```javascript
     var router = Router({
 
       '/dog': {
         '/(\\w+)': {
-          on: function(urlPathPart) {}
-        },
-        on: bark
+          on: function(color) { console.log(color) }
+        }
       }
 
     });
 ```
 
-In the above code, you'll notice that you can also use regular expressions inside the URLs. The capture groups from the regular expressions are then sent to the functions as parameters, one after the other (a, b, c, etc).
 
-### Providing Callbacks
-```javascript
-    var router = Router({
+## Special events
 
-      '/dog': {
-        '/angry': {
-          on: [growl, freakout]
-        }
-        on: bark
-      },
-
-      '/cat': {
-        '/squish': {
-          on: freakout
-        }
-        on: meow
-      }
-
-    });
-```
-
-Above we have a case where both `/dog/angry` and `cat/squsih` will execute `freakout`. Hence the `on` property will support an array which can execute many functions when there is a URL match.
-
-### Special events
-
-```javascript
-    var router = Router({
-
-      '/dog': {
-        '/angry': {
-          on: 'growl',
-          once: 'zap'
-        }
-        on: bark
-      },
-
-      '/cat': {
-        '/saton': {
-          on: 'freakout'
-        }
-        on: meow
-      }
-
-    });
-```
-
-In some cases, you may want to fire a function once. For instance a signin or advertisement is a good use case. In addition to the `on` property there is a `once` property for this purpose.
-
-### More special events
+In some cases a listener should only fire once or only after the user leaves the route.
 
 ```javascript
     var router = Router({
@@ -170,55 +220,7 @@ It is common to need a particular function to fire every time a route is matched
 
 It is possible to attach state to any segment of the router, so in our case above if `/dog` is reached, the current state will be set to `{ needy: true, fetch: 'possibly' }`. Each nested section will merge into and overwrite the current state. So in the case where the router matches `/cat/hungry`, the state will become `{ needy: true, fetch: 'unlikely', frantic: true }`.
 
-### Alternate ways to associate functions with routes.
-
-```javascript
-    (function() {
-
-      return {
-
-        Main: function() {
-
-          var router = Router({
-
-            '/dog': {
-              on: ['bark', 'eat'], // eat and bark.
-              '/fat': {
-                on: ['eat'] // eat a second time!
-              }
-            },
-
-            '/cat': {
-              on: ['meow', 'eat']
-            }
-
-          }, this);
-        },
-
-        bark: function() {
-          // woof!
-        },
-
-        meow: function() {
-          // mrrrow!
-        },
-    
-        eat: function() {
-          // yum!
-        }
-
-      };
-
-    })().Main();
-```
-
-Above, a host-object is provided to the router, this provides a way to organize methods which may defined or loaded after the router is configured.
-
-### Using SugarSkull with backbone.
-SugarSkull can be a replacement for backbone controllers. 
-
-API
-===
+## API
 
 ### Methods
 
@@ -266,10 +268,10 @@ API
 # Credits
 
 Author - hij1nx<br/>
-Contributors - indexzero, jdalton
+Contributors - @indexzero, @jdalton, @jvduf
 
 # Version
-0.2.5
+0.3.0
 
 # Licence
 
