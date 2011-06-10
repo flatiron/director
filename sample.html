@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
   <head>
@@ -16,46 +18,26 @@
     <!-- never put your script in your html file unless its a demo =) -->    
     <script type="text/javascript" charset="utf-8">
 
-      // when ready...
-      $(function() {
+    window.onload = function() {
 
-        // create some simple functions...
-        function red(someParam) {
-          $('.die').hide();
+      var router = Router({
 
-          if(someParam) {
-            $('#number').text(someParam);
-          }
-
-          $('.die.red').show();          
-          $('*').css('color', 'red');
-        }
-
-        function blue() {
-          $('.die').hide();
-          $('.die.blue').show();
-          $('*').css('color', 'blue');
-        }
-
-        function hideShow(tabSelector, contentSelector) {
-      	  $(contentSelector).show();
-      	  $(tabSelector).addClass('selected');
-        }
-
-        var router = Router({
-          '/red': {
-            '/(\\w+)': {
-              on: red
-            },
-            on: red
-          },
-          '/blue': blue
-        });
+        '/a': {
+          '/(.*)?': { on: function word(a) { console.log('/a/word/'+a); } },
+          on: function aOn() { console.log('/a'); }
+        },
+        '/b': {
+          '/a': function a() { console.log('/b/a'); },
+          on: function b() { console.log('/b'); }
+        },
+        '/c': function c() { console.log('/c'); }
         
-        router.init();
+      }, true);
 
-      });
-      
+      router.init();
+
+    };
+
     </script>
     <title></title>
   </head>

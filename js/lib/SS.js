@@ -1,18 +1,24 @@
+
 ;!function(window, undefined) {
 
   var dloc = document.location;
 
-  this.Router = function(routes, hostObject) {
+  this.Router = function(routes, recurse, hostObject) {
 
-    if(!(this instanceof Router)) return new Router(routes, hostObject);
+    if(!(this instanceof Router)) return new Router(routes, recurse, hostObject);
 
     var self = this,
         state = {},
         onleave;
 
+    if(recurse === null) {
+      recurse = undefined;
+    }
+
     this.routes = routes;
+    this.recurse = recurse;
     this.after = [];
-    this.queue = [];
+    this.on = [];
 
     function explodeURL() {
       var v = dloc.hash;
@@ -20,78 +26,83 @@
       return v.slice(1, v.length).split("/");
     }
 
-    function parseRoute(routes, rawRouteName, hashSeg, level) {
-
-      var prefix = level === 0 ? '^\\/' : '', match;
-
-      if (rawRouteName[0] === '/') {
-        match = new RegExp(prefix + rawRouteName.slice(1) + '(.*)?').exec(hashSeg);
-        hashSeg = match ? match[1] : hashSeg;
-      }
-
-      if (parseOption(routes, rawRouteName, match, hashSeg) && hashSeg !== 'undefined') {
-        for(routeSeg in routes[rawRouteName]) {
-          parseRoute(routes[rawRouteName], routeSeg, hashSeg, ++level);
-        }
-      }
-    }
-
-    function parseOption(routes, rawRouteName, match, hashSeg) {
-
-      var type = ({}).toString.call(routes[rawRouteName]);
-      var args = [hashSeg];
-      var store = rawRouteName === 'after' ? 'after' : 'queue';
-
-      if (~type.indexOf('Function')) {
-        self[store].unshift({ val: args, fn: routes[rawRouteName] });
-      }
-      else if (~type.indexOf('Array')) {
-        for (var i=0, l = routes[route].length; i < l; i++) {
-          self[store].unshift({ val: args, fn: routes[rawRouteName][i] });
-        }
-      }
-      else if (~type.indexOf('String')) {
-        self[store].unshift({ val: args, fn: hostObject[routes[rawRouteName]] });
-      }
-      else if (~type.indexOf('Object')) {
-        return !!match;
-      }
-
-      if(rawRouteName === 'once') {
-        routes[rawRouteName] = function() { return false; };
-      }
-
-      return false;
-    }
-
     function dispatch(src) {
-      for (var i=0, l = self[src].length; i < l; i++) {
-        
-        var listener = self[src].pop();
-        
-        if(listener.fn.apply(hostObject || null, listener.val) === false) {
-          self[src] = [];
-          return false;
+
+      if(self.firingOrder === 'last') {
+        var listener = self[src][self[src].length];
+        return listener.fn.apply(hostObject || null, listener.val);
+      }
+      else {
+        for (var i=0, l = self[src].length; i < l; i++) {
+
+          var listener = self[src][i];
+
+          if(listener.fn.call(hostObject || null, listener.val) === false) {
+            self[src] = [];
+            return false;
+          }
+        }        
+      }
+      return true;
+    }
+
+    function parser(routes, path) {
+
+      var partialpath = path.shift();
+      var keys = [];
+      
+      var route = routes['/' + partialpath];
+      
+      if(!route) { // optimized for the simple case.
+        for(var r in routes) {
+          exp = new RegExp(r.slice(1)).exec(partialpath);
+
+          if(exp && exp[1]) {
+            route = routes[r];
+            break;
+          }
         }
+      }
+      
+      var type = ({}).toString.call(route);
+
+      var isObject = type.indexOf('Object') !== -1;
+      var isFunction = type.indexOf('Function') !== -1;
+
+      var store = partialpath === 'after' ? 'after' : 'on';
+      var add = self.recurse === false ? 'push' : 'unshift';
+
+      if((route && path.length === 0) || self.recurse !== undefined) {
+
+        if(isObject && route.on) {
+          self[store][add]({ fn: route.on, val: partialpath });
+        }
+        else if(isFunction) {
+          self[store][add]({ fn: route, val: partialpath });        
+        }
+        
+        if(self.recurse === undefined) {
+          return true;
+        }
+      }
+      
+      if(isObject && path.length > 0) {
+        parser(route, path);
       }
       return true;
     }
 
     function router(event) {
 
-      var routes = self.routes;
+      var loc = dloc.hash.split('/').slice(1);
+
       dispatch('after');
-
-      for (var route in routes) {
-
-        if (routes.hasOwnProperty(route)) {       
-          parseRoute(routes, route, dloc.hash.slice(1), 0);
-        }
-
-        if(!dispatch('queue')) {
-          return false;
-        }
+      
+      if(parser(self.routes, loc)) {
+        dispatch('on');
+        self.on = [];
       }
+
     }
 
     this.init = function() {
