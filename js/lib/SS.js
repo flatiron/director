@@ -20,33 +20,26 @@
     this.after = [];
     this.on = [];
 
-    function explodeURL() {
+    function explode() {
       var v = dloc.hash;
       if(v[1] === '/') { v=v.slice(1); }
       return v.slice(1, v.length).split("/");
     }
 
     function dispatch(src) {
+      for (var i=0, l = self[src].length; i < l; i++) {
 
-      if(self.firingOrder === 'last') {
-        var listener = self[src][self[src].length];
-        return listener.fn.apply(hostObject || null, listener.val);
-      }
-      else {
-        for (var i=0, l = self[src].length; i < l; i++) {
+        var listener = self[src][i];
 
-          var listener = self[src][i];
-
-          if(listener.fn.call(hostObject || null, listener.val) === false) {
-            self[src] = [];
-            return false;
-          }
-        }        
+        if(listener.fn.call(hostObject || null, listener.val) === false) {
+          self[src] = [];
+          return false;
+        }
       }
       return true;
     }
 
-    function parser(routes, path) {
+    function parse(routes, path) {
 
       var partialpath = path.shift();
       var keys = [];
@@ -63,51 +56,59 @@
           }
         }
       }
-      
+
       var type = ({}).toString.call(route);
 
       var isObject = type.indexOf('Object') !== -1;
       var isFunction = type.indexOf('Function') !== -1;
 
-      var store = partialpath === 'after' ? 'after' : 'on';
       var add = self.recurse === false ? 'push' : 'unshift';
+      var fn = null;
+      var nop = function() { return false; };
 
       if((route && path.length === 0) || self.recurse !== undefined) {
 
-        if(isObject && route.on) {
-          self[store][add]({ fn: route.on, val: partialpath });
+        fn = route.on || route.once;
+        
+        if(isObject && route.after) {
+          self.after[add]({ fn: route.after || route.once, val: partialpath });
+        }
+
+        if(isObject && fn) {
+          self.on[add]({ fn: fn || route.once, val: partialpath });
+          if(route.once) { route.once = nop; }
         }
         else if(isFunction) {
-          self[store][add]({ fn: route, val: partialpath });        
+          self.on[add]({ fn: route, val: partialpath });        
         }
-        
+
         if(self.recurse === undefined) {
           return true;
         }
       }
-      
+
       if(isObject && path.length > 0) {
-        parser(route, path);
+        parse(route, path);
       }
       return true;
     }
 
-    function router(event) {
+    function route(event) {
 
       var loc = dloc.hash.split('/').slice(1);
 
       dispatch('after');
+      self.after = [];
       
-      if(parser(self.routes, loc)) {
+      if(parse(self.routes, loc)) {
         dispatch('on');
         self.on = [];
       }
-
     }
 
     this.init = function() {
-      listener.init(router);
-      router();
+      listener.init(route);
+      route();
       return this;
     };
 
@@ -124,14 +125,14 @@
       var ret = v;
 
       if(typeof v === "number") {
-        ret = explodeURL()[v];
+        ret = explode()[v];
       }
       else if(typeof v === "string"){
-        var h = explodeURL();
+        var h = explode();
         ret = h.indexOf(v);
       }
       else {
-        ret = explodeURL();
+        ret = explode();
       }
       
       return ret;
@@ -139,7 +140,7 @@
 
     this.setRoute = function(i, v, val) {
 
-      var url = explodeURL();
+      var url = explode();
 
       if(typeof i === 'number' && typeof v === 'string') {
         url[i] = v;

@@ -18,21 +18,31 @@
     <!-- never put your script in your html file unless its a demo =) -->    
     <script type="text/javascript" charset="utf-8">
 
+    var routes = {
+
+      '/a': {
+        '/(.*)?': { on: function word(a) { console.log('/a/regex (' + a + ')'); } },
+        on: function aOn() { console.log('/a'); }
+      },
+      
+      '/b': {
+        '/a': function a() { console.log('/b/a'); },
+        once: function b() { console.log('/b'); }
+      },
+      
+      '/c': function c() { console.log('/c'); },
+      
+      '/d': {
+        on: function d() { console.log('/d'); },
+        after: function dafter() { console.log('/d-after') }
+      }
+      
+    };
+
+
     window.onload = function() {
 
-      var router = Router({
-
-        '/a': {
-          '/(.*)?': { on: function word(a) { console.log('/a/word/'+a); } },
-          on: function aOn() { console.log('/a'); }
-        },
-        '/b': {
-          '/a': function a() { console.log('/b/a'); },
-          on: function b() { console.log('/b'); }
-        },
-        '/c': function c() { console.log('/c'); }
-        
-      }, true);
+      var router = Router(routes, null);
 
       router.init();
 
