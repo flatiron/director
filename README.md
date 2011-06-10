@@ -258,15 +258,15 @@ It is possible to attach state to any segment of the router, so in our case abov
 
 `getRetired()` - Returns an array that shows which routes have been retired.
 
-### Events
+## Events
 
-#### Available on all routes<br/><br/>
+### Available on all routes<br/><br/>
 
 #### `on` - A function or array of functions to execute when the route is matched.<br/>
 #### `leave` - A function or array of functions to execute when leaving a particular route.<br/>
 #### `once` - A function or array of functions to execute only once for a particular route.<br/><br/>
 
-#### Available only at the top level of the router configuration<br/><br/>
+### Available only at the top level of the router configuration<br/><br/>
 
 #### `before` - A function or array of functions to execute before any route is matched.<br/>
 #### `leave` - A function or array of functions to execute when leaving any route.<br/>
