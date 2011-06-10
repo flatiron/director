@@ -18,7 +18,7 @@
     <!-- never put your script in your html file unless its a demo =) -->    
     <script type="text/javascript" charset="utf-8">
 
-    var routes = {
+    var routes1 = {
 
       '/a': {
         '/(.*)?': { on: function word(a) { console.log('/a/regex (' + a + ')'); } },
@@ -39,12 +39,22 @@
       
     };
 
+    var routes2 = {
+      '/e': {
+        '/(.*)?': { on: function word(a) { console.log('/e/regex (' + a + ')'); } },
+        on: function eOn() { console.log('/e'); }
+      },
+    };
+
+
 
     window.onload = function() {
 
-      var router = Router(routes, null);
+      router1 = Router(routes1, null);
+      router2 = Router(routes2, null);
 
-      router.init();
+      router1.init();
+      router2.init();
 
     };
 

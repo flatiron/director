@@ -3,7 +3,9 @@
 
   var dloc = document.location;
 
-  this.Router = function(routes, recurse, hostObject) {
+  window.Router = Router;
+  
+  function Router(routes, recurse, hostObject) {
 
     if(!(this instanceof Router)) return new Router(routes, recurse, hostObject);
 
@@ -112,32 +114,6 @@
       return this;
     };
 
-    this.getState = function() {
-      return self.state;
-    };
-
-    this.getRoute = function(v) {
-
-      // if v == number, returns the value at that index of the hash.
-      // if v == string, returns the index at which it was found.
-      // else returns an array which represents the current hash.
-
-      var ret = v;
-
-      if(typeof v === "number") {
-        ret = explode()[v];
-      }
-      else if(typeof v === "string"){
-        var h = explode();
-        ret = h.indexOf(v);
-      }
-      else {
-        ret = explode();
-      }
-      
-      return ret;
-    };
-
     this.setRoute = function(i, v, val) {
 
       var url = explode();
@@ -154,14 +130,39 @@
 
       listener.setHash(url.join("/"));
       return url;
-                    
     };
 
     return this;
   };
+  
+  Router.prototype.getState = function() {
+    return this.state;
+  };
+  
+  Router.prototype.getRoute = function(v) {
+
+    // if v == number, returns the value at that index of the hash.
+    // if v == string, returns the index at which it was found.
+    // else returns an array which represents the current hash.
+
+    var ret = v;
+
+    if(typeof v === "number") {
+      ret = explode()[v];
+    }
+    else if(typeof v === "string"){
+      var h = explode();
+      ret = h.indexOf(v);
+    }
+    else {
+      ret = explode();
+    }
+    
+    return ret;
+  };
 
   var version = '0.3.0',
-      mode = 'compatibility',
+      mode = 'modern',
       listener = { 
 
     hash: dloc.hash,
@@ -175,7 +176,7 @@
     },
 
     fire: function() {
-      if(mode === 'compatibility') {
+      if(mode === 'modern') {
         window.onhashchange();
       }
       else {
@@ -187,11 +188,20 @@
 
       var self = this;
 
-      if('onhashchange' in window && 
-          (document.documentMode === undefined || document.documentMode > 7)) { 
+      if(!window.Router.listeners) {
+        window.Router.listeners = [];
+      }
+      
+      function onchange() {
+        for(var i = 0, l = window.Router.listeners.length; i < l; i++) {
+          window.Router.listeners[i]();
+        }
+      };
 
-        window.onhashchange = fn;
-        mode = 'compatibility';        
+      if('onhashchange' in window && 
+          (document.documentMode === undefined || document.documentMode > 7)) {
+        window.onhashchange = onchange
+        mode = 'modern';
       }
       else { // IE support, based on a concept by Erik Arvidson ...
 
@@ -209,11 +219,14 @@
           });
         }
 
-        this.onHashChanged = fn;
         window.setInterval(function () { self.check(); }, 50);
         
+        this.onHashChanged = onchnage;
         mode = 'legacy';
       }
+
+      window.Router.listeners.push(fn);      
+      
       return mode;
     },
 
