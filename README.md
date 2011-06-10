@@ -30,7 +30,6 @@ A hash route looks like this...<br/><br/>
 
 # Usage
 
-
 ## Constructor
 
 ```javascript
@@ -155,7 +154,7 @@ An object literal containing functions. If a host object is specified, your rout
 
 ```
 
-## More complex URLs
+## URL Matching
 
 Routes can sometimes become very complex, `simple/:tokens` don't always suffice. SugarSkull supports regular expressions inside the route names. The values captured from the regular expressions are passed to your listener function.
 
@@ -172,11 +171,12 @@ Routes can sometimes become very complex, `simple/:tokens` don't always suffice.
 ```
 
 
-## Special events
+## Special Events
 
-In some cases a listener should only fire once or only after the user leaves the route.
+In some cases a listener should only fire once or only after the user leaves the route. See the API section for more events and details about what events are available.
 
 ```javascript
+
     var router = Router({
 
       '/dog': {
@@ -192,12 +192,19 @@ In some cases a listener should only fire once or only after the user leaves the
       leave: function() {},
       notfound: function() {}
 
+    }).global({
+
+      on: function() {}
+      before: function() {}
+      after: function() {}
     });
+
 ```
 
-It is common to need a particular function to fire every time a route is matched, no mater what route it is. In this case `before` can be defined at the top level of the router definition. Similarly, `leave` will be fired when leaving all routs, and `notfound` will be fired when none of the routes can be matched against the user's request.
 
-### Providing some state.
+## Maintaining State
+
+It is possible to attach state to any segment of the router, so in our case above if `/dog` is reached, the current state will be set to `{ needy: true, fetch: 'possibly' }`. Each nested section will merge into and overwrite the current state. So in the case where the router matches `/cat/hungry`, the state will become `{ needy: true, fetch: 'unlikely', frantic: true }`.
 
 ```javascript
     var router = Router({
@@ -218,19 +225,18 @@ It is common to need a particular function to fire every time a route is matched
     });
 ```
 
-It is possible to attach state to any segment of the router, so in our case above if `/dog` is reached, the current state will be set to `{ needy: true, fetch: 'possibly' }`. Each nested section will merge into and overwrite the current state. So in the case where the router matches `/cat/hungry`, the state will become `{ needy: true, fetch: 'unlikely', frantic: true }`.
 
-## API
+# API
 
-### Methods
+## Methods
 
-#### Constructor Methods<br/><br/>
+### Constructor Methods<br/><br/>
 
 #### `Router(config [, hostObject])` - Returns a new instance of the router.<br/>
 @param {Object} config - An object literal representing the router configuration, aka: the routing table.<br/>
 @param {Object} hostObject - an object that contains function declarations for later use.<br/>
 
-#### Instance methods<br/><br/>
+### Instance methods<br/><br/>
 
 #### `init()` - Initialize the router, start listening for changes to the URL.<br/><br/>
 
