@@ -1,7 +1,7 @@
 {
   "name": "SugarSkull",
   "description": "A Client Side Router for Single Page Apps",
-  "version": "0.2.7",
+  "version": "0.3.0",
   "homepage": "http://twitter.com/hij1nx",
   "author" : "hij1nx <hij1nx@gmail.com> http://twitter.com/hij1nx",
   "contributers" : [
