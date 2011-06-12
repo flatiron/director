@@ -97,7 +97,11 @@ In some cases a listener should only fire once or only after the user leaves the
     // In some cases you may want to have these events always fire
     
     on: function(value) { console.log('the previous route captured the value ' + value); }, 
-    after: function(value) { console.log('the previous route captured the value ' + value); }
+    after: function(value) { console.log('the previous route captured the value ' + value); },
+    
+    // if you use multiple routers and define a notfound route, be cautious about multiple notfound listeners firing.
+    
+    notfound: function(value) { console.log('the route named ' + value + ' could not be found'); }
 
   }).init();
 

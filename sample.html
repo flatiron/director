@@ -62,6 +62,7 @@
 
       router1.use({ // extras...
         resource: container1,
+        notfound: function(routename) { console.log('not found: ' + routename)} 
         //recurse: 'forward', // 'backward'
         //on: [function on1() {console.log('oneach1');}, function on2() {console.log('oneach2');}]
         //after: [function after1() {console.log('aftereach1');}, function after2() {console.log('aftereach2');}]

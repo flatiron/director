@@ -18,10 +18,11 @@
     this.on = [];
     this.oneach = [];
     this.aftereach = [];
+    this.notfound = null;
     this.lastroutevalue = null;
 
     function dispatch(src) {
-      
+
       for (var i=0, l = self[src].length; i < l; i++) {
 
         var listener = self[src][i];
@@ -49,7 +50,7 @@
       var keys = [];
       
       var route = routes['/' + partialpath];
-      
+
       if(!route) { // optimized for the simple case.
         for(var r in routes) {
           exp = new RegExp(r.slice(1)).exec(partialpath);
@@ -60,7 +61,7 @@
           }
         }
       }
-      
+
       var type = ({}).toString.call(route);
 
       var isObject = type.indexOf('Object') !== -1;
@@ -70,8 +71,12 @@
 
       var add = self.recurse === 'backward' ? 'unshift' : 'push';
       var fn = null;
-      var nop = function() { return false; };
 
+      if(route === undefined || route.length === 0) {
+        self.noroute(partialpath);
+        return false;
+      };
+      
       if((route && path.length === 0) || self.recurse !== null) {
 
         if(route.state) {
@@ -94,7 +99,11 @@
           else {
             self.on[add]({ fn: fn || route.once, val: partialpath });
           }
-          if(route.once) { route.once = nop; }
+          if(route.once) { 
+            route.once = (function(){
+              return function() { if(self.notfound) { self.noroute(partialpath); } return false; };
+            }());
+          }
         }
         else if(isArray) {
           for (var i=0, l = route.length; i < l; i++) {
@@ -125,7 +134,7 @@
       dispatch('aftereach');
 
       self.after = [];
-      
+
       if(parse(self.routes, loc)) {
         dispatch('on');
         dispatch('oneach');
@@ -156,6 +165,11 @@
           this.resource = conf[item];
           continue;
         }
+        
+        if(item === 'notfound') {
+          this.notfound = conf[item];
+          continue;
+        }
 
         var fn = conf[item];
         var store = null;
@@ -175,6 +189,19 @@
       }
     }
     return this;
+  };
+
+  Router.prototype.noroute = function(routename) {    
+    if(this.notfound) {
+      if(({}).toString.call(this.notfound).indexOf('Array') !== -1) {
+        for (var i=0, l = this.notfound.length; i < l; i++) {
+          this.notfound[i](routename);
+        }
+      }
+      else {
+          this.notfound(routename);
+      }
+    }    
   };
 
   Router.prototype.explode = function() {
@@ -206,10 +233,6 @@
   };
   
   Router.prototype.getRoute = function(v) {
-
-    // if v == number, returns the value at that index of the hash.
-    // if v == string, returns the index at which it was found.
-    // else returns an array which represents the current hash.
 
     var ret = v;
 
