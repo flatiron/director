@@ -53,10 +53,61 @@ An object literal that contains nested route definitions. A potentially nested s
 
 ```
 
+## URL Matching
 
-### recurse (optional) 
+Routes can sometimes become very complex, `simple/:tokens` don't always suffice. SugarSkull supports regular expressions inside the route names. The values captured from the regular expressions are passed to your listener function.
 
-Can be assigned the value of `true`, `false` or `null`. The recurse option will determine the order in which to fire the listeners that are associated with your routes. If this option is NOT specified or set to null, then only the listeners associated with an exact match will be fired.
+```javascript
+
+  var router = Router({
+
+    '/dog': {
+      '/(\\w+)': {
+        on: function(color) { console.log(color) }
+      }
+    }
+
+  }).init();
+
+```
+
+
+## Special Events
+
+In some cases a listener should only fire once or only after the user leaves the route. See the API section for more events and details about what events are available.
+
+```javascript
+
+  var router = Router({
+
+    '/dog': {
+      on: bark
+    },
+
+    '/cat': {
+      on: meow
+      leave: function() {}
+    }
+
+    after: function() {},
+    notfound: function() {}
+
+  }).use({ 
+    
+    // In some cases you may want to have these events always fire
+    
+    on: function(value) { console.log('the previous route captured the value ' + value); }, 
+    after: function(value) { console.log('the previous route captured the value ' + value); }
+
+  }).init();
+
+```
+
+## More Options
+
+### recurse
+
+Can be assigned the value of `forward` or `backward`. The recurse option will determine the order in which to fire the listeners that are associated with your routes. If this option is NOT specified or set to null, then only the listeners associated with an exact match will be fired.
 
 #### No recursion, with the URL /dog/angry
 
@@ -133,7 +184,7 @@ Can be assigned the value of `true`, `false` or `null`. The recurse option will 
 ```
 
 
-### hostobject (optional) 
+### resource
 An object literal containing functions. If a host object is specified, your route definitions can provide string literals that represent the function names inside the host object. A host object can provide the means for better encapsulation and design.
 
 ```javascript
@@ -153,57 +204,6 @@ An object literal containing functions. If a host object is specified, your rout
   };
 
 ```
-
-## URL Matching
-
-Routes can sometimes become very complex, `simple/:tokens` don't always suffice. SugarSkull supports regular expressions inside the route names. The values captured from the regular expressions are passed to your listener function.
-
-```javascript
-
-  var router = Router({
-
-    '/dog': {
-      '/(\\w+)': {
-        on: function(color) { console.log(color) }
-      }
-    }
-
-  }).init();
-
-```
-
-
-## Special Events
-
-In some cases a listener should only fire once or only after the user leaves the route. See the API section for more events and details about what events are available.
-
-```javascript
-
-  var router = Router({
-
-    '/dog': {
-      on: bark
-    },
-
-    '/cat': {
-      on: meow
-      leave: function() {}
-    }
-
-    after: function() {},
-    notfound: function() {}
-
-  }).use({ 
-    
-    // In some cases you may want to have these events always fire
-    
-    on: function(value) { console.log('the previous route captured the value ' + value); }, 
-    after: function(value) { console.log('the previous route captured the value ' + value); }
-
-  }).init();
-
-```
-
 
 ## Maintaining State
 
