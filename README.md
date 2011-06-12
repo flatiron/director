@@ -59,11 +59,11 @@ Routes can sometimes become very complex, `simple/:tokens` don't always suffice.
 
 ```javascript
 
-  var router = Router({
+  var router = Router({ // given the route '/dog/yella'.
 
     '/dog': {
       '/(\\w+)': {
-        on: function(color) { console.log(color) }
+        on: function(color) { console.log(color) } // this function will return the value 'yella'.
       }
     }
 
