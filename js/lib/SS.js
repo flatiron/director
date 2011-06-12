@@ -4,40 +4,40 @@
 
   window.Router = Router;
   
-  function Router(routes, recurse, host) {
+  function Router(routes) {
 
-    if(!(this instanceof Router)) return new Router(routes, recurse, host);
+    if(!(this instanceof Router)) return new Router(routes);
 
-    var self = this,
-        state = {},
-        onleave;
-
-    if(recurse === null) {
-      recurse = undefined;
-    }
+    var self = this; 
 
     this.routes = routes;
-    this.recurse = recurse;
-    this.host = host;
+    this.recurse = null;
+    this.resource = null;
+    this.state = {};
     this.after = [];
     this.on = [];
     this.oneach = [];
     this.aftereach = [];
+    this.lastroutevalue = null;
 
     function dispatch(src) {
       
       for (var i=0, l = self[src].length; i < l; i++) {
 
         var listener = self[src][i];
+        var val = listener.val === null ? self.lastroutevalue : listener.val;
 
         if(typeof listener.fn === 'string') {
-          listener.fn = self.host[listener.fn];
+          listener.fn = self.resource[listener.fn];
         }
 
-        if(listener.fn.call(self.host || null, listener.val) === false) {
+        if(listener.fn.call(self.resource || null, val) === false) {
 
           self[src] = [];
           return false;
+        }
+        if(listener.val !== null) {
+          self.lastroutevalue = listener.val;
         }
       }
       return true;
@@ -66,12 +66,13 @@
       var isObject = type.indexOf('Object') !== -1;
       var isFunction = type.indexOf('Function') !== -1;
       var isArray = type.indexOf('Array') !== -1;
+      var isString = type.indexOf('String') !== -1;
 
-      var add = self.recurse === false ? 'push' : 'unshift';
+      var add = self.recurse === 'backward' ? 'unshift' : 'push';
       var fn = null;
       var nop = function() { return false; };
 
-      if((route && path.length === 0) || self.recurse !== undefined) {
+      if((route && path.length === 0) || self.recurse !== null) {
 
         fn = route.on || route.once;
         
@@ -96,11 +97,11 @@
             self.on[add]({ fn: route[i], val: partialpath  });
           }
         }
-        else if(isFunction) {
+        else if(isFunction || isString) {
           self.on[add]({ fn: route, val: partialpath });        
         }
-
-        if(self.recurse === undefined) {
+        
+        if(self.recurse === null) {
           return true;
         }
       }
@@ -116,6 +117,8 @@
       var loc = dloc.hash.split('/').slice(1);
 
       dispatch('after');
+      dispatch('aftereach');
+
       self.after = [];
       
       if(parse(self.routes, loc)) {
@@ -139,14 +142,22 @@
     for(var item in conf) {
       if(conf.hasOwnProperty(item)) {
 
-        var fn = conf[item];
+        if(item === 'recurse') {
+          this.recurse = conf[item];
+          continue;
+        }
+        
+        if(item === 'resource') {
+          this.resource = conf[item];
+          continue;
+        }
 
-        var store;
+        var fn = conf[item];
+        var store = null;
+        var type = ({}).toString.call(fn);
 
         if(item === 'on') { store = 'oneach'; }
         if(item === 'after') { store = 'aftereach'; }
-        
-        var type = ({}).toString.call(fn);
 
         if(type.indexOf('Array') !== -1) {
           for (var i=0, l = fn.length; i < l; i++) {
@@ -158,6 +169,7 @@
         }
       }
     }
+    return this;
   };
 
   Router.prototype.explode = function() {

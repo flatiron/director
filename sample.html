@@ -4,14 +4,6 @@
 <html>
   <head>
 
-    <style type="text/css" media="screen">
-      .die { display: none; }
-    </style>
-
-
-    <!-- use jquery for the demo -->
-    <!--script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js" type="text/javascript" charset="utf-8"></script -->
-
     <!-- include the lib -->
     <script src="js/lib/SS.js" type="text/javascript" charset="utf-8"></script>
     
@@ -34,9 +26,16 @@
       
       '/d': {
         on: function d() { console.log('/d'); },
+        '/a': {
+          '/b': {
+            on: ['booroute']
+          }
+        }
         //after: function dafter() { console.log('/d-after') }
-      }
-      
+      },
+
+      '/boo': 'booroute',
+      '/foo': ['fooroute1', 'fooroute2']
     };
 
     var routes2 = {
@@ -46,16 +45,29 @@
       },
       '/f': [function f1() { console.log('/f-1'); }, function f2() { console.log('/f-2'); }]
     };
+    
+    var container1 = {
+      'fooroute1': function() { console.log('fooroute1'); },
+      'fooroute2': function() { console.log('fooroute2'); },
+      'booroute': function() { console.log('booroute'); }
+    };
 
     window.onload = function() {
 
-      router1 = Router(routes1, null);
-      router2 = Router(routes2, null);
+      router1 = Router(routes1);
+      router2 = Router(routes2);
 
-      router1.init();
-      router2.init().use({
-        on: function() { console.log('oneach'); }
-      });
+      router1.use({ // extras...
+        resource: container1,
+        //recurse: 'forward', // 'backward'
+        //on: [function on1() {console.log('oneach1');}, function on2() {console.log('oneach2');}]
+        //after: [function after1() {console.log('aftereach1');}, function after2() {console.log('aftereach2');}]
+        //on: function(a) { console.log('oneach: ' + a); }
+        //after: function() { console.log('aftereach'); }
+
+      }).init();
+
+      router2.init();
 
     };
 

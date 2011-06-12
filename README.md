@@ -23,7 +23,7 @@ before the '#'), and then the client-side (everything after the '#'). The second
 A hash route looks like this...<br/><br/>
 <img src="https://github.com/hij1nx/SugarSkull/raw/master/img/hashRoute.png" width="598" height="113" alt="HashRoute" -->
 
-## Compatibility
+### Compatibility
 - Ender.js Compatibile.
 - Needs Cross Browser testing.
 
@@ -34,7 +34,7 @@ A hash route looks like this...<br/><br/>
 
 ```javascript
 
-    Router(routes [, recurse, hostobject]);
+  var router = Router(routes);
 
 ```
 
@@ -56,7 +56,7 @@ An object literal that contains nested route definitions. A potentially nested s
 
 ### recurse (optional) 
 
-Can be assigned the value of `true`, `false` or `null`. The recurse option will determine how to fire the listeners that are associated with your routes. If this option is NOT specified or set to null, then only the listeners associated with an exact match will be fired.
+Can be assigned the value of `true`, `false` or `null`. The recurse option will determine the order in which to fire the listeners that are associated with your routes. If this option is NOT specified or set to null, then only the listeners associated with an exact match will be fired.
 
 #### No recursion, with the URL /dog/angry
 
@@ -72,7 +72,7 @@ Can be assigned the value of `true`, `false` or `null`. The recurse option will 
     }
   };
 
-  var router = Router(routes, null);
+  var router = Router(routes);
 
 ```
 
@@ -90,7 +90,7 @@ Can be assigned the value of `true`, `false` or `null`. The recurse option will 
     }
   };
 
-  var router = Router(routes, true);
+  var router = Router(routes).use({ recurse: 'forward' }).init();
 
 ```
 
@@ -104,11 +104,11 @@ Can be assigned the value of `true`, `false` or `null`. The recurse option will 
       '/angry': {
         on: growl // this method will be fired first.
       },
-      on: bark // this method will also be second.
+      on: bark // this method will be fired second.
     }
   };
 
-  var router = Router(routes, false);
+  var router = Router(routes).use({ recurse: 'backward' }).init();
 
 ```
 
@@ -128,7 +128,7 @@ Can be assigned the value of `true`, `false` or `null`. The recurse option will 
   
   // this feature works in reverse with recursion set to true.
 
-  var router = Router(routes, false);
+  var router = Router(routes).use({ recurse: 'backward' }).init();
 
 ```
 
@@ -145,7 +145,7 @@ An object literal containing functions. If a host object is specified, your rout
       '/sawbuck': 'five'
     }
 
-  }, null, container);
+  }).use({ resource: container }).init();
 
   var container = {
     hundred: function() { return 100; },
@@ -168,7 +168,7 @@ Routes can sometimes become very complex, `simple/:tokens` don't always suffice.
       }
     }
 
-  });
+  }).init();
 
 ```
 
@@ -193,13 +193,14 @@ In some cases a listener should only fire once or only after the user leaves the
     after: function() {},
     notfound: function() {}
 
-  }).global({ 
+  }).use({ 
     
     // In some cases you may want to have these events always fire
     
-    on: function() {},
-    leave: function() {}
-  });
+    on: function(value) { console.log('the previous route captured the value ' + value); }, 
+    after: function(value) { console.log('the previous route captured the value ' + value); }
+
+  }).init();
 
 ```
 
@@ -225,65 +226,67 @@ It is possible to attach state to any segment of the router, so in our case abov
       state: { needy: false, fetch: 'unlikely' }
     }
 
-  });
+  }).init();
 
 ```
 
 
 # API
 
-## Methods
+## Constructor<br/><br/>
 
-### Constructor Methods<br/><br/>
-
-#### Router(config [, recurse, hostObject])<br/>
-@param {Object} config - An object literal representing the router configuration, aka: the routing table.<br/>
-@param {Object} hostObject - an object that contains function declarations for later use.<br/>
+### Router(config)<br/>
+`config` {Object} - An object literal representing the router configuration.<br/>
 
 Returns a new instance of the router.<br/><br/>
 
-### Instance methods<br/><br/>
+## Instance methods
 
-#### init()<br/>
+### use([on, after, recurse, resource])
+`on` {Function} or {Array} - A callback or list of callbacks that will fire on every route.<br/>
+`after` {Function} or {Array} - A callback or list of callbacks that will fire after every route.<br/>
+`recurse` {String} - Determines the order in which to fire the listeners that are associated with your routes. can be set to '*backward*' or '*forward*'.<br/>
+`resource` {Object} - An object literal of function declarations.<br/>
+
 Initialize the router, start listening for changes to the URL.<br/><br/>
 
-#### getState()<br/>
+### init()
+Initialize the router, start listening for changes to the URL.<br/><br/>
+
+### getState()
 Returns the state object that is relative to the current route.<br/><br/>
 
-#### getRoute([index])<br/>
-@param {Numner} index - The hash value is divided by forward slashes, each section then has an index, if this is provided,
- only that section of the route will be returned.<br/>
+### getRoute([index])
+`index` {Numner} - The hash value is divided by forward slashes, each section then has an index, if this is provided, only that section of the route will be returned.<br/>
 
-Returns the entire route or just a section of it.<br/>
+Returns the entire route or just a section of it.<br/><br/>
 
-#### setRoute(route)<br/>
-@param {String} route - Supply a route value, such as `home/stats`.<br/>
+### setRoute(route)
+`route` {String} - Supply a route value, such as `home/stats`.<br/>
 
-Set the current route.<br/>
-<br/>
+Set the current route.<br/><br/>
   
-#### setRoute(start, length)<br/>
-@param {Number} start - The position at which to start removing items.<br/>
-@param {Number} length - The number of items to remove from the route.<br/>
+### setRoute(start, length)
+`start` {Number} - The position at which to start removing items.<br/>
+`length` {Number} - The number of items to remove from the route.<br/>
 
-Remove from the current route.<br/>
-<br/>
+Remove a segment from the current route.<br/><br/>
 
-#### setRoute(index, value)<br/>
-@param {Number} index - The hash value is divided by forward slashes, each section then has an index.<br/>
-@param {String} value - The new value to assign the the position indicated by the first parameter.<br/>
+### setRoute(index, value)
+`index` {Number} - The hash value is divided by forward slashes, each section then has an index.<br/>
+`value` {String} - The new value to assign the the position indicated by the first parameter.<br/>
 
-Set the current route.<br/>
+Set a segment of the current route.<br/><br/>
 
 ## Events
 
-### Available on all routes<br/><br/>
+### Events on each route<br/>
 
 `on` - A function or array of functions to execute when the route is matched.<br/>
 `after` - A function or array of functions to execute when leaving a particular route.<br/>
 `once` - A function or array of functions to execute only once for a particular route.<br/><br/>
 
-### Available only at the top level of the router configuration<br/><br/>
+### Events on all routes<br/>
 
 `on` - A function or array of functions to execute when any route is matched.<br/>
 `after` - A function or array of functions to execute when leaving any route.<br/>
