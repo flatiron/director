@@ -1,13 +1,12 @@
-
 ;!function(window, undefined) {
 
   var dloc = document.location;
 
   window.Router = Router;
   
-  function Router(routes, recurse, hostObject) {
+  function Router(routes, recurse, host) {
 
-    if(!(this instanceof Router)) return new Router(routes, recurse, hostObject);
+    if(!(this instanceof Router)) return new Router(routes, recurse, host);
 
     var self = this,
         state = {},
@@ -19,21 +18,24 @@
 
     this.routes = routes;
     this.recurse = recurse;
+    this.host = host;
     this.after = [];
     this.on = [];
-
-    function explode() {
-      var v = dloc.hash;
-      if(v[1] === '/') { v=v.slice(1); }
-      return v.slice(1, v.length).split("/");
-    }
+    this.oneach = [];
+    this.aftereach = [];
 
     function dispatch(src) {
+      
       for (var i=0, l = self[src].length; i < l; i++) {
 
         var listener = self[src][i];
 
-        if(listener.fn.call(hostObject || null, listener.val) === false) {
+        if(typeof listener.fn === 'string') {
+          listener.fn = self.host[listener.fn];
+        }
+
+        if(listener.fn.call(self.host || null, listener.val) === false) {
+
           self[src] = [];
           return false;
         }
@@ -78,7 +80,15 @@
         }
 
         if(isObject && fn) {
-          self.on[add]({ fn: fn || route.once, val: partialpath });
+
+          if(({}).toString.call(fn).indexOf('Array') !== -1) {
+            for (var i=0, l = fn.length; i < l; i++) {
+              self.on[add]({ fn: fn[i], val: partialpath  });
+            }
+          }
+          else {
+            self.on[add]({ fn: fn || route.once, val: partialpath });
+          }
           if(route.once) { route.once = nop; }
         }
         else if(isArray) {
@@ -110,6 +120,7 @@
       
       if(parse(self.routes, loc)) {
         dispatch('on');
+        dispatch('oneach');
         self.on = [];
       }
     }
@@ -120,25 +131,57 @@
       return this;
     };
 
-    this.setRoute = function(i, v, val) {
-
-      var url = explode();
-
-      if(typeof i === 'number' && typeof v === 'string') {
-        url[i] = v;
-      }
-      else if(typeof val === 'string') {
-        url.splice(i, v, s);
-      }
-      else {
-        url = [i];
-      }
-
-      listener.setHash(url.join("/"));
-      return url;
-    };
-
     return this;
+  };
+
+  Router.prototype.use = function(conf) {
+    
+    for(var item in conf) {
+      if(conf.hasOwnProperty(item)) {
+
+        var fn = conf[item];
+
+        var store;
+
+        if(item === 'on') { store = 'oneach'; }
+        if(item === 'after') { store = 'aftereach'; }
+        
+        var type = ({}).toString.call(fn);
+
+        if(type.indexOf('Array') !== -1) {
+          for (var i=0, l = fn.length; i < l; i++) {
+            this[store].push({ fn: fn[i], val: null });
+          }
+        }
+        else {
+          this[store].push({ fn: fn, val: null });
+        }
+      }
+    }
+  };
+
+  Router.prototype.explode = function() {
+    var v = dloc.hash;
+    if(v[1] === '/') { v=v.slice(1); }
+    return v.slice(1, v.length).split("/");
+  };
+
+  Router.prototype.setRoute = function(i, v, val) {
+
+    var url = this.explode();
+
+    if(typeof i === 'number' && typeof v === 'string') {
+      url[i] = v;
+    }
+    else if(typeof val === 'string') {
+      url.splice(i, v, s);
+    }
+    else {
+      url = [i];
+    }
+
+    listener.setHash(url.join("/"));
+    return url;
   };
   
   Router.prototype.getState = function() {
@@ -154,14 +197,14 @@
     var ret = v;
 
     if(typeof v === "number") {
-      ret = explode()[v];
+      ret = this.explode()[v];
     }
     else if(typeof v === "string"){
-      var h = explode();
+      var h = this.explode();
       ret = h.indexOf(v);
     }
     else {
-      ret = explode();
+      ret = this.explode();
     }
     
     return ret;

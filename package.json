@@ -3,7 +3,10 @@
   "description": "A Client Side Router for Single Page Apps",
   "version": "0.2.7",
   "homepage": "http://twitter.com/hij1nx",
-  "authors": ["Hij1nx at Nodejitsu, @hij1nx"],
+  "author" : "hij1nx <hij1nx@gmail.com> http://twitter.com/hij1nx",
+  "contributers" : [
+    "Charlie Robbins <charlie@nodejitsu.com> http://twitter.com/indexzero"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/hij1nx/SugarSkull.git"

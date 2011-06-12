@@ -10,7 +10,7 @@
 
 
     <!-- use jquery for the demo -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+    <!--script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js" type="text/javascript" charset="utf-8"></script -->
 
     <!-- include the lib -->
     <script src="js/lib/SS.js" type="text/javascript" charset="utf-8"></script>
@@ -34,7 +34,7 @@
       
       '/d': {
         on: function d() { console.log('/d'); },
-        after: function dafter() { console.log('/d-after') }
+        //after: function dafter() { console.log('/d-after') }
       }
       
     };
@@ -53,27 +53,15 @@
       router2 = Router(routes2, null);
 
       router1.init();
-      router2.init();
+      router2.init().use({
+        on: function() { console.log('oneach'); }
+      });
 
     };
 
     </script>
     <title></title>
   </head>
-  <body>
-    <br/>
-    <a href="#/red">die everything red.</a><br/>
-    <a href="#/red/9">die everything red and use formula 9.</a><br/>
-    <a href="#/red/7">die everything red and use formula 7.</a><br/>    
-    <a href="#/blue">die everything blue.</a><br/>
-        
-    <div class="red die">
-      <h1>Red die #<span id="number">7</span>!</h1>
-    </div>
-    
-    <div class="blue die">
-      <h1>Blue Die!</h1>
-    </div>    
-    
+  <body>    
   </body>
 </html>

@@ -138,19 +138,19 @@ An object literal containing functions. If a host object is specified, your rout
 
 ```javascript
 
-    var router = Router({
+  var router = Router({
 
-      '/moola': {
-        '/benny': 'hundred',
-        '/sawbuck': 'five'
-      }
+    '/moola': {
+      '/benny': 'hundred',
+      '/sawbuck': 'five'
+    }
 
-    }, null, container);
+  }, null, container);
 
-    var container = {
-      hundred: function() { return 100; },
-      five: function() { return 5; }
-    };
+  var container = {
+    hundred: function() { return 100; },
+    five: function() { return 5; }
+  };
 
 ```
 
@@ -159,15 +159,17 @@ An object literal containing functions. If a host object is specified, your rout
 Routes can sometimes become very complex, `simple/:tokens` don't always suffice. SugarSkull supports regular expressions inside the route names. The values captured from the regular expressions are passed to your listener function.
 
 ```javascript
-    var router = Router({
 
-      '/dog': {
-        '/(\\w+)': {
-          on: function(color) { console.log(color) }
-        }
+  var router = Router({
+
+    '/dog': {
+      '/(\\w+)': {
+        on: function(color) { console.log(color) }
       }
+    }
 
-    });
+  });
+
 ```
 
 
@@ -177,27 +179,27 @@ In some cases a listener should only fire once or only after the user leaves the
 
 ```javascript
 
-    var router = Router({
+  var router = Router({
 
-      '/dog': {
-        on: bark
-      },
+    '/dog': {
+      on: bark
+    },
 
-      '/cat': {
-        on: meow
-        leave: function() {}
-      }
+    '/cat': {
+      on: meow
+      leave: function() {}
+    }
 
-      before: function() {},
-      leave: function() {},
-      notfound: function() {}
+    after: function() {},
+    notfound: function() {}
 
-    }).global({
-
-      on: function() {}
-      before: function() {}
-      after: function() {}
-    });
+  }).global({ 
+    
+    // In some cases you may want to have these events always fire
+    
+    on: function() {},
+    leave: function() {}
+  });
 
 ```
 
@@ -207,22 +209,24 @@ In some cases a listener should only fire once or only after the user leaves the
 It is possible to attach state to any segment of the router, so in our case above if `/dog` is reached, the current state will be set to `{ needy: true, fetch: 'possibly' }`. Each nested section will merge into and overwrite the current state. So in the case where the router matches `/cat/hungry`, the state will become `{ needy: true, fetch: 'unlikely', frantic: true }`.
 
 ```javascript
-    var router = Router({
 
-      '/dog': {
-        on: bark,
-        state: { needy: true, fetch: 'possibly' }
+  var router = Router({
+
+    '/dog': {
+      on: bark,
+      state: { needy: true, fetch: 'possibly' }
+    },
+
+    '/cat': {
+      '/hungry': {
+        state: { needy: true, frantic: true }
       },
+      on: meow,
+      state: { needy: false, fetch: 'unlikely' }
+    }
 
-      '/cat': {
-        '/hungry': {
-          state: { needy: true, frantic: true }
-        },
-        on: meow,
-        state: { needy: false, fetch: 'unlikely' }
-      }
+  });
 
-    });
 ```
 
 
@@ -232,49 +236,57 @@ It is possible to attach state to any segment of the router, so in our case abov
 
 ### Constructor Methods<br/><br/>
 
-#### `Router(config [, hostObject])` - Returns a new instance of the router.<br/>
+#### Router(config [, recurse, hostObject])<br/>
 @param {Object} config - An object literal representing the router configuration, aka: the routing table.<br/>
 @param {Object} hostObject - an object that contains function declarations for later use.<br/>
 
+Returns a new instance of the router.<br/><br/>
+
 ### Instance methods<br/><br/>
 
-#### `init()` - Initialize the router, start listening for changes to the URL.<br/><br/>
+#### init()<br/>
+Initialize the router, start listening for changes to the URL.<br/><br/>
 
-#### `getState()` - Returns the state object that is relative to the current route.<br/><br/>
+#### getState()<br/>
+Returns the state object that is relative to the current route.<br/><br/>
 
-#### `getRoute([index])` - Returns the entire route or just a section of it.<br/>
-@param {Numner} index - The hash value is divided by forward slashes, each section then has an index, if this is provided, only that section of the route will be returned.<br/>
+#### getRoute([index])<br/>
+@param {Numner} index - The hash value is divided by forward slashes, each section then has an index, if this is provided,
+ only that section of the route will be returned.<br/>
 
-#### `setRoute(route)` - Set the current route.<br/>
+Returns the entire route or just a section of it.<br/>
+
+#### setRoute(route)<br/>
 @param {String} route - Supply a route value, such as `home/stats`.<br/>
+
+Set the current route.<br/>
+<br/>
   
-#### `setRoute(start, length)` - Remove from the current route.<br/>
+#### setRoute(start, length)<br/>
 @param {Number} start - The position at which to start removing items.<br/>
 @param {Number} length - The number of items to remove from the route.<br/>
 
-#### `setRoute(index, value)` - Set the current route.<br/>
+Remove from the current route.<br/>
+<br/>
+
+#### setRoute(index, value)<br/>
 @param {Number} index - The hash value is divided by forward slashes, each section then has an index.<br/>
 @param {String} value - The new value to assign the the position indicated by the first parameter.<br/>
 
-`getRetired()` - Returns an array that shows which routes have been retired.
+Set the current route.<br/>
 
 ## Events
 
 ### Available on all routes<br/><br/>
 
-#### `on` - A function or array of functions to execute when the route is matched.<br/>
-#### `leave` - A function or array of functions to execute when leaving a particular route.<br/>
-#### `once` - A function or array of functions to execute only once for a particular route.<br/><br/>
+`on` - A function or array of functions to execute when the route is matched.<br/>
+`after` - A function or array of functions to execute when leaving a particular route.<br/>
+`once` - A function or array of functions to execute only once for a particular route.<br/><br/>
 
 ### Available only at the top level of the router configuration<br/><br/>
 
-#### `before` - A function or array of functions to execute before any route is matched.<br/>
-#### `leave` - A function or array of functions to execute when leaving any route.<br/>
-
-# Credits
-
-Author - hij1nx<br/>
-Contributors - @indexzero, @jdalton, @jvduf
+`on` - A function or array of functions to execute when any route is matched.<br/>
+`after` - A function or array of functions to execute when leaving any route.<br/>
 
 # Version
 0.3.0
