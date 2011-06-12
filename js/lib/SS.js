@@ -74,6 +74,11 @@
 
       if((route && path.length === 0) || self.recurse !== null) {
 
+        if(route.state) {
+          self.state = route.state;
+          console.log(self.state)
+        }
+
         fn = route.on || route.once;
         
         if(isObject && route.after) {
