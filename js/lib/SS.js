@@ -60,7 +60,7 @@
           }
         }
       }
-
+      
       var type = ({}).toString.call(route);
 
       var isObject = type.indexOf('Object') !== -1;
@@ -76,7 +76,6 @@
 
         if(route.state) {
           self.state = route.state;
-          console.log(self.state)
         }
 
         fn = route.on || route.once;
@@ -114,6 +113,7 @@
       if(isObject && path.length > 0) {
         parse(route, path);
       }
+      
       return true;
     }
 
