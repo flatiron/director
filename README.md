@@ -89,9 +89,6 @@ In some cases a listener should only fire once or only after the user leaves the
       after: function() {}
     }
 
-    after: function() {},
-    notfound: function() {}
-
   }).use({ 
     
     // In some cases you may want to have these events always fire
