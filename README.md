@@ -86,7 +86,7 @@ In some cases a listener should only fire once or only after the user leaves the
 
     '/cat': {
       on: meow
-      leave: function() {}
+      after: function() {}
     }
 
     after: function() {},
