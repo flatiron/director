@@ -251,6 +251,7 @@ Returns a new instance of the router.<br/><br/>
 `after` {Function} or {Array} - A callback or list of callbacks that will fire after every route.<br/>
 `recurse` {String} - Determines the order in which to fire the listeners that are associated with your routes. can be set to '*backward*' or '*forward*'.<br/>
 `resource` {Object} - An object literal of function declarations.<br/>
+`notfound` {Function} or {Array} - A callback or a list of callbacks to be called when there is not matching route.<br/>
 
 Initialize the router, start listening for changes to the URL.<br/><br/>
 
