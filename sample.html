@@ -1,83 +1,28 @@
 
+<head>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
-<html>
-  <head>
+  <link rel="stylesheet" href="sample.css" type="text/css" charset="utf-8">
 
-    <!-- include the lib -->
-    <script src="js/lib/SS.js" type="text/javascript" charset="utf-8"></script>
-    
-    <!-- never put your script in your html file unless its a demo =) -->    
-    <script type="text/javascript" charset="utf-8">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+  <script src="js/lib/SS.js" type="text/javascript" charset="utf-8"></script>
+  <script src="sample.js" type="text/javascript" charset="utf-8"></script>
+  <title>SugarSkull Sample</title>
+  
+</head>
 
-    var router1, router2;
-
-    var routes1 = {
-
-      '/a': {
-        '/(.*)?': { on: function word(a) { console.log('/a/regex (' + a + ')'); } },
-        on: function aOn() { console.log('/a'); },
-        state: { a: true }
-      },
-      
-      '/b': {
-        '/a': function a() { console.log('/b/a'); },
-        once: function b() { console.log('/b'); }
-      },
-      
-      '/c': function c() { console.dir(router1.getState()); },
-      
-      '/d': {
-        on: function d() { console.log('/d'); },
-        '/a': {
-          '/b': {
-            on: ['booroute']
-          }
-        }
-        //after: function dafter() { console.log('/d-after') }
-      },
-
-      '/boo': 'booroute',
-      '/foo': ['fooroute1', 'fooroute2']
-    };
-
-    var routes2 = {
-      '/e': {
-        '/(.*)?': { on: function word(a) { console.log('/e/regex (' + a + ')'); } },
-        on: function eOn() { console.log('/e'); }
-      },
-      '/f': [function f1() { console.log('/f-1'); }, function f2() { console.log('/f-2'); }]
-    };
-    
-    var container1 = {
-      'fooroute1': function() { console.log('fooroute1'); },
-      'fooroute2': function() { console.log('fooroute2'); },
-      'booroute': function() { console.log('booroute'); }
-    };
-
-    window.onload = function() {
-
-      router1 = Router(routes1);
-      router2 = Router(routes2);
-
-      router1.use({ // extras...
-        resource: container1,
-        notfound: function(routename) { console.log('not found: ' + routename)} 
-        //recurse: 'forward', // 'backward'
-        //on: [function on1() {console.log('oneach1');}, function on2() {console.log('oneach2');}]
-        //after: [function after1() {console.log('aftereach1');}, function after2() {console.log('aftereach2');}]
-        //on: function(a) { console.log('oneach: ' + a); }
-        //after: function() { console.log('aftereach'); }
-
-      }).init();
-
-      router2.init();
-
-    };
-
-    </script>
-    <title></title>
-  </head>
-  <body>    
-  </body>
-</html>
+<body>
+  <h1>{ sugarskull demo }</h1>
+  <header>
+    <a href="#/sectionA">Section A</a>
+    <a href="#/sectionB">Section B</a>
+    <a href="#/sectionC/">Section C</a>
+    <a href="#/onceonly">Once Only</a>
+    <a href="#/java">Not Found</a>
+  </header>
+  <div id="clear" title="clear">X</div>
+  
+  <div id="contentcontainer">
+    <div id="contentarea">
+    </div>
+  </div>
+</body>

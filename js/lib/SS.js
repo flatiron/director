@@ -72,7 +72,7 @@
       var add = self.recurse === 'backward' ? 'unshift' : 'push';
       var fn = null;
 
-      if(route === undefined || route.length === 0) {
+      if(route === undefined && path.length === 0) {
         self.noroute(partialpath);
         return false;
       };
