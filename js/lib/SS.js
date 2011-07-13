@@ -32,7 +32,11 @@
           listener.fn = self.resource[listener.fn];
         }
 
-        if(listener.fn.call(self.resource || null, val) === false) {
+        if(typeof val === 'string') {
+          val = [val];
+        }
+
+        if(listener.fn.apply(self.resource || null, val) === false) {
 
           self[src] = [];
           return false;
@@ -47,15 +51,26 @@
     function parse(routes, path) {
 
       var partialpath = path.shift();
-      var keys = [];
-      
+
       var route = routes['/' + partialpath];
+      var opts = [], leftovers;
 
-      if(!route) { // optimized for the simple case.
+      if(!route) { // optimized for the simple case
         for(var r in routes) {
-          exp = new RegExp(r.slice(1)).exec(partialpath);
+          leftovers = '/' + partialpath + '/' + path.join('/');
+          opts = leftovers.match(new RegExp('^' + r + '$'));
+          if(opts && opts.length > 1) {
+            opts = opts.splice(1); // remove the match origin
 
-          if(exp && exp[1]) {
+            for(var i=0, l=opts.length; i<l; i++) { // remove blanks
+              if(opts[i] === '') {
+                opts.splice(i, 1);
+              }
+            }
+            path = []; // remove the path
+          }
+
+          if(opts && opts.length > 0) {
             route = routes[r];
             break;
           }
@@ -76,7 +91,7 @@
         self.noroute(partialpath);
         return false;
       };
-      
+
       if((route && path.length === 0) || self.recurse !== null) {
 
         if(route.state) {
@@ -84,9 +99,9 @@
         }
 
         fn = route.on || route.once;
-        
+
         if(isObject && route.after) {
-          self.after[add]({ fn: route.after || route.once, val: partialpath });
+          self.after[add]({ fn: route.after || route.once, val: opts });
         }
 
         if(isObject && fn) {
@@ -97,7 +112,7 @@
             }
           }
           else {
-            self.on[add]({ fn: fn || route.once, val: partialpath });
+            self.on[add]({ fn: fn || route.once, val: opts });
           }
           if(route.once) { 
             route.once = (function(){
@@ -107,11 +122,11 @@
         }
         else if(isArray) {
           for (var i=0, l = route.length; i < l; i++) {
-            self.on[add]({ fn: route[i], val: partialpath  });
+            self.on[add]({ fn: route[i], val: opts  });
           }
         }
         else if(isFunction || isString) {
-          self.on[add]({ fn: route, val: partialpath });        
+          self.on[add]({ fn: route, val: opts });        
         }
         
         if(self.recurse === null) {
