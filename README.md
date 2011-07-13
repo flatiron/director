@@ -71,6 +71,20 @@ Routes can sometimes become very complex, `simple/:tokens` don't always suffice.
 
 ```
 
+```javascript
+
+  var router = Router({ // given the route '/dog/yella'.
+
+    '/ferret': {
+      '/smelly/?([^\/]*)\/([^\/]*)/?': function(a, b) {
+        console.log(a, b);
+      }
+    }
+
+  }).init();
+
+```
+
 
 ## Special Events
 
