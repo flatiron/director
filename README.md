@@ -73,7 +73,7 @@ Routes can sometimes become very complex, `simple/:tokens` don't always suffice.
 
 ```javascript
 
-  var router = Router({ // given the route '/dog/yella'.
+  var router = Router({ // given the route '/ferret/smelly/true/damn'.
 
     '/ferret': {
       '/smelly/?([^\/]*)\/([^\/]*)/?': function(a, b) {
