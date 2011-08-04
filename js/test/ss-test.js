@@ -20,3 +20,19 @@ asyncTest("basic match", function(){
     start();
   }, 20);
 });
+
+asyncTest("regex match", function(){
+  var message = "changeme";
+  var router = Router({
+    '/initiative\\/([a-z0-9-]+)\\/([a-z0-9-]+)': function(one, two){
+      message = "awesome";
+    }
+  }).init();
+  window.location.hash = "/initiative/hi/there";
+
+  setTimeout(function(){
+    equals(message, "awesome", "basic route should have changed variable");
+    start();
+  }, 20);
+});
+
