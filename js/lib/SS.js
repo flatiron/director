@@ -300,7 +300,7 @@
         for(var i = 0, l = window.Router.listeners.length; i < l; i++) {
           window.Router.listeners[i]();
         }
-      };
+      }
 
       if('onhashchange' in window && 
           (document.documentMode === undefined || document.documentMode > 7)) {
