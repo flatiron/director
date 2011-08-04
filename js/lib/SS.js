@@ -164,7 +164,7 @@
     };
 
     return this;
-  };
+  }
 
   Router.prototype.use = function(conf) {
     

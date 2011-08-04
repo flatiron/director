@@ -26,6 +26,8 @@ asyncTest("regex match", function(){
   var router = Router({
     '/initiative\\/([a-z0-9-]+)\\/([a-z0-9-]+)': function(one, two){
       message = "awesome";
+      equals(one, "hi");
+      equals(two, "there");
     }
   }).init();
   window.location.hash = "/initiative/hi/there";
@@ -35,4 +37,8 @@ asyncTest("regex match", function(){
     start();
   }, 20);
 });
+
+//todo test on, after, and notfound
+
+
 
