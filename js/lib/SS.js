@@ -1,4 +1,4 @@
-;!function(window, undefined) {
+(function(window, undefined) {
 
   var dloc = document.location;
 
@@ -365,4 +365,4 @@
     onHashChanged:  function () {}
   };
  
-}(window);
+})(window);
