@@ -325,7 +325,7 @@
 
         window.setInterval(function () { self.check(); }, 50);
         
-        this.onHashChanged = onchnage;
+        this.onHashChanged = onchange;
         mode = 'legacy';
       }
 
