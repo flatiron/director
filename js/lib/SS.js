@@ -304,7 +304,7 @@
 
       if('onhashchange' in window && 
           (document.documentMode === undefined || document.documentMode > 7)) {
-        window.onhashchange = onchange
+        window.onhashchange = onchange;
         mode = 'modern';
       }
       else { // IE support, based on a concept by Erik Arvidson ...
