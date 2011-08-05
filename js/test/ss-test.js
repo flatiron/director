@@ -26,10 +26,12 @@ var router = new Router({
       message = color;
     }
   },
-  '/say\\/([a-z0-9-]+)\\/([a-z0-9-]+)': function(one, two) {
+  '/say\\/(\\w+)\\/(\\w+)': function(one, two) {
     message = "awesome";
     param1 = one;
     param2 = two;
+//    console.log('param1: ', param1);
+//    console.log('param2: ', param2);
   },
   '/special': {
     on: function() {
@@ -149,7 +151,7 @@ asyncTest("special event - notfound (for the entire router)", function() {
 
 //todo test recurse
 //todo test state
-
+//todo to url params (?option=open&section=2)
 
 
 

@@ -48,7 +48,7 @@
     }
 
     function parse(routes, path) {
-
+      //path is an array
       var partialpath = path.shift();
 
       var route = routes['/' + partialpath];
@@ -59,7 +59,8 @@
           leftovers = '/' + partialpath + '/' + path.join('/');
           opts = leftovers.match(new RegExp('^' + r + '$'));
           if(opts && opts.length > 1) {
-            opts = opts.splice(1); // remove the match origin
+            //IE8 has a bug that causes splice to fail without explicit howmany arg
+            opts = opts.splice(1, opts.length); // remove the match origin
 
             for(var i=0, l=opts.length; i<l; i++) { // remove blanks
               if(opts[i] === '') {
@@ -301,6 +302,7 @@
         }
       }
 
+      //note IE8 is being counted as 'modern' because it has the hashchange event
       if('onhashchange' in window && 
           (document.documentMode === undefined || document.documentMode > 7)) {
         window.onhashchange = onchange;
