@@ -36,8 +36,7 @@
           val = [val];
         }
 
-        if(listener.fn.apply(self.resource || null, val) === false) {
-
+        if(listener.fn.apply(self.resource || null, val || []) === false) {
           self[src] = [];
           return false;
         }
