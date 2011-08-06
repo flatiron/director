@@ -22,16 +22,19 @@ var router = new Router({
     }
   },
   '/cat': {
-    '/(\\w+)': function(color) {
-      message = color;
+    '/(\\w+)': {
+      '/(\\w+)': function(color, size){
+        message = color + " and " + size
+      },
+      on: function(color) {
+        message = color;
+      }
     }
   },
   '/say\\/(\\w+)\\/(\\w+)': function(one, two) {
     message = "awesome";
     param1 = one;
     param2 = two;
-//    console.log('param1: ', param1);
-//    console.log('param2: ', param2);
   },
   '/special': {
     on: function() {
@@ -96,14 +99,21 @@ asyncTest("nested syntax", function() {
   }, 10);
 });
 
-//nested syntax currently either not supported or has a bug
-//asyncTest("nested syntax with params", function() {
-//  window.location.hash = "/cat/orange";
-//  setTimeout(function() {
-//    equals(message, "orange", "color should be orange");
-//    start();
-//  }, 10);
-//});
+asyncTest("nested syntax with params", function() {
+  window.location.hash = "/cat/orange";
+  setTimeout(function() {
+    equals(message, "orange", "color should be orange");
+    start();
+  }, 10);
+});
+
+asyncTest("nested syntax with multiple params", function() {
+  window.location.hash = "/cat/purple/small";
+  setTimeout(function() {
+    equals(message, "small and purple", "color and size params should have been passed");
+    start();
+  }, 10);
+});
 
 asyncTest("special event - after", function() {
   //run the test after
