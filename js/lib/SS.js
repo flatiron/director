@@ -90,7 +90,7 @@
       if(route === undefined && path.length === 0) {
         self.noroute(partialpath);
         return false;
-      };
+      }
 
       if((route && path.length === 0) || self.recurse !== null) {
 
@@ -107,8 +107,8 @@
         if(isObject && fn) {
 
           if(({}).toString.call(fn).indexOf('Array') !== -1) {
-            for (var i=0, l = fn.length; i < l; i++) {
-              self.on[add]({ fn: fn[i], val: partialpath  });
+            for (var j=0, m = fn.length; j < m; j++) {
+              self.on[add]({ fn: fn[j], val: partialpath  });
             }
           }
           else {
@@ -121,8 +121,8 @@
           }
         }
         else if(isArray) {
-          for (var i=0, l = route.length; i < l; i++) {
-            self.on[add]({ fn: route[i], val: opts  });
+          for (var p=0, q = route.length; p < q; p++) {
+            self.on[add]({ fn: route[p], val: opts  });
           }
         }
         else if(isFunction || isString) {
