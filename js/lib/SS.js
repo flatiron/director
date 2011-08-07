@@ -1,4 +1,4 @@
-;!function(window, undefined) {
+(function(window, undefined) {
 
   var dloc = document.location;
 
@@ -36,8 +36,7 @@
           val = [val];
         }
 
-        if(listener.fn.apply(self.resource || null, val) === false) {
-
+        if(listener.fn.apply(self.resource || null, val || []) === false) {
           self[src] = [];
           return false;
         }
@@ -49,7 +48,7 @@
     }
 
     function parse(routes, path) {
-
+      //path is an array
       var partialpath = path.shift();
 
       var route = routes['/' + partialpath];
@@ -60,7 +59,8 @@
           leftovers = '/' + partialpath + '/' + path.join('/');
           opts = leftovers.match(new RegExp('^' + r + '$'));
           if(opts && opts.length > 1) {
-            opts = opts.splice(1); // remove the match origin
+            //IE8 has a bug that causes splice to fail without explicit howmany arg
+            opts = opts.splice(1, opts.length); // remove the match origin
 
             for(var i=0, l=opts.length; i<l; i++) { // remove blanks
               if(opts[i] === '') {
@@ -90,7 +90,7 @@
       if(route === undefined && path.length === 0) {
         self.noroute(partialpath);
         return false;
-      };
+      }
 
       if((route && path.length === 0) || self.recurse !== null) {
 
@@ -107,8 +107,8 @@
         if(isObject && fn) {
 
           if(({}).toString.call(fn).indexOf('Array') !== -1) {
-            for (var i=0, l = fn.length; i < l; i++) {
-              self.on[add]({ fn: fn[i], val: partialpath  });
+            for (var j=0, m = fn.length; j < m; j++) {
+              self.on[add]({ fn: fn[j], val: partialpath  });
             }
           }
           else {
@@ -121,8 +121,8 @@
           }
         }
         else if(isArray) {
-          for (var i=0, l = route.length; i < l; i++) {
-            self.on[add]({ fn: route[i], val: opts  });
+          for (var p=0, q = route.length; p < q; p++) {
+            self.on[add]({ fn: route[p], val: opts  });
           }
         }
         else if(isFunction || isString) {
@@ -164,7 +164,7 @@
     };
 
     return this;
-  };
+  }
 
   Router.prototype.use = function(conf) {
     
@@ -300,11 +300,12 @@
         for(var i = 0, l = window.Router.listeners.length; i < l; i++) {
           window.Router.listeners[i]();
         }
-      };
+      }
 
+      //note IE8 is being counted as 'modern' because it has the hashchange event
       if('onhashchange' in window && 
           (document.documentMode === undefined || document.documentMode > 7)) {
-        window.onhashchange = onchange
+        window.onhashchange = onchange;
         mode = 'modern';
       }
       else { // IE support, based on a concept by Erik Arvidson ...
@@ -325,7 +326,7 @@
 
         window.setInterval(function () { self.check(); }, 50);
         
-        this.onHashChanged = onchnage;
+        this.onHashChanged = onchange;
         mode = 'legacy';
       }
 
@@ -365,4 +366,4 @@
     onHashChanged:  function () {}
   };
  
-}(window);
+})(window);
