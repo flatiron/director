@@ -169,7 +169,9 @@
 
     this.init = function() {
       listener.init(route);
-      route();
+      if(dloc.hash.length > 0) {
+        route();
+      }
       return this;
     };
 
