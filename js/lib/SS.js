@@ -366,4 +366,4 @@
     onHashChanged:  function () {}
   };
  
-})(window);
+}(window));
