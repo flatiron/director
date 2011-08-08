@@ -21,6 +21,16 @@
     this.notfound = null;
     this.lastroutevalue = null;
 
+    //convert all simple param routes to regex
+    //todo this will probably need to convert nested simple params too...
+    for (var key in this.routes) {
+      if(key.indexOf(":") !== -1){
+        var newKey = key.replace(/:.*?\/|:.*?$/g, '([a-z0-9-]+)/').slice(0, -1);
+        this.routes[newKey] = this.routes[key];
+        delete this.routes[key];
+      }
+    }
+
     function dispatch(src) {
 
       for (var i=0, l = self[src].length; i < l; i++) {

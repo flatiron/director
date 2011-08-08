@@ -21,6 +21,14 @@ var router = new Router({
       }
     }
   },
+  '/article/:id': function(id){
+    message = "Cool Article";
+    param1 = id;
+  },
+  '/article/:season/:year': function(season, year){
+    param1 = season;
+    param2 = year;
+  },
   '/cat': {
     '/(\\w+)': {
       '/(\\w+)': function(color, size){
@@ -87,6 +95,33 @@ asyncTest("regex match", function() {
     equals(message, "awesome", "route should have changed the message variable");
     equals(param1, "hi");
     equals(param2, "there");
+    start();
+  }, 10);
+});
+
+asyncTest("simple params", function(){
+  window.location.hash = "/article/22";
+  setTimeout(function(){
+    equals(message, "Cool Article", "simple param should have found match");
+    equals(param1, 22, "param1 should have been set by the function");
+    start();
+  }, 10);
+});
+
+asyncTest("simple params", function(){
+  window.location.hash = "/article/22";
+  setTimeout(function(){
+    equals(message, "Cool Article", "simple param should have found match");
+    equals(param1, 22, "param1 should have been set by the function");
+    start();
+  }, 10);
+});
+
+asyncTest("multiple simple params", function(){
+  window.location.hash = "/article/summer-time/2011";
+  setTimeout(function(){
+    equals(param1, "summer-time", "param1 should have been set by the function");
+    equals(param2, "2011", "param2 should have been set by the function");
     start();
   }, 10);
 });
