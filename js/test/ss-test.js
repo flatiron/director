@@ -21,6 +21,14 @@ var router = new Router({
       }
     }
   },
+  '/article/:id': function(id){
+    message = "Cool Article";
+    param1 = id;
+  },
+  '/article/:season/:year': function(season, year){
+    param1 = season;
+    param2 = year;
+  },
   '/cat': {
     '/(\\w+)': {
       '/(\\w+)': function(color, size){
@@ -91,6 +99,24 @@ asyncTest("regex match", function() {
   }, 10);
 });
 
+asyncTest("simple tokens", function(){
+  window.location.hash = "/article/22";
+  setTimeout(function(){
+    equals(message, "Cool Article", "simple param should have found match");
+    equals(param1, 22, "param1 should have been set by the function");
+    start();
+  }, 10);
+});
+
+asyncTest("multiple simple tokens", function(){
+  window.location.hash = "/article/summer-time/2011";
+  setTimeout(function(){
+    equals(param1, "summer-time", "param1 should have been set by the function");
+    equals(param2, "2011", "param2 should have been set by the function");
+    start();
+  }, 10);
+});
+
 asyncTest("nested syntax", function() {
   window.location.hash = "/dog/blue";
   setTimeout(function() {
@@ -114,6 +140,9 @@ asyncTest("nested syntax with multiple params", function() {
     start();
   }, 10);
 });
+
+//todo test nested syntax with simple token
+//todo test nested syntax with multiple simple tokens
 
 asyncTest("special event - after", function() {
   //run the test after
