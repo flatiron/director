@@ -55,6 +55,20 @@ An object literal that contains nested route definitions. A potentially nested s
 
 ## URL Matching
 
+```javascript
+
+  var router = Router({ // given the route '/dog/yella'.
+
+    '/dog': {
+      '/:color': {
+        on: function(color) { console.log(color) } // this function will return the value 'yella'.
+      }
+    }
+
+  }).init();
+
+```
+
 Routes can sometimes become very complex, `simple/:tokens` don't always suffice. SugarSkull supports regular expressions inside the route names. The values captured from the regular expressions are passed to your listener function.
 
 ```javascript
