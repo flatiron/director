@@ -175,6 +175,11 @@
       return this;
     };
 
+    this.destroy = function() {
+      listener.destroy(route);
+      return this;
+    };
+
     return this;
   }
 
@@ -345,6 +350,18 @@
       window.Router.listeners.push(fn);      
       
       return mode;
+    },
+
+    destroy: function (fn) {
+      if (!window.Router || !window.Router.listeners) return;
+
+      var listeners = window.Router.listeners;
+
+      for (var i = listeners.length - 1; i >= 0; i--) {
+        if (listeners[i] === fn) {
+          listeners.splice(i, 1);
+        }
+      }
     },
 
     setHash: function (s) {
