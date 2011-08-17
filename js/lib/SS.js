@@ -75,9 +75,12 @@
             if(exactmatch && roughmatch) {
 
               // convert roughmatch to an array of names without `/`s.
-              for (var i=0, l = roughmatch.length; i<l; i++) {
-                if(roughmatch[i] && roughmatch[i][0] === '/') { 
-                  roughmatch[i] = roughmatch[i].slice(1); 
+              for (var i = roughmatch.length; i >= 0; i--) {
+                if (roughmatch[i]) {
+                  roughmatch[i] = roughmatch[i].replace(/^\//, '');
+                }
+                else {
+                  roughmatch.splice(i, 1);
                 }
               }
               path = roughmatch.slice(1);
@@ -86,7 +89,7 @@
                 route = routes[r];
               }
               else {
-                route = routes[exactmatch];
+                route = routes[exactmatch[0]];
               }
               break;
             }
@@ -133,7 +136,7 @@
 
       self.after = [];
 
-      if(parse(self.routes, loc, len, len)) {
+      if(parse(self.routes, loc, len + 1, len)) {
         dispatch('on');
         dispatch('oneach');
         self.on = [];
@@ -145,6 +148,11 @@
       if(dloc.hash.length > 0) {
         route();
       }
+      return this;
+    };
+
+    this.destroy = function() {
+      listener.destroy(route);
       return this;
     };
 
@@ -318,6 +326,18 @@
       window.Router.listeners.push(fn);      
       
       return mode;
+    },
+
+    destroy: function (fn) {
+      if (!window.Router || !window.Router.listeners) return;
+
+      var listeners = window.Router.listeners;
+
+      for (var i = listeners.length - 1; i >= 0; i--) {
+        if (listeners[i] === fn) {
+          listeners.splice(i, 1);
+        }
+      }
     },
 
     setHash: function (s) {

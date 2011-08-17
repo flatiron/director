@@ -10,7 +10,7 @@ Storing some information about the state of an application within the URL allows
 
 The HTML5 history API isn't a replacement for using the location hash. The HTML5 history API requires that a URL resolves to real assets on the server. It is also designed around the requirement that all pages *should* load without Javascript. SugarSkull targets script-rich applications who's audience is well-known.
 
-SugarSkull can enhance ***backbone.js*** by replacing its controllers. It covers more use cases and provides a more expressive way to define routes and associate logic with them. It's a lightweight alternative to ***sammy.js***, narrowly focused on routing.
+SugarSkull can enhance ***backbone.js*** by replacing its more simplistic Routers. SugarSkull covers more use cases and provides a more expressive way to define routes and associate logic with them. A lightweight alternative to ***sammy.js***, narrowly focused on routing.
 
 Is using a client side router a problem for SEO? Yes. If advertising is a requirement, you are probably building a "Web Page" and not a "Web Application". SugarSkull is meant for script-heavy Web Applications.
 
@@ -54,6 +54,20 @@ An object literal that contains nested route definitions. A potentially nested s
 ```
 
 ## URL Matching
+
+```javascript
+
+  var router = Router({ // given the route '/dog/yella'.
+
+    '/dog': {
+      '/:color': {
+        on: function(color) { console.log(color) } // this function will return the value 'yella'.
+      }
+    }
+
+  }).init();
+
+```
 
 Routes can sometimes become very complex, `simple/:tokens` don't always suffice. SugarSkull supports regular expressions inside the route names. The values captured from the regular expressions are passed to your listener function.
 
