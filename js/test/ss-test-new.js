@@ -1,4 +1,4 @@
-createTest('nested routes', {
+createTest('Circus test', {
   '/a/b': {
     '/c': function c() {
       shared.fired.push('abc');
@@ -123,7 +123,7 @@ createTest('Single nested route with on member containing array of function valu
 // Recursion features
 // ----------------------------------------------------------
 
-createTest('nested routes with no recursion', {
+createTest('Nested routes with no recursion', {
   '/a': {
     '/b': {
       '/c': {
@@ -152,7 +152,7 @@ createTest('nested routes with no recursion', {
   });
 });
 
-createTest('nested routes with backward recursion', {
+createTest('Nested routes with backward recursion', {
   '/a': {
     '/b': {
       '/c': {
@@ -181,7 +181,7 @@ createTest('nested routes with backward recursion', {
   });
 });
 
-createTest('breaking out of nested routes with backward recursion', {
+createTest('Breaking out of nested routes with backward recursion', {
   '/a': {
     '/b': {
       '/c': {
