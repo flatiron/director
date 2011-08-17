@@ -115,13 +115,25 @@
         if (len === 0 || self.recurse) {
 
           if (typeof route === 'function' || route.on) {
-            if(route.on && route.on[0]) {
-              for (var j=0, m = route.on.length; j < m; j++) {
-                self.on[add]({ fn: route.on[j], val: parts || path });
+            queue(route.on || route, 'on');
+          }
+
+          if (route.once){
+            queue(route.once, 'once');
+          }
+
+          if (route.after){
+            queue(route.after, 'after');
+          }
+
+          function queue(listeners, type) {
+            if(route[type] && route[type][0]) {
+              for (var j=0, m = route[type].length; j < m; j++) {
+                self[type][add]({ fn: route[type][j], val: parts || path });
               }
             }
             else {
-              self.on[add]({ fn: route.on || route, val: parts || path });
+              self[type][add]({ fn: listeners, val: parts || path });
             }
           }
         }

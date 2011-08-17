@@ -149,7 +149,23 @@ createTest('Single nested route with on member containing array of function valu
   });
 });
 
-
+createTest('method should only fire once on the route.', {
+  '/a': {
+    '/b': {
+      once: function() {
+        shared.fired.push(1);
+      }
+    }
+  }
+}, function() {
+  shared.fired = [];
+  this.navigate('/a/b', function() {
+    this.navigate('/a/b', function() {
+      deepEqual(shared.fired, 1);
+      this.finish();
+    });
+  });
+});
 
 
 
