@@ -211,7 +211,7 @@ createTest('Breaking out of nested routes with backward recursion', {
   });
 });
 
-createTest('nested routes with forward recursion', {
+createTest('Nested routes with forward recursion', {
   '/a': {
     '/b': {
       '/c': {
@@ -240,7 +240,7 @@ createTest('nested routes with forward recursion', {
   });
 });
 
-createTest('breaking out of nested routes with forward recursion', {
+createTest('Breaking out of nested routes with forward recursion', {
   '/a': {
     '/b': {
       '/c': {
