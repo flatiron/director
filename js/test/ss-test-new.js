@@ -114,3 +114,158 @@ createTest('Single nested route with on member containing array of function valu
       this.finish();
   });
 });
+
+
+
+
+
+// 
+// Recursion features
+// ----------------------------------------------------------
+
+createTest('nested routes with no recursion', {
+  '/a': {
+    '/b': {
+      '/c': {
+        on: function c() {
+          shared.fired.push('c');
+        }
+      },
+      on: function b() {
+        shared.fired.push('b');
+      }
+    },
+    on: function a() {
+      shared.fired.push('a');
+    }
+  }
+}, function() {
+  this.router.use({
+    //recurse: 'backward'
+  });
+
+  shared.fired = [];
+
+  this.navigate('/a/b/c', function() {
+    deepEqual(shared.fired, ['c']);
+    this.finish();
+  });
+});
+
+createTest('nested routes with backward recursion', {
+  '/a': {
+    '/b': {
+      '/c': {
+        on: function c() {
+          shared.fired.push('c');
+        }
+      },
+      on: function b() {
+        shared.fired.push('b');
+      }
+    },
+    on: function a() {
+      shared.fired.push('a');
+    }
+  }
+}, function() {
+  this.router.use({
+    recurse: 'backward'
+  });
+
+  shared.fired = [];
+
+  this.navigate('/a/b/c', function() {
+    deepEqual(shared.fired, ['c', 'b', 'a']);
+    this.finish();
+  });
+});
+
+createTest('breaking out of nested routes with backward recursion', {
+  '/a': {
+    '/b': {
+      '/c': {
+        on: function c() {
+          shared.fired.push('c');
+        }
+      },
+      on: function b() {
+        shared.fired.push('b');
+        return false;
+      }
+    },
+    on: function a() {
+      shared.fired.push('a');
+    }
+  }
+}, function() {
+  this.router.use({
+    recurse: 'backward'
+  });
+
+  shared.fired = [];
+
+  this.navigate('/a/b/c', function() {
+    deepEqual(shared.fired, ['c', 'b']);
+    this.finish();
+  });
+});
+
+createTest('nested routes with forward recursion', {
+  '/a': {
+    '/b': {
+      '/c': {
+        on: function c() {
+          shared.fired.push('c');
+        }
+      },
+      on: function b() {
+        shared.fired.push('b');
+      }
+    },
+    on: function a() {
+      shared.fired.push('a');
+    }
+  }
+}, function() {
+  this.router.use({
+    recurse: 'forward'
+  });
+
+  shared.fired = [];
+
+  this.navigate('/a/b/c', function() {
+    deepEqual(shared.fired, ['a', 'b', 'c']);
+    this.finish();
+  });
+});
+
+createTest('breaking out of nested routes with forward recursion', {
+  '/a': {
+    '/b': {
+      '/c': {
+        on: function c() {
+          shared.fired.push('c');
+        }
+      },
+      on: function b() {
+        shared.fired.push('b');
+        return false;
+      }
+    },
+    on: function a() {
+      shared.fired.push('a');
+    }
+  }
+}, function() {
+  this.router.use({
+    recurse: 'forward'
+  });
+
+  shared.fired = [];
+
+  this.navigate('/a/b/c', function() {
+    deepEqual(shared.fired, ['a', 'b']);
+    this.finish();
+  });
+});

@@ -86,15 +86,19 @@
               path = roughmatch.slice(1);
 
               if (exactmatch.length > 1) {
+                len--;
                 route = routes[r];
               }
               else {
+                len -= exactmatch[0].split('/').length - 1;
                 route = routes[exactmatch[0]];
               }
               break;
             }
           }
         }
+      } else {
+        len -= path.split('/').length - 1;
       }
 
       if (route) {
@@ -106,9 +110,9 @@
           path = '/' + path.join('/');
         }
 
-        parse(route, path, --len, olen);
+        parse(route, path, len, olen);
 
-        if (len === 1 || self.recurse) {
+        if (len === 0 || self.recurse) {
 
           if (typeof route === 'function' || route.on) {
             if(route.on && route.on[0]) {
@@ -136,7 +140,7 @@
 
       self.after = [];
 
-      if(parse(self.routes, loc, len + 1, len)) {
+      if(parse(self.routes, loc, len, len)) {
         dispatch('on');
         dispatch('oneach');
         self.on = [];
