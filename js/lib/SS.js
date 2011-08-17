@@ -20,16 +20,21 @@
     this.aftereach = [];
     this.notfound = null;
     this.lastroutevalue = null;
+    
+    var add = self.recurse === 'backward' ? 'unshift' : 'push';
 
-    //convert all simple param routes to regex
-    //todo this will probably need to convert nested simple params too...
-    for (var key in this.routes) {
-      if(key.indexOf(":") !== -1){
-        var newKey = key.replace(/:.*?\/|:.*?$/g, '([a-z0-9-]+)/').slice(0, -1);
-        this.routes[newKey] = this.routes[key];
-        delete this.routes[key];
+    function regify(routes) { // convert all simple param routes to regex
+      for (var key in routes) {
+        regify(routes[key]);
+        if (key.indexOf(':') !== -1) {
+          var newKey = key.replace(/:.*?\/|:.*?$/g, '([a-z0-9-]+)/').slice(0, -1);
+          routes[newKey] = routes[key];
+          delete routes[key];
+        }
       }
     }
+
+    regify(this.routes);
 
     function dispatch(src) {
 
@@ -38,129 +43,97 @@
         var listener = self[src][i];
         var val = listener.val === null ? self.lastroutevalue : listener.val;
 
-        if(typeof listener.fn === 'string') {
+        if (typeof listener.fn === 'string') {
           listener.fn = self.resource[listener.fn];
         }
 
-        if(typeof val === 'string') {
+        if (typeof val === 'string') {
           val = [val];
         }
 
-        if(listener.fn.apply(self.resource || null, val || []) === false) {
+        if (listener.fn.apply(self.resource || null, val || []) === false) {
           self[src] = [];
           return false;
         }
-        if(listener.val !== null) {
+        if (listener.val !== null) {
           self.lastroutevalue = listener.val;
         }
       }
       return true;
     }
+    
+    function parse(routes, path, len, olen) {
 
-    function parse(routes, path) {
-      //path is an array
-      var partialpath = path.shift();
+      var roughmatch, exactmatch;
+      var route = routes[path];
 
-      var route = routes['/' + partialpath];
-      var opts = [], leftovers;
+      if(!route) {
+        for (var r in routes) { // we dont have an exact match, lets explore.
+          if(routes.hasOwnProperty(r)) {
+            exactmatch = path.match(new RegExp('^' + r));
+            roughmatch = path.match(new RegExp('^' + r + '(.*)?'));
+            if(exactmatch && roughmatch) {
 
-      if(!route) { // optimized for the simple case
-        for(var r in routes) {
-          leftovers = '/' + partialpath + '/' + path.join('/');
-          opts = leftovers.match(new RegExp('^' + r + '$'));
-          if(opts && opts.length > 1) {
-            //IE8 has a bug that causes splice to fail without explicit howmany arg
-            opts = opts.splice(1, opts.length); // remove the match origin
+              // convert roughmatch to an array of names without `/`s.
+              for (var i=0, l = roughmatch.length; i<l; i++) {
+                if(roughmatch[i] && roughmatch[i][0] === '/') { 
+                  roughmatch[i] = roughmatch[i].slice(1); 
+                }
+              }
+              path = roughmatch.slice(1);
 
-            for(var i=0, l=opts.length; i<l; i++) { // remove blanks
-              if(opts[i] === '') {
-                opts.splice(i, 1);
+              if (exactmatch.length > 1) {
+                route = routes[r];
+              }
+              else {
+                route = routes[exactmatch];
+              }
+              break;
+            }
+          }
+        }
+      }
+
+      if (route) {
+
+        var parts;
+
+        if(typeof path !== 'string') {
+          parts = path.slice();
+          path = '/' + path.join('/');
+        }
+
+        parse(route, path, --len, olen);
+        
+        if (len === 1 || self.recurse) {
+
+          if (typeof route === 'function' || route.on) {
+            if(route.on && route.on[0]) {
+              for (var j=0, m = route.on.length; j < m; j++) {
+                self.on[add]({ fn: route.on[j], val: parts || path });
               }
             }
-            path = []; // remove the path
-          }
-
-          if(opts && opts.length > 0) {
-            route = routes[r];
-            break;
-          }
-        }
-      }
-
-      var type = ({}).toString.call(route);
-
-      var isObject = type.indexOf('Object') !== -1;
-      var isFunction = type.indexOf('Function') !== -1;
-      var isArray = type.indexOf('Array') !== -1;
-      var isString = type.indexOf('String') !== -1;
-
-      var add = self.recurse === 'backward' ? 'unshift' : 'push';
-      var fn = null;
-
-      if(route === undefined && path.length === 0) {
-        self.noroute(partialpath);
-        return false;
-      }
-
-      if((route && path.length === 0) || self.recurse !== null) {
-
-        if(route.state) {
-          self.state = route.state;
-        }
-
-        fn = route.on || route.once;
-
-        if(isObject && route.after) {
-          self.after[add]({ fn: route.after || route.once, val: opts });
-        }
-
-        if(isObject && fn) {
-
-          if(({}).toString.call(fn).indexOf('Array') !== -1) {
-            for (var j=0, m = fn.length; j < m; j++) {
-              self.on[add]({ fn: fn[j], val: partialpath  });
+            else {
+              self.on[add]({ fn: route.on || route, val: parts || path });
             }
           }
-          else {
-            self.on[add]({ fn: fn || route.once, val: opts });
-          }
-          if(route.once) { 
-            route.once = (function(){
-              return function() { if(self.notfound) { self.noroute(partialpath); } return false; };
-            }());
-          }
-        }
-        else if(isArray) {
-          for (var p=0, q = route.length; p < q; p++) {
-            self.on[add]({ fn: route[p], val: opts  });
-          }
-        }
-        else if(isFunction || isString) {
-          self.on[add]({ fn: route, val: opts });        
-        }
-        
-        if(self.recurse === null) {
-          return true;
         }
       }
 
-      if(isObject && path.length > 0) {
-        parse(route, path);
-      }
-      
       return true;
     }
 
     function route(event) {
 
-      var loc = dloc.hash.split('/').slice(1);
+      var loc = dloc.hash.slice(1);
+      var len = loc.split('/').length-1;
 
       dispatch('after');
       dispatch('aftereach');
 
       self.after = [];
 
-      if(parse(self.routes, loc)) {
+      if(parse(self.routes, loc, len, len)) {
         dispatch('on');
         dispatch('oneach');
         self.on = [];
@@ -256,7 +229,7 @@
       url = [i];
     }
 
-    listener.setHash(url.join("/"));
+    listener.setHash(url.join('/'));
     return url;
   };
   
