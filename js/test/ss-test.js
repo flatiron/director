@@ -53,6 +53,11 @@ var router = new Router({
       testAfter();
     }
   },
+  '/other/nested': {
+    '/test': function() {
+      message = "success";
+    }
+  },
   '/onceonly': {
     once: function() {
       onceCount++;
@@ -121,6 +126,14 @@ asyncTest("nested syntax", function() {
   window.location.hash = "/dog/blue";
   setTimeout(function() {
     equals(message, "blue", "color should be blue");
+    start();
+  }, 10);
+});
+
+asyncTest("mixed nested syntax", function() {
+  window.location.hash = "/another/nested/test";
+  setTimeout(function() {
+    equals(message, "success", "should be success");
     start();
   }, 10);
 });
