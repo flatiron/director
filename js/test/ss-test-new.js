@@ -55,8 +55,8 @@ createTest('Circus test', {
 createTest('Nested route with the first child as a token, callback should yield a param', {
   '/foo': {
     '/:id': {
-      on: function() {
-        shared.fired.push(location.hash);
+      on: function(id) {
+        shared.fired.push(location.hash, id);
       }
     }
   }
@@ -64,7 +64,25 @@ createTest('Nested route with the first child as a token, callback should yield 
   shared.fired = [];
   this.navigate('/foo/a', function() {
     this.navigate('/foo/b/c', function() {
-      deepEqual(shared.fired, ['#/foo/a']);
+      deepEqual(shared.fired, ['#/foo/a', 'a']);
+      this.finish();
+    });
+  });
+});
+
+createTest('Nested route with the first child as a regexp, callback should yield a param', {
+  '/foo': {
+    '/(\\w+)': {
+      on: function(value) {
+        shared.fired.push(location.hash, value);
+      }
+    }
+  }
+}, function() {
+  shared.fired = [];
+  this.navigate('/foo/a', function() {
+    this.navigate('/foo/b/c', function() {
+      deepEqual(shared.fired, ['#/foo/a', 'a']);
       this.finish();
     });
   });
