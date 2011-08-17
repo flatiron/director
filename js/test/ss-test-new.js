@@ -47,7 +47,25 @@ createTest('nested routes', {
   shared.fired = [];
 
   this.navigate('/a/b/c', function() {
-    equal(shared.fired, ['abc']);
+    deepEqual(shared.fired, ['abc', 'ab']);
     this.finish();
+  });
+});
+
+createTest('Route param', {
+  '/foo': {
+    '/:id': {
+      on: function() {
+        shared.fired.push(location.hash);
+      }
+    }
+  }
+}, function() {
+  shared.fired = [];
+  this.navigate('/foo/a', function() {
+    this.navigate('/foo/b/c', function() {
+      deepEqual(shared.fired, ['#/foo/a']);
+      this.finish();
+    });
   });
 });
