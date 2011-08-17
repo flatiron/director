@@ -69,3 +69,17 @@ createTest('Route param', {
     });
   });
 });
+
+createTest('Single non-nested route with on member containing function value', {
+  '/a/b': {
+    on: function() {
+      shared.fired.push(location.hash);
+    }
+  }
+}, function() {
+  shared.fired = [];
+  this.navigate('/a/b', function() {
+    deepEqual(shared.fired, ['#/a/b']);
+    this.finish();
+  });
+});
