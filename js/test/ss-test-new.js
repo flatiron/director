@@ -52,6 +52,22 @@ createTest('Circus test', {
   });
 });
 
+createTest('Nested route with the many children as a tokens, callbacks should yield historic params', {
+  '/a': {
+    '/:id': {
+      '/:id': function(a, b) {
+        shared.fired.push(location.hash, a, b);
+      }
+    }
+  }
+}, function() {
+  shared.fired = [];
+  this.navigate('/a/b/c', function() {
+    deepEqual(shared.fired, ['#/a/b/c', 'b', 'c']);
+    this.finish();
+  });
+});
+
 createTest('Nested route with the first child as a token, callback should yield a param', {
   '/foo': {
     '/:id': {
