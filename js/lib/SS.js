@@ -11,7 +11,16 @@
     var self = this; 
 
     this.routes = routes;
-    this.recurse = null;
+
+    var add;
+
+    this.recurse = function(value) {
+      if (value === undefined) return recurse;
+      add = (this._recurse = value) === 'forward' ? 'unshift' : 'push';
+    };
+
+    this._recurse = null;
+    this.recurse(null);
     this.resource = null;
     this.state = {};
     this.after = [];
@@ -21,8 +30,6 @@
     this.aftereach = [];
     this.notfound = null;
     this.lastroutevalue = null;
-    
-    var add = self.recurse === 'backward' ? 'unshift' : 'push';
 
     function regify(routes) { // convert all simple param routes to regex
       for (var key in routes) {
@@ -113,7 +120,7 @@
 
         parse(route, path, len, olen);
 
-        if (len === 0 || self.recurse) {
+        if (len === 0 || self._recurse) {
 
           if (typeof route === 'function' || route.on) {
             queue(route.on || route, 'on');
@@ -183,7 +190,7 @@
       if(conf.hasOwnProperty(item)) {
 
         if(item === 'recurse') {
-          this.recurse = conf[item];
+          this.recurse(conf[item]);
           continue;
         }
         

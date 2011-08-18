@@ -39,11 +39,9 @@ createTest('Circus test', {
       }
     }
   }
+}, {
+  recurse: 'backward'
 }, function() {
-  this.router.use({
-    recurse: 'backward'
-  });
-
   shared.fired = [];
 
   this.navigate('/a/b/c', function() {
@@ -190,10 +188,6 @@ createTest('Nested routes with no recursion', {
     }
   }
 }, function() {
-  this.router.use({
-    //recurse: 'backward'
-  });
-
   shared.fired = [];
 
   this.navigate('/a/b/c', function() {
@@ -218,11 +212,9 @@ createTest('Nested routes with backward recursion', {
       shared.fired.push('a');
     }
   }
+}, {
+  recurse: 'backward'
 }, function() {
-  this.router.use({
-    recurse: 'backward'
-  });
-
   shared.fired = [];
 
   this.navigate('/a/b/c', function() {
@@ -248,11 +240,9 @@ createTest('Breaking out of nested routes with backward recursion', {
       shared.fired.push('a');
     }
   }
+}, {
+  recurse: 'backward'
 }, function() {
-  this.router.use({
-    recurse: 'backward'
-  });
-
   shared.fired = [];
 
   this.navigate('/a/b/c', function() {
@@ -277,11 +267,9 @@ createTest('Nested routes with forward recursion', {
       shared.fired.push('a');
     }
   }
+}, {
+  recurse: 'forward'
 }, function() {
-  this.router.use({
-    recurse: 'forward'
-  });
-
   shared.fired = [];
 
   this.navigate('/a/b/c', function() {
@@ -307,11 +295,9 @@ createTest('Breaking out of nested routes with forward recursion', {
       shared.fired.push('a');
     }
   }
+}, {
+  recurse: 'forward'
 }, function() {
-  this.router.use({
-    recurse: 'forward'
-  });
-
   shared.fired = [];
 
   this.navigate('/a/b/c', function() {
