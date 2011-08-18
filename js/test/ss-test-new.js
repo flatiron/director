@@ -153,12 +153,12 @@ createTest('method should only fire once on the route.', {
   '/a': {
     '/b': {
       once: function() {
-        shared.fired.push(1);
+        shared.fired++;
       }
     }
   }
 }, function() {
-  shared.fired = [];
+  shared.fired = 0;
   this.navigate('/a/b', function() {
     this.navigate('/a/b', function() {
       deepEqual(shared.fired, 1);

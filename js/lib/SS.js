@@ -16,6 +16,7 @@
     this.state = {};
     this.after = [];
     this.on = [];
+    this.once = [];
     this.oneach = [];
     this.aftereach = [];
     this.notfound = null;
@@ -154,6 +155,7 @@
 
       if(parse(self.routes, loc, len, len)) {
         dispatch('on');
+        dispatch('once');
         dispatch('oneach');
         self.on = [];
       }
