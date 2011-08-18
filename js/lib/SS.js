@@ -20,7 +20,7 @@
     this.aftereach = [];
     this.notfound = null;
     this.lastroutevalue = null;
-    
+
     var add = self.recurse === 'backward' ? 'unshift' : 'push';
 
     function regify(routes) { // convert all simple param routes to regex
@@ -41,28 +41,28 @@
       for (var i=0, l = self[src].length; i < l; i++) {
 
         var listener = self[src][i];
-        var val = listener.val === null ? self.lastroutevalue : listener.val;
-
-        if (typeof listener.fn === 'string') {
-          listener.fn = self.resource[listener.fn];
-        }
-
-        if (typeof val === 'string') {
-          val = [val];
-        }
-
-        if (listener.fn.apply(self.resource || null, val || []) === false) {
-          self[src] = [];
-          return false;
-        }
-        if (listener.val !== null) {
-          self.lastroutevalue = listener.val;
-        }
+         var val = listener.val === null ? self.lastroutevalue : listener.val;
+         
+         if (typeof listener.fn === 'string') {
+           listener.fn = self.resource[listener.fn];
+         }
+         
+         if (typeof val === 'string') {
+           val = [val];
+         }
+         
+         if (listener.fn.apply(self.resource || null, val || []) === false) {
+           self[src] = [];
+           return false;
+         }
+         if (listener.val !== null) {
+           self.lastroutevalue = listener.val;
+         }
+      
       }
-      return true;
     }
     
-    function parse(routes, path, len, olen) {
+    function parse(routes, path, len) {
 
       var roughmatch, exactmatch;
       var route = routes[path];
@@ -110,7 +110,7 @@
           path = '/' + path.join('/');
         }
 
-        parse(route, path, len, olen);
+        parse(route, path, len);
 
         if (len === 0 || self.recurse) {
 
@@ -119,7 +119,7 @@
           }
 
           if (route.once){
-            queue(route.once, 'once');
+            queue(route.once, 'on');
           }
 
           if (route.after){
@@ -127,6 +127,7 @@
           }
 
           function queue(listeners, type) {
+
             if(route[type] && route[type][0]) {
               for (var j=0, m = route[type].length; j < m; j++) {
                 self[type][add]({ fn: route[type][j], val: parts || path });
@@ -135,10 +136,12 @@
             else {
               self[type][add]({ fn: listeners, val: parts || path });
             }
+            if(type === 'once') {
+              route.once = function() {}
+            }
           }
         }
       }
-
       return true;
     }
 

@@ -1,56 +1,3 @@
-createTest('Circus test', {
-  '/a/b': {
-    '/c': function c() {
-      shared.fired.push('abc');
-    },
-    on: function ab() {
-      shared.fired.push('ab');
-    }
-  },
-
-  '/a': {
-    on: function a() {
-      shared.fired.push('a');
-    }
-  },
-
-  '/hello': {
-    '/world': {
-      on: function world(a) {
-        shared.fired.push('hello world');
-      }
-    }
-  },
-
-  '/d/:id': function did(a) {
-    shared.fired.push('d:id');
-  },
-
-  '/e': {
-    '/:id': function(a) {
-      shared.fired.push('e:id');
-    }
-  },
-
-  '/f': {
-    '/:id': {
-      '/:id': function(a, b) {
-        shared.fired.push('f:id:id');
-      }
-    }
-  }
-}, function() {
-  this.router.use({
-    recurse: 'backward'
-  });
-
-  shared.fired = [];
-
-  this.navigate('/a/b/c', function() {
-    deepEqual(shared.fired, ['abc', 'ab']);
-    this.finish();
-  });
-});
 
 createTest('Nested route with the many children as a tokens, callbacks should yield historic params', {
   '/a': {
@@ -104,6 +51,24 @@ createTest('Nested route with the first child as a regexp, callback should yield
   });
 });
 
+createTest('Nested route with the several regular expressions, callback should yield a param', {
+  '/a': {
+    '/(\\w+)': {
+      '/(\\w+)': function(a, b) {
+        shared.fired.push(a, b);
+      }
+    }
+  }
+}, function() {
+  shared.fired = [];
+  this.navigate('/a/b/c', function() {
+    deepEqual(shared.fired, ['b', 'c']);
+    this.finish();
+  });
+});
+
+
+
 createTest('Single nested route with on member containing function value', {
   '/a': {
     '/b': {
@@ -153,7 +118,7 @@ createTest('method should only fire once on the route.', {
   '/a': {
     '/b': {
       once: function() {
-        shared.fired.push(1);
+        shared.fired = 1;
       }
     }
   }
