@@ -131,7 +131,7 @@ asyncTest("nested syntax", function() {
 });
 
 asyncTest("mixed nested syntax", function() {
-  window.location.hash = "/another/nested/test";
+  window.location.hash = "/other/nested/test";
   setTimeout(function() {
     equals(message, "success", "should be success");
     start();

@@ -70,7 +70,7 @@
       return true;
     }
     
-    function parse(routes, path, len, olen) {
+    function parse(routes, path, len, matched) {
 
       var roughmatch, exactmatch;
       var route = routes[path];
@@ -91,61 +91,70 @@
                   roughmatch.splice(i, 1);
                 }
               }
-              path = roughmatch.slice(1);
+
+              var partsCount = exactmatch[0].split('/').length - 1,
+                  _path = roughmatch.slice(exactmatch.length),
+                  _len = len - partsCount,
+                  _matched = matched.concat(exactmatch.slice(1));
 
               if (exactmatch.length > 1) {
-                len--;
                 route = routes[r];
               }
               else {
-                len -= exactmatch[0].split('/').length - 1;
                 route = routes[exactmatch[0]];
               }
-              break;
+
+              if (next(_path, _len, _matched)) return true;
             }
           }
         }
       } else {
-        len -= path.split('/').length - 1;
+        _len = len - path.split('/').length + 1;
       }
 
-      if (route) {
+      next('/', _len, matched);
 
-        var parts;
+      function next(path, len, matched) {
+        if (route) {
 
-        if(typeof path !== 'string') {
-          parts = path.slice();
-          path = '/' + path.join('/');
-        }
-
-        parse(route, path, len, olen);
-
-        if (len === 0 || self._recurse) {
-
-          if (typeof route === 'function' || route.on) {
-            queue(route.on || route, 'on');
+          if(typeof path !== 'string') {
+            path = '/' + path.join('/');
           }
 
-          if (route.once){
-            queue(route.once, 'once');
+          if (path !== '/') {
+            parse(route, path, len, matched);
           }
 
-          if (route.after){
-            queue(route.after, 'after');
-          }
+          if (len === 0 || self._recurse) {
 
-          function queue(listeners, type) {
-            if(route[type] && route[type][0]) {
-              for (var j=0, m = route[type].length; j < m; j++) {
-                self[type][add]({ fn: route[type][j], val: parts || path });
+            if (typeof route === 'function' || route.on) {
+              queue(route.on || route, 'on');
+            }
+
+            if (route.once && !route.once._fired){
+              route.once._fired = true;
+              queue(route.once, 'once');
+            }
+
+            if (route.after){
+              queue(route.after, 'after');
+            }
+
+            function queue(listeners, type) {
+              if(route[type] && route[type][0]) {
+                for (var j=0, m = route[type].length; j < m; j++) {
+                  self[type][add]({ fn: route[type][j], val: matched || path });
+                }
               }
-            }
-            else {
-              self[type][add]({ fn: listeners, val: parts || path });
-            }
+              else {
+                self[type][add]({ fn: listeners, val: matched || path });
+              }
+            };
+
+            return true;
           }
         }
-      }
+      };
 
       return true;
     }
@@ -155,17 +164,17 @@
       var loc = dloc.hash.slice(1);
       var len = loc.split('/').length-1;
 
-      dispatch('after');
-      dispatch('aftereach');
-
       self.after = [];
 
-      if(parse(self.routes, loc, len, len)) {
+      if(parse(self.routes, loc, len, [])) {
         dispatch('on');
         dispatch('once');
         dispatch('oneach');
         self.on = [];
       }
+
+      dispatch('after');
+      dispatch('aftereach');
     }
 
     this.init = function() {
