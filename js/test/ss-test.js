@@ -149,7 +149,7 @@ asyncTest("nested syntax with params", function() {
 asyncTest("nested syntax with multiple params", function() {
   window.location.hash = "/cat/purple/small";
   setTimeout(function() {
-    equals(message, "small and purple", "color and size params should have been passed");
+    equals(message, "purple and small", "color and size params should have been passed");
     start();
   }, 10);
 });
