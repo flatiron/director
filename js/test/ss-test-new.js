@@ -300,16 +300,13 @@ createTest('All global event should fire after every route', {
 }, {
   after: function() {
     shared.fired.push('b');
-    alert('v')
   }
 }, function() {
   shared.fired = [];
 
   this.navigate('/a', function() {
-    alert('a')
     this.navigate('/b/c', function() {
-    alert('b')
-      this.navigate('/d/e', function() {    
+      this.navigate('/d/e', function() {
         deepEqual(shared.fired, ['a', 'b', 'a', 'b', 'a', 'b']);
         this.finish();
       });
@@ -318,3 +315,26 @@ createTest('All global event should fire after every route', {
 
 });
 
+createTest('Not found.', {
+  '/a': {
+    on: function a() {
+      shared.fired.push('a');
+    }
+  },
+  '/b': {
+    on: function a() {
+      shared.fired.push('b');
+    }
+  }
+}, {
+  notfound: function() {
+    shared.fired.push('notfound');
+  }
+}, function() {
+  shared.fired = [];
+
+  this.navigate('/c', function() {
+    deepEqual(shared.fired, ['notfound']);
+    this.finish();
+  });
+});
