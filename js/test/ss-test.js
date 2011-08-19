@@ -168,22 +168,6 @@ asyncTest("special event - after", function() {
   }, 10);
 });
 
-asyncTest("special event - once", function() {
-  window.testOnce = function() {
-    equals(onceCount, 1, "count should have only been increased one time");
-  };
-  window.location.hash = "/onceonly";
-  setTimeout(function() {
-    equals(onceCount, 1, "count should have only been increased one time");
-    start();
-    window.location.hash = "";
-    window.location.hash = "/onceonly";
-    setTimeout(function() {
-      equals(onceCount, 1, "count should have only been increased one time");
-    }, 10);
-  }, 10);
-});
-
 asyncTest("special event - on (for the entire router)", function() {
   window.location.hash = "/cat/orange";
   setTimeout(function() {
