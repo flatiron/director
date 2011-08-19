@@ -157,7 +157,7 @@
           }
         }
         else {
-          self.noroute(matched)
+          self.noroute(matched);
         }
       };
       return true;

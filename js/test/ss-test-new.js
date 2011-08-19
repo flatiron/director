@@ -126,8 +126,33 @@ createTest('method should only fire once on the route.', {
   shared.fired = 0;
   this.navigate('/a/b', function() {
     this.navigate('/a/b', function() {
-      deepEqual(shared.fired, 1);
-      this.finish();
+      this.navigate('/a/b', function() {
+        deepEqual(shared.fired, 1);
+        this.finish();
+      });
+    });
+  });
+});
+
+createTest('method should only fire once on the route, multiple nesting.', {
+  '/a': {
+    on: function() { shared.fired++; },
+    once: function() { shared.fired++; }
+  },
+  '/b': {
+    on: function() { shared.fired++; },
+    once: function() { shared.fired++; }
+  }
+}, function() {
+  shared.fired = 0;
+  this.navigate('/a', function() {
+    this.navigate('/b', function() {
+      this.navigate('/a', function() {
+        this.navigate('/b', function() {
+          deepEqual(shared.fired, 6);
+          this.finish();
+        });
+      });
     });
   });
 });
