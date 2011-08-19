@@ -334,7 +334,9 @@ createTest('Not found.', {
   shared.fired = [];
 
   this.navigate('/c', function() {
-    deepEqual(shared.fired, ['notfound']);
-    this.finish();
+    this.navigate('/d', function() {
+      deepEqual(shared.fired, ['notfound', 'notfound']);
+      this.finish();
+    });
   });
 });

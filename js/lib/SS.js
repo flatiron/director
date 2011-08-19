@@ -156,6 +156,9 @@
             return true;
           }
         }
+        else {
+          self.noroute(matched)
+        }
       };
       return true;
     }
