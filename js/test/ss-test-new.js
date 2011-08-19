@@ -157,7 +157,22 @@ createTest('method should only fire once on the route, multiple nesting.', {
   });
 });
 
-
+createTest('overlapping routes with tokens.', {
+  '/a/:b/c' : function(){
+    shared.fired.push(location.hash);
+  },
+  '/a/:b/c/:d' : function(){
+    shared.fired.push(location.hash);
+  }
+}, function() {
+  shared.fired = [];
+  this.navigate('/a/b/c', function() {
+    this.navigate('/a/b/c/d', function() {
+      deepEqual(shared.fired, ['#/a/b/c', '#/a/b/c/d']);
+      this.finish();
+    });
+  });
+});
 
 // 
 // Recursion features
