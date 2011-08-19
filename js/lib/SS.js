@@ -175,6 +175,7 @@
         dispatch('once');
         dispatch('oneach');
         self.on = [];
+        self.once = [];
       }
 
       dispatch('after');
