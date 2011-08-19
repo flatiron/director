@@ -47,27 +47,26 @@
     regify(this.routes);
 
     function dispatch(src) {
-
       for (var i=0, l = self[src].length; i < l; i++) {
 
         var listener = self[src][i];
-         var val = listener.val === null ? self.lastroutevalue : listener.val;
-         
-         if (typeof listener.fn === 'string') {
-           listener.fn = self.resource[listener.fn];
-         }
-         
-         if (typeof val === 'string') {
-           val = [val];
-         }
-         
-         if (listener.fn.apply(self.resource || null, val || []) === false) {
-           self[src] = [];
-           return false;
-         }
-         if (listener.val !== null) {
-           self.lastroutevalue = listener.val;
-         }
+        var val = listener.val === null ? self.lastroutevalue : listener.val;
+        
+        if (typeof listener.fn === 'string') {
+          listener.fn = self.resource[listener.fn];
+        }
+        
+        if (typeof val === 'string') {
+          val = [val];
+        }
+        
+        if (listener.fn.apply(self.resource || null, val || []) === false) {
+          self[src] = [];
+          return false;
+        }
+        if (listener.val !== null) {
+          self.lastroutevalue = listener.val;
+        }
       
       }
     }
@@ -142,14 +141,14 @@
               queue(route.after, 'after');
             }
 
-            function queue(listeners, type) {
-              if(route[type] && route[type][0]) {
-                for (var j=0, m = route[type].length; j < m; j++) {
-                  self[type][add]({ fn: route[type][j], val: matched || path });
+            function queue(fn, type) {
+              if(fn && fn[0]) {
+                for (var j = 0, m = fn.length; j < m; j++) {
+                  self[type][add]({ fn: fn[j], val: matched || path });
                 }
               }
               else {
-                self[type][add]({ fn: listeners, val: matched || path });
+                self[type][add]({ fn: fn, val: matched || path });
               }
             };
 
