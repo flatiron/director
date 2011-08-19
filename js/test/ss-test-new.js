@@ -118,12 +118,12 @@ createTest('method should only fire once on the route.', {
   '/a': {
     '/b': {
       once: function() {
-        shared.fired = 1;
+        shared.fired++;
       }
     }
   }
 }, function() {
-  shared.fired = [];
+  shared.fired = 0;
   this.navigate('/a/b', function() {
     this.navigate('/a/b', function() {
       deepEqual(shared.fired, 1);
@@ -155,10 +155,6 @@ createTest('Nested routes with no recursion', {
     }
   }
 }, function() {
-  this.router.use({
-    //recurse: 'backward'
-  });
-
   shared.fired = [];
 
   this.navigate('/a/b/c', function() {
@@ -183,11 +179,9 @@ createTest('Nested routes with backward recursion', {
       shared.fired.push('a');
     }
   }
+}, {
+  recurse: 'backward'
 }, function() {
-  this.router.use({
-    recurse: 'backward'
-  });
-
   shared.fired = [];
 
   this.navigate('/a/b/c', function() {
@@ -213,11 +207,9 @@ createTest('Breaking out of nested routes with backward recursion', {
       shared.fired.push('a');
     }
   }
+}, {
+  recurse: 'backward'
 }, function() {
-  this.router.use({
-    recurse: 'backward'
-  });
-
   shared.fired = [];
 
   this.navigate('/a/b/c', function() {
@@ -242,11 +234,9 @@ createTest('Nested routes with forward recursion', {
       shared.fired.push('a');
     }
   }
+}, {
+  recurse: 'forward'
 }, function() {
-  this.router.use({
-    recurse: 'forward'
-  });
-
   shared.fired = [];
 
   this.navigate('/a/b/c', function() {
@@ -272,11 +262,9 @@ createTest('Breaking out of nested routes with forward recursion', {
       shared.fired.push('a');
     }
   }
+}, {
+  recurse: 'forward'
 }, function() {
-  this.router.use({
-    recurse: 'forward'
-  });
-
   shared.fired = [];
 
   this.navigate('/a/b/c', function() {
@@ -284,3 +272,49 @@ createTest('Breaking out of nested routes with forward recursion', {
     this.finish();
   });
 });
+
+// 
+// Special Events
+// ----------------------------------------------------------
+
+createTest('All global event should fire after every route', {
+  '/a': {
+    on: function a() {
+      shared.fired.push('a');
+    }
+  },
+  '/b': {
+    '/c': {
+      on: function a() {
+        shared.fired.push('a');
+      }
+    }
+  },
+  '/d': {
+    '/:e': {
+      on: function a() {
+        shared.fired.push('a');
+      }
+    }
+  }
+}, {
+  after: function() {
+    shared.fired.push('b');
+    alert('v')
+  }
+}, function() {
+  shared.fired = [];
+
+  this.navigate('/a', function() {
+    alert('a')
+    this.navigate('/b/c', function() {
+    alert('b')
+      this.navigate('/d/e', function() {    
+        deepEqual(shared.fired, ['a', 'b', 'a', 'b', 'a', 'b']);
+        this.finish();
+      });
+    });
+  });
+
+});
+

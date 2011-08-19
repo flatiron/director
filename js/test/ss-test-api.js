@@ -11,11 +11,21 @@ module("SugarSkull.js", {
 
 var shared;
 
-function createTest(name, config, test) {
+function createTest(name, config, use, test) {
+  if (typeof use === 'function') {
+    test = use;
+    use = undefined;
+  }
   asyncTest(name, function() {
     setTimeout(function() {
-      var router = new Router(config).init(),
+      var router = new Router(config),
           context;
+
+      if (use !== undefined) {
+        router.use(use);
+      }
+
+      router.init();
 
       test.call(context = {
         router: router,
