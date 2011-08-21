@@ -1,5 +1,26 @@
 /*  HTML5 ✰ Boilerplate  */
 
+@font-face {
+  font-family: 'typewriter';
+  src: local("â˜º"), url("typewriter.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal; 
+}
+
+@font-face {
+  font-family: 'AllerLt';
+  src: local("â˜º"), url("AllerLt.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal; 
+}
+
+@font-face {
+  font-family: 'Ballpark';
+  src: local("â˜º"), url("Ballpark.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal; 
+}
+
 html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp,
 small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li,
@@ -77,129 +98,135 @@ button {  width: auto; overflow: visible; }
 .hidden { display: none; visibility: hidden; } 
 .visuallyhidden { position: absolute !important; clip: rect(1px 1px 1px 1px);  clip: rect(1px, 1px, 1px, 1px); }
 .invisible { visibility: hidden; }
-.clearfix:before, .clearfix:after {  content: "\0020"; display: block; height: 0; visibility: hidden;	 } 
+.clearfix:before, .clearfix:after {  content: "\0020"; display: block; height: 0; visibility: hidden;   } 
 .clearfix:after { clear: both; }
 .clearfix { zoom: 1; }
 
 #red {
-	color: red;
+  color: red;
 }
 
 body {
-	background-color: #e7e6df;
+    font-family: 'AllerLt';
+  background-color: #e7e6df;
 }
 
-h1, h2, header a {
+h1, header a {
   font-size: 60px;
-  text-shadow: 2px 2px 0 #ddd, 3px 3px 0 #515151;
-
+  font-family: 'typewriter';
   margin-top: 0;
   margin-bottom: 0;
-	color: #333;
-	text-align: center;
-	margin: 20px;
+  color: #444;
+  text-align: center;
+  margin: 20px;
+  text-shadow: 1px 1px 0 #fff, 2px 2px 0 #d0d0d0;
 }
 
-h2 {
-	font-size: 30px;
+h2, a {
+  text-align: center;
+  margin: 0px;
+  color: #e7e6df;
+  font-size: 20px;
+  text-shadow: 2px 2px 0 #111;
+}
+
+section {
+  display: none;
 }
 
 header {
-	text-align: center;
+  text-align: center;
 }
 
 header a {
   text-transform: uppercase;
-	color: #333;
-	font-size: 15px;
-	text-shadow: none;
-	text-decoration: none;
+  color: #333;
+  font-size: 15px;
+  text-shadow: none;
+  text-decoration: none;
 }
 
 header a:hover {
   text-shadow: 1px 1px 0 #fff, 2px 2px 0 #d0d0d0;
 }
 
+#subnav {
+  text-align: center;
+}
+
+#subnav a {
+  margin: 0 20px 0 20px;
+}
+
 a {
-	text-decoration: none;
+  text-decoration: none;
 }
 
 #contentcontainer {
-	background-color: #333;
-	color : #666;
-	margin-top: 20px;
-	padding: 25px 0px 25px 0px;
+  background-color: #333;
+  color : #666;
+  margin-top: 20px;
+  padding: 25px 0px 25px 0px;
+  margin-bottom: 10%;
+}
+
+pre {
+  white-space: -moz-pre-wrap; /* Mozilla, supported since 1999 */
+  white-space: -pre-wrap; /* Opera 4 - 6 */
+  white-space: -o-pre-wrap; /* Opera 7 */
+  white-space: pre-wrap; /* CSS3 - Text module (Candidate Recommendation) http://www.w3.org/TR/css3-text/#white-space */
+  word-wrap: break-word; /* IE 5.5+ */
 }
 
 #contentarea {
-	border-top: 1px dashed #666;
-	border-bottom: 1px dashed #666;
-	background-color: #333;
-	color : #666;
-	margin-top: 20px;
-	margin-bottom: 20px;
-	padding: 25px;
-	min-height: 300px;
+  border-top: 1px dashed #666;
+  border-bottom: 1px dashed #666;
+  background-color: #333;
+  color : #666;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 25px;
+  min-height: 350px;
 }
 
-
-#clear {
-	position: absolute;
-	top: 135px;
-	right: 20px;
-	border-radius: 18px;
-	height: 15px;
-	width: 13px;
-	padding: 6px;
-	font-size: 25px;
-	line-height: 10px;
-	padding-left: 10px;
-	padding-top: 8px;
-	background-color: #e7e6df;
-	border: 3px solid #333;
-	cursor: pointer;
-	box-shadow: 2px 2px 4px #e7e6df;
-	-webkit-box-shadow: 2px 2px 0px #e7e6df;
+.codesample {
+  display: inline-block;
+  border-radius: 10px;
+  background-color: #222;
+  padding: 10px;
+  font-family: 'Courier New';
+  font-size: 15px;
+  float: left;
+  width: 45%;
+  box-shadow: 2px 2px 0px #111;
 }
 
-#clear:hover {
-	color: red;
+.codeexplained {
+  float: left;
+  width: 45%;
+  color: #666;
+  display: inline-block;
+  font-size: 20px;
+  margin-left: 20px;
+  text-shadow: 1px 1px 0 #111;
+  margin-bottom: 20px;
 }
 
-.route.samplelayer {
-	display: none;
-	position: absolute;
-	left: 20%;
-	padding: 20px;
-	top: 120px;
-	height: 240px;
-	width: 55%;
-	background-color: #e7e6df;
-	-webkit-border-radius: 4px;
-	-webkit-border-top-right-radius: 20px;
-	-webkit-border-bottom-left-radius: 20px;
-	-moz-border-radius: 4px;
-	-moz-border-radius-topright: 20px;
-	-moz-border-radius-bottomleft: 20px;
-	border-radius: 4px;
-	-webkit-box-shadow: 0 0 20px #000;
-	box-shadow: 0 0 20px #000;
-	border-top-right-radius: 20px;
-	border-bottom-left-radius: 20px;
-	border: 8px solid #8a8a84;
+#about {
+  margin-top: 30px;
+  text-align: center;
+  font-size: 30px;
+}
+.free {
+  text-align: center;
+  font-family: 'Ballpark';
+  font-size: 140px;
+  color: #3d3d3d;
+  text-shadow: -1px -1px 0 #111;
 }
 
-.button {
-	position: absolute;
-	bottom: 0px;
-	right: 40px;
-	border-top-right-radius: 6px;
-	border-top-left-radius: 6px;	
-	width: auto;
-	color: #fff;
-	background-color: rgba(0,0,0,0.4);
-	padding: 6px;
-	cursor: pointer;
+section[data-route-1="methods"] {
+  min-height: 600px;
 }
 
 @media all and (orientation:portrait) { 
