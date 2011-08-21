@@ -128,6 +128,17 @@
 
           if (len === 0 || self._recurse) {
 
+            function queue(fn, type) {
+              if(fn && fn[0]) {
+                for (var j = 0, m = fn.length; j < m; j++) {
+                  self[type][add]({ fn: fn[j], val: matched || path });
+                }
+              }
+              else {
+                self[type][add]({ fn: fn, val: matched || path });
+              }
+            };
+
             if (typeof route === 'function' || route.on) {
               queue(route.on || route, 'on');
             }
@@ -140,17 +151,6 @@
             if (route.after){
               queue(route.after, 'after');
             }
-
-            function queue(fn, type) {
-              if(fn && fn[0]) {
-                for (var j = 0, m = fn.length; j < m; j++) {
-                  self[type][add]({ fn: fn[j], val: matched || path });
-                }
-              }
-              else {
-                self[type][add]({ fn: fn, val: matched || path });
-              }
-            };
 
             return true;
           }
