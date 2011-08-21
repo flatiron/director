@@ -181,8 +181,11 @@
       dispatch('aftereach');
     }
 
-    this.init = function() {
+    this.init = function(r) {
       listener.init(route);
+      if(dloc.hash.length < 1 && r) { 
+        dloc.hash = r; 
+      }
       if(dloc.hash.length > 0) {
         route();
       }
