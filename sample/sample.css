@@ -198,6 +198,7 @@ pre {
   font-size: 15px;
   float: left;
   width: 45%;
+  text-shadow: -1px -1px 0 #111;
   box-shadow: 2px 2px 0px #111;
   margin-bottom: 20px;
   clear: left;
