@@ -1,3 +1,4 @@
+<br/>
 ![Alt text](https://github.com/hij1nx/SugarSkull/raw/master/img/sugarskull.png)
 
 # Synopsis
@@ -6,11 +7,19 @@ SugarSkull is a client side URL router. It's the smallest amount of glue needed 
 
 # Motivation
 
+### The quick explanation.
+
+Sometimes you only need a wrench, not the toolbox with a hammer, screwdriver, etc. sugarskull is small. it does one job and does it well. It's not a framework, its a simple tool easy to add or remove. It promotes centralizing router logic so it's not intertwined throughout your code. Sugarskull was intended to replace backbone.js routes and provide a lighter weight, less sinatra-like alternative to sammy.js.
+
+### Enough talk, how about a demo? <http://hij1nx.github.com/SugarSkull>
+
+### The longer explanation.
+
 Storing some information about the state of an application within the URL allows the URL of the application to be emailed, bookmarked or copied and pasted. When the URL is visited it restores the state of the application. A client side router will also notify the browser about changes to the page, so even if the page does not reload, the back/forward buttons will give the illusion of navigation.
 
 The HTML5 history API isn't a replacement for using the location hash. The HTML5 history API requires that a URL resolves to real assets on the server. It is also designed around the requirement that all pages *should* load without Javascript. SugarSkull targets script-rich applications who's audience is well-known.
 
-SugarSkull can enhance ***backbone.js*** by replacing its more simplistic Routers. SugarSkull covers more use cases and provides a more expressive way to define routes and associate logic with them. A lightweight alternative to ***sammy.js***, narrowly focused on routing.
+### WHAT ABOUT SEO?
 
 Is using a client side router a problem for SEO? Yes. If advertising is a requirement, you are probably building a "Web Page" and not a "Web Application". SugarSkull is meant for script-heavy Web Applications.
 
