@@ -331,9 +331,6 @@ Set a segment of the current route.<br/><br/>
 `on` - A function or array of functions to execute when any route is matched.<br/>
 `after` - A function or array of functions to execute when leaving any route.<br/>
 
-# Version
-0.3.0
-
 # Licence
 
 (The MIT License)
