@@ -8,6 +8,8 @@
 
     if(!(this instanceof Router)) return new Router(routes);
 
+//    if (dloc.hash === '') { dloc.hash = '/'; }
+
     var self = this; 
 
     this.routes = routes;
@@ -183,7 +185,7 @@
 
     this.init = function(r) {
       listener.init(route);
-      if(dloc.hash.length < 1 && r) { 
+      if(dloc.hash.length === '/' && r) { 
         dloc.hash = r; 
       }
       if(dloc.hash.length > 0) {
