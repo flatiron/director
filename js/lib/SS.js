@@ -2,6 +2,17 @@
 
   var dloc = document.location;
 
+  function regify(routes) { // convert all simple param routes to regex
+    for (var key in routes) {
+      regify(routes[key]);
+      if (key.indexOf(':') !== -1) {
+        var newKey = key.replace(/:.*?\/|:.*?$/g, '([a-z0-9-]+)/').slice(0, -1);
+        routes[newKey] = routes[key];
+        delete routes[key];
+      }
+    }
+  }
+
   window.Router = Router;
   
   function Router(routes) {
@@ -34,17 +45,6 @@
     this.notfound = null;
     this.lastroutevalue = null;
     this.alreadyrun = false;
-
-    function regify(routes) { // convert all simple param routes to regex
-      for (var key in routes) {
-        regify(routes[key]);
-        if (key.indexOf(':') !== -1) {
-          var newKey = key.replace(/:.*?\/|:.*?$/g, '([a-z0-9-]+)/').slice(0, -1);
-          routes[newKey] = routes[key];
-          delete routes[key];
-        }
-      }
-    }
 
     regify(this.routes);
 
@@ -203,7 +203,7 @@
   }
 
   Router.prototype.use = function(conf) {
-    
+
     for(var item in conf) {
       if(conf.hasOwnProperty(item)) {
 
@@ -211,12 +211,12 @@
           this.recurse(conf[item]);
           continue;
         }
-        
+
         if(item === 'resource') {
           this.resource = conf[item];
           continue;
         }
-        
+
         if(item === 'notfound') {
           this.notfound = conf[item];
           continue;

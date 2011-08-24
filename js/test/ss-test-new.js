@@ -380,3 +380,56 @@ createTest('Not found.', {
     });
   });
 });
+
+createTest('On all.', {
+  '/a': {
+    on: function a() {
+      shared.fired.push('a');
+    }
+  },
+  '/b': {
+    on: function a() {
+      shared.fired.push('b');
+    }
+  }
+}, {
+  on: function() {
+    shared.fired.push('c');
+  }
+}, function() {
+  shared.fired = [];
+
+  this.navigate('/a', function() {
+    this.navigate('/b', function() {
+      deepEqual(shared.fired, ['a', 'c', 'b', 'c']);
+      this.finish();
+    });
+  });
+});
+
+
+createTest('After all.', {
+  '/a': {
+    on: function a() {
+      shared.fired.push('a');
+    }
+  },
+  '/b': {
+    on: function a() {
+      shared.fired.push('b');
+    }
+  }
+}, {
+  after: function() {
+    shared.fired.push('c');
+  }
+}, function() {
+  shared.fired = [];
+
+  this.navigate('/a', function() {
+    this.navigate('/b', function() {
+      deepEqual(shared.fired, ['a', 'c', 'b', 'c']);
+      this.finish();
+    });
+  });
+});
