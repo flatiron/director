@@ -3,7 +3,10 @@
   var dloc = document.location;
 
   function regify(routes) { // convert all simple param routes to regex
-    for (var key in routes) {
+
+	if (typeof routes === 'string') return;
+  
+	for (var key in routes) {
       regify(routes[key]);
       if (key.indexOf(':') !== -1) {
         var newKey = key.replace(/:.*?\/|:.*?$/g, '([a-z0-9-]+)/').slice(0, -1);
@@ -47,13 +50,14 @@
     regify(this.routes);
 
     function dispatch(src) {
+	
       for (var i=0, l = self[src].length; i < l; i++) {
 
         var listener = self[src][i];
         var val = listener.val === null ? self.lastroutevalue : listener.val;
-        
+
         if (typeof listener.fn === 'string') {
-          listener.fn = self.resource[listener.fn];
+			listener.fn = self.resource[listener.fn];
         }
         
         if (typeof val === 'string') {
@@ -129,7 +133,8 @@
           if (len === 0 || self._recurse) {
 
             function queue(fn, type) {
-              if(fn && fn[0]) {
+			
+              if(fn && fn.constructor == Array) {
                 for (var j = 0, m = fn.length; j < m; j++) {
                   self[type][add]({ fn: fn[j], val: matched || path });
                 }
