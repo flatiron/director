@@ -3,6 +3,9 @@
   var dloc = document.location;
 
   function regify(routes) { // convert all simple param routes to regex
+    if (typeof routes === 'string') {
+      return; 
+    }
     for (var key in routes) {
       regify(routes[key]);
       if (key.indexOf(':') !== -1) {
@@ -129,7 +132,7 @@
           if (len === 0 || self._recurse) {
 
             function queue(fn, type) {
-              if(fn && fn[0]) {
+              if(fn && typeof fn !== 'string' && fn[0]) {
                 for (var j = 0, m = fn.length; j < m; j++) {
                   self[type][add]({ fn: fn[j], val: matched || path });
                 }

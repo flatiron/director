@@ -433,3 +433,34 @@ createTest('After all.', {
     });
   });
 });
+
+createTest('resource object.', {
+  '/a': {
+    '/b/:c': {
+      on: 'f1'
+    },
+    on: 'f2'
+  },
+  '/d': { 
+    on: ['f1', 'f2']
+  }
+},
+{
+  resource: {
+    f1: function (name){
+        shared.fired.push("f1-" + name);
+    },
+    f2: function (name){
+        shared.fired.push("f2");
+    }
+  }
+}, function() {
+  shared.fired = [];
+
+  this.navigate('/a/b/c', function() {
+    this.navigate('/d', function() {
+      deepEqual(shared.fired, ['f1-c', 'f1-undefined', 'f2']);
+      this.finish();
+    });
+  });
+});
