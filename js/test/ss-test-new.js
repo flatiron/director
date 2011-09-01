@@ -285,6 +285,38 @@ createTest('Nested routes with forward recursion', {
   });
 });
 
+createTest('Nested routes with forward recursion, single route with an after event.', {
+  '/a': {
+    '/b': {
+      '/c': {
+        on: function c() {
+          shared.fired.push('c');
+        },
+        after: function() {
+          shared.fired.push('c-after');
+        }
+      },
+      on: function b() {
+        shared.fired.push('b');
+      }
+    },
+    on: function a() {
+      shared.fired.push('a');
+    }
+  }
+}, {
+  recurse: 'forward'
+}, function() {
+  shared.fired = [];
+
+  this.navigate('/a/b/c', function() {
+    this.navigate('/a/b', function() {
+      deepEqual(shared.fired, ['a', 'b', 'c', 'c-after', 'a', 'b']);
+      this.finish();
+    });
+  });
+});
+
 createTest('Breaking out of nested routes with forward recursion', {
   '/a': {
     '/b': {
@@ -433,3 +465,38 @@ createTest('After all.', {
     });
   });
 });
+
+createTest('resource object.', {
+  '/a': {
+    '/b/:c': {
+      on: 'f1'
+    },
+    on: 'f2'
+  },
+  '/d': { 
+    on: ['f1', 'f2']
+  }
+},
+{
+  resource: {
+    f1: function (name){
+        shared.fired.push("f1-" + name);
+    },
+    f2: function (name){
+        shared.fired.push("f2");
+    }
+  }
+}, function() {
+  shared.fired = [];
+
+  this.navigate('/a/b/c', function() {
+    this.navigate('/d', function() {
+      deepEqual(shared.fired, ['f1-c', 'f1-undefined', 'f2']);
+      this.finish();
+    });
+  });
+});
+
+
+
+
