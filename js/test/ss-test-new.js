@@ -285,6 +285,38 @@ createTest('Nested routes with forward recursion', {
   });
 });
 
+createTest('Nested routes with forward recursion, single route with an after event.', {
+  '/a': {
+    '/b': {
+      '/c': {
+        on: function c() {
+          shared.fired.push('c');
+        },
+        after: function() {
+          shared.fired.push('c-after');
+        }
+      },
+      on: function b() {
+        shared.fired.push('b');
+      }
+    },
+    on: function a() {
+      shared.fired.push('a');
+    }
+  }
+}, {
+  recurse: 'forward'
+}, function() {
+  shared.fired = [];
+
+  this.navigate('/a/b/c', function() {
+    this.navigate('/a/b', function() {
+      deepEqual(shared.fired, ['a', 'b', 'c', 'c-after', 'a', 'b']);
+      this.finish();
+    });
+  });
+});
+
 createTest('Breaking out of nested routes with forward recursion', {
   '/a': {
     '/b': {
@@ -464,3 +496,7 @@ createTest('resource object.', {
     });
   });
 });
+
+
+
+
