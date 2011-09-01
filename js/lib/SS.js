@@ -9,7 +9,7 @@
     for (var key in routes) {
       regify(routes[key]);
       if (key.indexOf(':') !== -1) {
-        var newKey = key.replace(/:.*?\/|:.*?$/g, '([a-z0-9-]+)/').slice(0, -1);
+        var newKey = key.replace(/:.*?\/|:.*?$/g, '([a-zA-Z0-9-]+)/').slice(0, -1);
         routes[newKey] = routes[key];
         delete routes[key];
       }

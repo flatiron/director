@@ -497,6 +497,19 @@ createTest('resource object.', {
   });
 });
 
+createTest('argument matching should be case agnostic', {
+  '/fooBar/:name': {
+      on: function(name) {
+        shared.fired.push("fooBar-" + name);
+      }
+    }
+}, function() {
+  shared.fired = [];
+  this.navigate('/fooBar/tesTing', function() {
+    deepEqual(shared.fired, ['fooBar-tesTing']);
+    this.finish();
+  });
+});
 
 
 
