@@ -186,7 +186,7 @@
 
     this.init = function(r) {
 
-      if(dloc.hash === '/' && r) { 
+      if(dloc.hash === '' && r) { 
         dloc.hash = r; 
       }
 
