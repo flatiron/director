@@ -79,11 +79,13 @@
       var roughmatch, exactmatch;
       var route = routes[path];
 
-      if(!route) {
+      if(!route || path === '/') {
         for (var r in routes) { // we dont have an exact match, lets explore.
           if(routes.hasOwnProperty(r)) {
+
             exactmatch = path.match(new RegExp('^' + r));
             roughmatch = path.match(new RegExp('^' + r + '(.*)?'));
+            
             if(exactmatch && roughmatch) {
 
               // convert roughmatch to an array of names without `/`s.
@@ -94,6 +96,12 @@
                 else {
                   roughmatch.splice(i, 1);
                 }
+              }
+
+              if (exactmatch[0] === '/' && 
+                  roughmatch.length > 1 && 
+                  '/([a-zA-Z0-9-]+)' in routes) {
+                continue;
               }
 
               var partsCount = exactmatch[0].split('/').length - 1,
@@ -186,7 +194,7 @@
 
     this.init = function(r) {
 
-      if(dloc.hash.length === '/' && r) { 
+      if(dloc.hash === '/' && r) {
         dloc.hash = r; 
       }
 

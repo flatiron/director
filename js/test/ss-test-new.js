@@ -511,5 +511,29 @@ createTest('argument matching should be case agnostic', {
   });
 });
 
+createTest('`/` route should not override a `/:token` route', {
+  '/': {
+    on: function root() {
+      shared.fired.push('/');
+    }
+  },
+  '/:username': {
+    on: function afunc(username) {
+      shared.fired.push('/' + username);
+    }
+  }
+}, function() {
+  shared.fired = [];
+  this.navigate('/', function root() {
+    console.log('r: /');
+    this.navigate('/a', function afunc() {
+    console.log('r: /a');
+      deepEqual(shared.fired, ['/', '/a']);
+      this.finish();
+    });
+  });
+});
 
 
+// visiting woo.com/#/ logs 'home'
+// visiting woo.com/#/bob should log 'woo, bob' but instead logs 'home'
