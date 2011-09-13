@@ -122,6 +122,14 @@ asyncTest("multiple simple tokens", function(){
   }, 10);
 });
 
+asyncTest("article name including underscore and dot", function(){
+  window.location.hash = "/article/nice_summer_day.json";
+  setTimeout(function(){
+    equals(param1, "nice_summer_day.json", "param1 should match filename");
+    start();
+  }, 10);
+});
+
 asyncTest("nested syntax", function() {
   window.location.hash = "/dog/blue";
   setTimeout(function() {
