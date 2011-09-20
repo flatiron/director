@@ -4,10 +4,10 @@
 
   function regifyString(str) {
     if(~str.indexOf('*')) {
-      str = str.replace(/\*/g, '([a-zA-Z0-9-]+)');
+      str = str.replace(/\*/g, '([a-zA-Z0-9-_\.]+)');
     }
     if(~str.indexOf(':')) {
-      str = str.replace(/:.*?\/|:.*?$/g, '([a-zA-Z0-9-]+)/');
+      str = str.replace(/:.*?\/|:.*?$/g, '([a-zA-Z0-9-_\.]+)/');
       str = str.slice(0, -1);
     }
     return str;
