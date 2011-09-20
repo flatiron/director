@@ -2,14 +2,25 @@
 
   var dloc = document.location;
 
-  function regify(routes) { // convert all simple param routes to regex
+  function regifyString(str) {
+    if(~str.indexOf('*')) {
+      str = str.replace(/\*/g, '([a-zA-Z0-9-]+)');
+    }
+    if(~str.indexOf(':')) {
+      str = str.replace(/:.*?\/|:.*?$/g, '([a-zA-Z0-9-]+)/');
+      str = str.slice(0, -1);
+    }
+    return str;
+  }
+
+  function regifyObject(routes) { // convert all simple param routes to regex
     if (typeof routes === 'string') {
-      return; 
+      return false;
     }
     for (var key in routes) {
-      regify(routes[key]);
-      if (key.indexOf(':') !== -1) {
-        var newKey = key.replace(/:.*?\/|:.*?$/g, '([a-zA-Z0-9-]+)/').slice(0, -1);
+      regifyObject(routes[key]);
+      if (key.indexOf(':') !== -1 || key.indexOf('*') !== -1) {
+        var newKey = regifyString(key);
         routes[newKey] = routes[key];
         delete routes[key];
       }
@@ -38,21 +49,25 @@
 
     this.resource = null;
     this.state = {};
-    this.after = [];
-    this.on = [];
-    this.once = [];
-    this.oneach = [];
-    this.aftereach = [];
-    this.notfound = null;
+
+    this.events = {};
+    this.events.on = [];
+    this.events.oneach = [];
+    this.events.after = [];
+    this.events.aftereach = [];
+    this.events.once = [];
+    this.events.notfound = null;
+
+    this.route = null;
     this.lastroutevalue = null;
     this.alreadyrun = false;
 
-    regify(this.routes);
+    regifyObject(this.routes);
 
     function dispatch(src) {
-      for (var i=0, l = self[src].length; i < l; i++) {
+      for (var i=0, l = self.events[src].length; i < l; i++) {
 
-        var listener = self[src][i];
+        var listener = self.events[src][i];
         var val = listener.val === null ? self.lastroutevalue : listener.val;
         
         if (typeof listener.fn === 'string') {
@@ -63,7 +78,7 @@
           val = [val];
         }
         
-        if (listener.fn.apply(self.resource || null, val || []) === false) {
+        if (listener.fn.apply(self.resource || self, val || []) === false) {
           self[src] = [];
           return false;
         }
@@ -142,11 +157,11 @@
             function queue(fn, type) {
               if(fn && typeof fn !== 'string' && fn[0]) {
                 for (var j = 0, m = fn.length; j < m; j++) {
-                  self[type][add]({ fn: fn[j], val: matched || path });
+                  self.events[type][add]({ fn: fn[j], val: matched || path });
                 }
               }
               else {
-                self[type][add]({ fn: fn, val: matched || path });
+                self.events[type][add]({ fn: fn, val: matched || path });
               }
             };
 
@@ -178,14 +193,14 @@
       var loc = dloc.hash.slice(1);
       var len = loc.split('/').length-1;
 
-      self.after = [];
+      self.events.after = [];
 
       if(parse(self.routes, loc, len, [])) {
         dispatch('on');
         dispatch('once');
         dispatch('oneach');
-        self.on = [];
-        self.once = [];
+        self.events.on = [];
+        self.events.once = [];
       }
 
       dispatch('after');
@@ -230,7 +245,7 @@
         }
 
         if(item === 'notfound') {
-          this.notfound = conf[item];
+          this.events.notfound = conf[item];
           continue;
         }
 
@@ -243,11 +258,11 @@
 
         if(type.indexOf('Array') !== -1) {
           for (var i=0, l = fn.length; i < l; i++) {
-            this[store].push({ fn: fn[i], val: null });
+            this.events[store].push({ fn: fn[i], val: null });
           }
         }
         else {
-          this[store].push({ fn: fn, val: null });
+          this.events[store].push({ fn: fn, val: null });
         }
       }
     }
@@ -255,14 +270,14 @@
   };
 
   Router.prototype.noroute = function(routename) {    
-    if(this.notfound) {
-      if(({}).toString.call(this.notfound).indexOf('Array') !== -1) {
-        for (var i=0, l = this.notfound.length; i < l; i++) {
-          this.notfound[i](routename);
+    if(this.events.notfound) {
+      if(({}).toString.call(this.events.notfound).indexOf('Array') !== -1) {
+        for (var i=0, l = this.events.notfound.length; i < l; i++) {
+          this.events.notfound[i](routename);
         }
       }
       else {
-          this.notfound(routename);
+          this.events.notfound(routename);
       }
     }    
   };
@@ -311,6 +326,24 @@
     }
     
     return ret;
+  };
+
+  Router.prototype.on = function(route, cb) {
+
+    var compiledRoute;
+
+    if(this.route) {
+      compiledRoute = this.route[regifyString(route)];
+    }
+    else {
+      compiledRoute = this.route = this.routes[regifyString(route)] = {
+        on: null
+      };
+    }
+
+    if(compiledRoute) {
+      compiledRoute.on = cb;
+    }
   };
 
   var version = '0.4.0',
