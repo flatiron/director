@@ -4,7 +4,7 @@
 
   function regifyString(str) {
     if(~str.indexOf('*')) {
-      str = str.replace(/\*/g, '([a-zA-Z0-9-]+)');
+      str = str.replace(/\*/g, '([_\.\(\)!\\ %@&a-zA-Z0-9-]+)');
     }
     if(~str.indexOf(':')) {
       str = str.replace(/:.*?\/|:.*?$/g, '([a-zA-Z0-9-]+)/');
