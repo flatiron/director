@@ -1,5 +1,5 @@
 {
-  "name": "directory",
+  "name": "director",
   "description": "SugarSkull 1.0 (with server and client-side support)",
   "version": "0.0.0",
   "author": "Nodejitsu Inc <info@nodejitsu.com>",
@@ -10,6 +10,9 @@
   "repository": {
     "type": "git",
     "url": "http://github.com/flatiron/director.git" 
+  },
+  "dependencies": {
+    "uglify-js": "1.0.6"
   },
   "devDependencies": {
     "vows": "0.5.x"
