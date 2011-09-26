@@ -12,23 +12,34 @@ vows.describe('director/router/mount').addBatch({
         function foobar () { }
         function foostar () { }
         function foobazzbuzz () { }
+        var fnArray = [foobar, foostar];
       
         router.mount({
           '/foo': {
             '/bar': foobar,
-            '/*': foostar
+            '/*': foostar,
+            '/jitsu/then': {
+              before: foobar
+            }
           },
           '/foo/bazz': {
             '/buzz': foobazzbuzz
-          }
+          },
+          '/foo/jitsu': {
+            '/then': fnArray
+          },
+          '/foo/jitsu/then/now': foostar
         });
 
         eyes.inspect(router.routes);
-        assert.strictEqual(router.routes.foo.bar, foobar);
-        assert.strictEqual(router.routes.foo['([_.()!\\ %@&a-zA-Z0-9-]+)'], foostar);
+        assert.strictEqual(router.routes.foo.bar.on, foobar);
+        assert.strictEqual(router.routes.foo['([_.()!\\ %@&a-zA-Z0-9-]+)'].on, foostar);
+        assert.strictEqual(router.routes.foo.jitsu.then.on, fnArray);
+        assert.strictEqual(router.routes.foo.jitsu.then.before, foobar);
         
         assert.isObject(router.routes.foo.bazz);
-        assert.strictEqual(router.routes.foo.bazz.buzz, foobazzbuzz);
+        assert.strictEqual(router.routes.foo.bazz.buzz.on, foobazzbuzz);
+        assert.strictEqual(router.routes.foo.jitsu.then.now.on, foostar);
       }
     }
   }
