@@ -1,0 +1,49 @@
+#!/usr/bin/env node
+
+var fs = require('fs'),
+    path = require('path'),
+    uglify = require('uglify-js');
+
+var root   = path.join(__dirname, '..'),
+    pkg    = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8')),
+    lib    = path.join(root, 'lib', 'director'),
+    build  = path.join(root, 'build'),
+    base   = ['director', pkg.version].join('-'),
+    source = {},
+    targets = {},
+    save = {},
+    files;
+    
+files = {
+  router: path.join(lib, 'router.js'),
+  browser: path.join(lib, 'browser.js'),
+};
+
+targets = {
+  director: path.join(build, base + '.js'),
+  'director-min': path.join(build, base + '.min.js')
+};
+
+Object.keys(files).forEach(function (file) {
+  source[file] = fs.readFileSync(files[file], 'utf8');
+});
+
+var parts = source.browser.split('//\\top||bottom\\/'),
+    code;
+
+code = save[targets.director] = [
+  '(function(window) {',
+  parts[0],
+  source.router,
+  parts[1],
+  '})(window);'
+].join('');
+
+var ast = uglify.parser.parse(code);
+ast = uglify.uglify.ast_mangle(ast);
+ast = uglify.uglify.ast_squeeze(ast);
+save[targets['director-min']] = uglify.uglify.gen_code(ast);
+
+Object.keys(save).forEach(function (file) {
+  fs.writeFileSync(file, save[file], 'utf8');
+});
