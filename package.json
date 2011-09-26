@@ -15,6 +15,7 @@
     "uglify-js": "1.0.6"
   },
   "devDependencies": {
+    "eyes": "0.1.x",
     "vows": "0.5.x"
   },
   "main": "./lib/director",
