@@ -12,13 +12,13 @@ vows.describe('director/router/insert').addBatch({
         function route () { }
         
         router.insert('on', ['foo', 'bar'], route);
-        assert.strictEqual(router.routes.foo.bar, route);
+        assert.strictEqual(router.routes.foo.bar.on, route);
       },
       "'on', ['foo', 'bar'] again": function (router) {
         function route () { }
         
         router.insert('on', ['foo', 'bar'], route);
-        assert.isArray(router.routes.foo.bar);
+        assert.isArray(router.routes.foo.bar.on);
       },
       "'get', ['fizz', 'buzz']": function (router) {
         function route () { }
