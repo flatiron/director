@@ -19,6 +19,14 @@ vows.describe('director/router/insert').addBatch({
         
         router.insert('on', ['foo', 'bar'], route);
         assert.isArray(router.routes.foo.bar.on);
+        assert.length(router.routes.foo.bar.on, 2);
+      },
+      "'on', ['foo', 'bar'] a third time": function (router) {
+        function route () { }
+        
+        router.insert('on', ['foo', 'bar'], route);
+        assert.isArray(router.routes.foo.bar.on);
+        assert.length(router.routes.foo.bar.on, 3);
       },
       "'get', ['fizz', 'buzz']": function (router) {
         function route () { }
