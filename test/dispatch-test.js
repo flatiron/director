@@ -8,6 +8,7 @@ vows.describe('director/router/mount').addBatch({
   "An instance of director.Router": {
     topic: new director.Router({
       '/foo': {
+        on: function log () { console.log('foo') },
         '/bar': {
           '/buzz': function log () { console.log('foo bar buzz') }
         }
