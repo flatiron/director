@@ -2,11 +2,11 @@
 var assert = require('assert'),
     vows = require('vows'),
     eyes = require('eyes'),
-    director = require('../lib/director');
+    SS = require('../lib/SS');
     
-vows.describe('director/router/mount').addBatch({
-  "An instance of director.Router": {
-    topic: new director.Router({
+vows.describe('SS/router/mount').addBatch({
+  "An instance of SS.Router": {
+    topic: new SS.Router({
       '/foo': {
         before: function beforeFoo () { console.log('before foo') },
         on: function onFoo () { console.log('foo') },

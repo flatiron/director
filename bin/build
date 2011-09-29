@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 
 var fs = require('fs'),
+    colors = require('colors'),
     path = require('path'),
     uglify = require('uglify-js');
 
 var root   = path.join(__dirname, '..'),
     pkg    = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8')),
-    lib    = path.join(root, 'lib', 'director'),
+    lib    = path.join(root, 'lib', 'sugarskull'),
     build  = path.join(root, 'build'),
-    base   = ['director', pkg.version].join('-'),
+    base   = ['sugarskull', pkg.version].join('-'),
     source = {},
     targets = {},
     save = {},
@@ -20,8 +21,8 @@ files = {
 };
 
 targets = {
-  director: path.join(build, base + '.js'),
-  'director-min': path.join(build, base + '.min.js')
+  'sugarskull': path.join(build, base + '.js'),
+  'sugarskull-min': path.join(build, base + '.min.js')
 };
 
 Object.keys(files).forEach(function (file) {
@@ -31,7 +32,7 @@ Object.keys(files).forEach(function (file) {
 var parts = source.browser.split('//\\top||bottom\\/'),
     code;
 
-code = save[targets.director] = [
+code = save[targets.sugarskull] = [
   '(function(window) {',
   parts[0],
   source.router,
@@ -42,8 +43,11 @@ code = save[targets.director] = [
 var ast = uglify.parser.parse(code);
 ast = uglify.uglify.ast_mangle(ast);
 ast = uglify.uglify.ast_squeeze(ast);
-save[targets['director-min']] = uglify.uglify.gen_code(ast);
+save[targets['sugarskull-min']] = uglify.uglify.gen_code(ast);
+
+console.log('Build...');
 
 Object.keys(save).forEach(function (file) {
+  console.log('Attempting to write file [' + file.green + ']');
   fs.writeFileSync(file, save[file], 'utf8');
 });

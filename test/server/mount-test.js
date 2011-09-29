@@ -2,7 +2,7 @@
 var assert = require('assert'),
     vows = require('vows'),
     eyes = require('eyes'),
-    director = require('../lib/director');
+    SS = require('../lib/SS');
 
 function assertRoute (fn, path, route) {
   if (path.length === 1) {
@@ -14,10 +14,10 @@ function assertRoute (fn, path, route) {
   assertRoute(fn, path, route);
 }
 
-vows.describe('director/router/mount').addBatch({
-  "An instance of director.Router": {
+vows.describe('SS/router/mount').addBatch({
+  "An instance of SS.Router": {
     "with no preconfigured params": {
-      topic: new director.Router(),
+      topic: new SS.Router(),
       "the mount() method": {
         "should sanitize the routes correctly": function (router) {
           function foobar () { }
@@ -56,7 +56,7 @@ vows.describe('director/router/mount').addBatch({
     },
     "with preconfigured params": {
       topic: function () {
-        var router = new director.Router();
+        var router = new SS.Router();
         router.param('city', '([\\w\\-]+)');
         router.param(':country', /([A-Z][A-Za-z]+)/);
         router.param(':zip', /([\d]{5})/);

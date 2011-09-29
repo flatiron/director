@@ -1,7 +1,7 @@
 {
-  "name": "director",
+  "name": "sugarskull",
   "description": "SugarSkull 1.0 (with server and client-side support)",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": "Nodejitsu Inc <info@nodejitsu.com>",
   "contributors": [
     { "name": "Paolo Fragomeni", "email": "hij1nx@nodejitsu.com" },
@@ -9,7 +9,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "http://github.com/flatiron/director.git" 
+    "url": "http://github.com/flatiron/sugarskull.git" 
   },
   "dependencies": {
     "uglify-js": "1.0.6"
@@ -18,6 +18,6 @@
     "eyes": "0.1.x",
     "vows": "0.5.x"
   },
-  "main": "./lib/director",
+  "main": "./lib/sugarskull",
   "engines": { "node": ">= 0.4.0" }
 }

@@ -2,11 +2,11 @@
 
 var assert = require('assert'),
     vows = require('vows'),
-    director = require('../lib/director');
+    SS = require('../lib/SS');
     
-vows.describe('director/router/insert').addBatch({
-  "An instance of director.Router": {
-    topic: new director.Router(),
+vows.describe('SS/router/insert').addBatch({
+  "An instance of SS.Router": {
+    topic: new SS.Router(),
     "the insert() method": {
       "'on', ['foo', 'bar']": function (router) {
         function route () { }
