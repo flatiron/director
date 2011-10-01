@@ -2,11 +2,11 @@
 
 var assert = require('assert'),
     vows = require('vows'),
-    SS = require('../lib/SS');
+    sugarskull = require('../../../lib/sugarskull');
     
-vows.describe('SS/router/insert').addBatch({
-  "An instance of SS.Router": {
-    topic: new SS.Router(),
+vows.describe('sugarskull/router/insert').addBatch({
+  "An instance of sugarskull.Router": {
+    topic: new sugarskull.Router(),
     "the insert() method": {
       "'on', ['foo', 'bar']": function (router) {
         function route () { }

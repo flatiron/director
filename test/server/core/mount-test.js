@@ -2,7 +2,7 @@
 var assert = require('assert'),
     vows = require('vows'),
     eyes = require('eyes'),
-    SS = require('../lib/SS');
+    sugarskull = require('../../../lib/sugarskull');
 
 function assertRoute (fn, path, route) {
   if (path.length === 1) {
@@ -14,10 +14,10 @@ function assertRoute (fn, path, route) {
   assertRoute(fn, path, route);
 }
 
-vows.describe('SS/router/mount').addBatch({
-  "An instance of SS.Router": {
+vows.describe('sugarskull/router/mount').addBatch({
+  "An instance of sugarskull.Router": {
     "with no preconfigured params": {
-      topic: new SS.Router(),
+      topic: new sugarskull.Router(),
       "the mount() method": {
         "should sanitize the routes correctly": function (router) {
           function foobar () { }
@@ -56,7 +56,7 @@ vows.describe('SS/router/mount').addBatch({
     },
     "with preconfigured params": {
       topic: function () {
-        var router = new SS.Router();
+        var router = new sugarskull.Router();
         router.param('city', '([\\w\\-]+)');
         router.param(':country', /([A-Z][A-Za-z]+)/);
         router.param(':zip', /([\d]{5})/);

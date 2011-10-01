@@ -2,11 +2,11 @@
 var assert = require('assert'),
     vows = require('vows'),
     eyes = require('eyes'),
-    SS = require('../lib/SS');
+    sugarskull = require('../../../lib/sugarskull');
     
-vows.describe('SS/router/mount').addBatch({
-  "An instance of SS.Router": {
-    topic: new SS.Router({
+vows.describe('sugarskull/router/mount').addBatch({
+  "An instance of sugarskull.Router": {
+    topic: new sugarskull.Router({
       '/foo': {
         before: function beforeFoo () { console.log('before foo') },
         on: function onFoo () { console.log('foo') },
