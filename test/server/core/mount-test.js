@@ -1,4 +1,11 @@
-
+/*
+ * mount-test.js: Tests for mounting and normalizing routes into a Router instance. 
+ *
+ * (C) 2011, Nodejitsu Inc.
+ * MIT LICENSE
+ *
+ */
+ 
 var assert = require('assert'),
     vows = require('vows'),
     eyes = require('eyes'),

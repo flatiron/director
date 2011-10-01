@@ -1,4 +1,11 @@
-
+/*
+ * dispatch-test.js: Tests for the core dispatch method. 
+ *
+ * (C) 2011, Nodejitsu Inc.
+ * MIT LICENSE
+ *
+ */
+ 
 var assert = require('assert'),
     vows = require('vows'),
     eyes = require('eyes'),
@@ -6,22 +13,29 @@ var assert = require('assert'),
     
 vows.describe('sugarskull/router/mount').addBatch({
   "An instance of sugarskull.Router": {
-    topic: new sugarskull.Router({
-      '/foo': {
-        before: function beforeFoo () { console.log('before foo') },
-        on: function onFoo () { console.log('foo') },
-        after: function afterFoo () { console.log('after foo') },
-        '/bar': {
-          before: function beforeFooBar () { console.log('before foo bar') },
-          on: function onFooBar () { console.log('foo bar') },
-          after: function afterFooBar () { console.log ('after foo bar') },
-          '/buzz': function onFooBarBuzz () { console.log('foo bar buzz') }
+    topic: function () {
+      var that = this;
+      that.matched = {};
+      that.matched['foo'] = [];
+      that.matched['f*'] = []
+      
+      return new sugarskull.Router({
+        '/foo': {
+          before: function () { that.matched.foo.push('before foo') },
+          on: function () { that.matched.foo.push('on foo') },
+          after: function () { that.matched.foo.push('after foo') },
+          '/bar': {
+            before: function () { that.matched.foo.push('before foo bar') },
+            on: function () { that.matched.foo.push('foo bar') },
+            after: function () { that.matched.foo.push('after foo bar') },
+            '/buzz': function () { that.matched.foo.push('foo bar buzz') }
+          }
+        },
+        '/f*': {
+          '/barbie': function () { that.matched['f*'].push('f* barbie') }
         }
-      },
-      '/f*': {
-        '/barbie': function log () { console.log ('f* barbie') }
-      }
-    }),
+      })
+    },
     "should have the correct routing table": function (router) {
       assert.isObject(router.routes.foo);
       assert.isObject(router.routes.foo.bar);
@@ -31,9 +45,17 @@ vows.describe('sugarskull/router/mount').addBatch({
     "the dispatch() method": {
       "/foo/bar/buzz": function (router) {
         assert.isTrue(router.dispatch('on', '/foo/bar/buzz'));
+        assert.equal(this.matched.foo[0], 'before foo');
+        assert.equal(this.matched.foo[1], 'on foo');
+        assert.equal(this.matched.foo[2], 'before foo bar');
+        assert.equal(this.matched.foo[3], 'foo bar');
+        assert.equal(this.matched.foo[4], 'foo bar buzz');
+        assert.equal(this.matched.foo[5], 'after foo bar');
+        assert.equal(this.matched.foo[6], 'after foo');
       },
       "/foo/barbie": function (router) {
         assert.isTrue(router.dispatch('on', '/foo/barbie'));
+        assert.equal(this.matched['f*'][0], 'f* barbie');
       },
       "/foo/BAD": function (router) {
         assert.isFalse(router.dispatch('on', '/foo/BAD'));

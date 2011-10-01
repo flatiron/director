@@ -1,4 +1,10 @@
-
+/*
+ * insert-test.js: Tests for inserting routes into a normalized routing table. 
+ *
+ * (C) 2011, Nodejitsu Inc.
+ * MIT LICENSE
+ *
+ */
 
 var assert = require('assert'),
     vows = require('vows'),
