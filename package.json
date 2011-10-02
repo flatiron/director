@@ -11,10 +11,8 @@
     "type": "git",
     "url": "http://github.com/flatiron/sugarskull.git" 
   },
-  "dependencies": {
-    "uglify-js": "1.0.6"
-  },
   "devDependencies": {
+    "codesurgeon": "0.1.x",
     "eyes": "0.1.x",
     "vows": "0.5.x"
   },

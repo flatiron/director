@@ -1,53 +1,49 @@
 #!/usr/bin/env node
 
-var fs = require('fs'),
-    colors = require('colors'),
-    path = require('path'),
-    uglify = require('uglify-js');
+var Codesurgeon = require('codesurgeon').Codesurgeon;
+var surgeon = new Codesurgeon;
 
-var root   = path.join(__dirname, '..'),
-    pkg    = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8')),
-    lib    = path.join(root, 'lib', 'sugarskull'),
-    build  = path.join(root, 'build'),
-    base   = ['sugarskull', pkg.version].join('-'),
-    source = {},
-    targets = {},
-    save = {},
-    files;
-    
-files = {
-  router: path.join(lib, 'router.js'),
-  browser: path.join(lib, 'browser.js'),
-};
+var path    = require('path');
 
-targets = {
-  'sugarskull': path.join(build, base + '.js'),
-  'sugarskull-min': path.join(build, base + '.min.js')
-};
+var root    = path.join(__dirname, '..');
+var lib     = path.join(root, 'lib', 'sugarskull');
 
-Object.keys(files).forEach(function (file) {
-  source[file] = fs.readFileSync(files[file], 'utf8');
-});
+//
+// Distill and package the browser version.
+//
 
-var parts = source.browser.split('//\\top||bottom\\/'),
-    code;
-
-code = save[targets.sugarskull] = [
-  '(function(window) {',
-  parts[0],
-  source.router,
-  parts[1],
-  '})(window);'
-].join('');
-
-var ast = uglify.parser.parse(code);
-ast = uglify.uglify.ast_mangle(ast);
-ast = uglify.uglify.ast_squeeze(ast);
-save[targets['sugarskull-min']] = uglify.uglify.gen_code(ast);
-
-console.log('Build...');
-
-Object.keys(save).forEach(function (file) {
-  console.log('Attempting to write file [' + file.green + ']');
-  fs.writeFileSync(file, save[file], 'utf8');
-});
+surgeon
+  .configure({ 
+    package: '../package.json',
+    owner: 'Nodejitsu, Inc.'
+  })
+  .read(
+    path.join(lib, 'router.js'),
+    path.join(lib, 'browser.js')
+  )
+  .extract(
+    'dloc',
+    'listener',
+    'paramifyString',
+    'regifyString',
+    'dispatch',
+    'Router',
+    'Router.prototype.configure',
+    'Router.prototype.param',
+    'Router.prototype.on',
+    'Router.prototype.dispatch',
+    'Router.prototype.insert',
+    'Router.prototype.extend',
+    'Router.prototype.mount',
+    'Router.prototype.init',
+    'Router.prototype.explode',
+    'Router.prototype.setRoute',
+    'Router.prototype.getState',
+    'Router.prototype.getRoute',
+    'Router.prototype.destroy',
+    'Router.prototype.recurse'
+  )
+  .write('../build/sugarskull.js')
+  .uglify()
+  .write('../build/sugarskull.min.js')
+;
