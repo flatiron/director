@@ -25,7 +25,7 @@ vows.describe('sugarskull/cli/dispatch').addBatch({
         that.matched['users'].push('on users create');
       });
       
-      router.on('apps (\\w+\\s\\w+)', function () {
+      router.on(/apps (\w+\s\w+)/, function () {
         assert.equal(arguments.length, 1);
         that.matched['apps'].push('on apps (\\w+\\s\\w+)');
       })
