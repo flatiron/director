@@ -11,7 +11,7 @@ var assert = require('assert'),
     eyes = require('eyes'),
     sugarskull = require('../../../lib/sugarskull');
     
-vows.describe('sugarskull/router/mount').addBatch({
+vows.describe('sugarskull/cli/dispatch').addBatch({
   "An instance of sugarskull.Router": {
     topic: function () {
       var router = new sugarskull.cli.Router(),
