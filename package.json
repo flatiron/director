@@ -15,7 +15,8 @@
     "codesurgeon": "0.1.x",
     "eyes": "0.1.x",
     "uglify-js": "1.0.6",
-    "vows": "0.5.x"
+    "vows": "0.5.x",
+    "colors": "0.5.x"
   },
   "main": "./lib/sugarskull",
   "engines": { "node": ">= 0.4.0" },

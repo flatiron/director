@@ -14,7 +14,7 @@ var lib     = path.join(root, 'lib', 'sugarskull');
 
 surgeon
   .configure({ 
-    package: '../package.json',
+    package: root + '/package.json',
     owner: 'Nodejitsu, Inc.'
   })
   .read(
@@ -43,7 +43,8 @@ surgeon
     'Router.prototype.destroy',
     'Router.prototype.recurse'
   )
-  .write('../build/sugarskull.js')
+  .wrap()
+  .write(root + '/build/sugarskull.js')
   .uglify()
-  .write('../build/sugarskull.min.js')
+  .write(root + '/build/sugarskull.min.js')
 ;
