@@ -157,6 +157,9 @@ createTest('method should only fire once on the route, multiple nesting.', {
   });
 });
 
+//
+// XXX @hij1nx should this test fail?!
+//
 createTest('overlapping routes with tokens.', {
   '/a/:b/c' : function() {
     shared.fired.push(location.hash);
