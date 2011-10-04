@@ -23,6 +23,7 @@ surgeon
   )
   .extract(
     'dloc',
+    '_every',
     'listener',
     'paramifyString',
     'regifyString',
@@ -32,6 +33,8 @@ surgeon
     'Router.prototype.param',
     'Router.prototype.on',
     'Router.prototype.dispatch',
+    'Router.prototype.invoke',
+    'Router.prototype.traverse',
     'Router.prototype.insert',
     'Router.prototype.extend',
     'Router.prototype.mount',
