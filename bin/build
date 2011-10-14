@@ -36,6 +36,7 @@ surgeon
     'Router.prototype.invoke',
     'Router.prototype.traverse',
     'Router.prototype.insert',
+    'Router.prototype.insertEx',
     'Router.prototype.extend',
     'Router.prototype.mount',
     'Router.prototype.init',
