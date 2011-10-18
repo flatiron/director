@@ -167,6 +167,7 @@ createTest('overlapping routes with tokens.', {
 }, function() {
   shared.fired = [];
   this.navigate('/a/b/c', function() {
+
     this.navigate('/a/b/c/d', function() {
       deepEqual(shared.fired, ['#/a/b/c', '#/a/b/c/d']);
       this.finish();
@@ -174,9 +175,9 @@ createTest('overlapping routes with tokens.', {
   });
 });
 
-// 
-// Recursion features
-// ----------------------------------------------------------
+// // // 
+// // // Recursion features
+// // // ----------------------------------------------------------
 
 createTest('Nested routes with no recursion', {
   '/a': {
@@ -232,7 +233,7 @@ createTest('Nested routes with backward recursion', {
 
 createTest('Breaking out of nested routes with backward recursion', {
   '/a': {
-    '/b': {
+    '/:b': {
       '/c': {
         on: function c() {
           shared.fired.push('c');
@@ -345,9 +346,13 @@ createTest('Breaking out of nested routes with forward recursion', {
   });
 });
 
-// 
-// Special Events
-// ----------------------------------------------------------
+//
+// ABOVE IS WORKING
+//
+
+// // 
+// // Special Events
+// // ----------------------------------------------------------
 
 createTest('All global event should fire after every route', {
   '/a': {
@@ -379,7 +384,7 @@ createTest('All global event should fire after every route', {
   this.navigate('/a', function() {
     this.navigate('/b/c', function() {
       this.navigate('/d/e', function() {
-        deepEqual(shared.fired, ['a', 'b', 'a', 'b', 'a', 'b']);
+        deepEqual(shared.fired, ['a', 'b', 'a', 'b', 'a']);
         this.finish();
       });
     });
@@ -460,7 +465,7 @@ createTest('After all.', {
 
   this.navigate('/a', function() {
     this.navigate('/b', function() {
-      deepEqual(shared.fired, ['a', 'c', 'b', 'c']);
+      deepEqual(shared.fired, ['a', 'c', 'b']);
       this.finish();
     });
   });
@@ -530,7 +535,7 @@ createTest('sanity test', {
   });
 });
 
-createTest('`/` route should not override a `/:token` route', {
+createTest('`/` route should be navigable from the routing table', {
   '/': {
     on: function root() {
       shared.fired.push('/');
@@ -544,12 +549,27 @@ createTest('`/` route should not override a `/:token` route', {
 }, function() {
   shared.fired = [];
   this.navigate('/', function root() {
-    console.log('r: /');
-    this.navigate('/a', function afunc() {
-    console.log('r: /a');
-      deepEqual(shared.fired, ['/', '/a']);
-      this.finish();
-    });
+    deepEqual(shared.fired, ['/']);
+    this.finish();
+  });
+});
+
+createTest('`/` route should not override a `/:token` route', {
+  '/': {
+    on: function root() {
+      shared.fired.push('/');
+    }
+  },
+  '/:username': {
+    on: function afunc(username) {
+      shared.fired.push('/' + username);
+    }
+  }
+}, function() {
+  shared.fired = [];
+  this.navigate('/a', function afunc() {
+    deepEqual(shared.fired, ['/a']);
+    this.finish();
   });
 });
 
@@ -584,7 +604,7 @@ createTest('routes should allow wildcards.', {
 createTest('functions should have |this| context of the router instance.', {
   '/': {
     on: function root() {
-      shared.fired.push(!!this.events);
+      shared.fired.push(!!this.routes);
     }
   }
 }, function() {
@@ -594,4 +614,3 @@ createTest('functions should have |this| context of the router instance.', {
     this.finish();
   });
 });
-
