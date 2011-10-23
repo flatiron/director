@@ -29,10 +29,10 @@ if (!Array.isArray){
 function _flatten (arr) {
   var flat = [];
 
-  arr.forEach(function (a) {
-    flat = flat.concat(a);
-  });
-
+  for (var i = 0, n = arr.length; i < n; i++) {
+    flat = flat.concat(arr[i]);
+  }
+  
   return flat;
 }
 
