@@ -12,7 +12,7 @@
     "url": "http://github.com/flatiron/sugarskull.git" 
   },
   "devDependencies": {
-    "codesurgeon": "0.1.x",
+    "codesurgeon": "0.2.x",
     "eyes": "0.1.x",
     "uglify-js": "1.0.6",
     "vows": "0.5.x",
