@@ -12,7 +12,7 @@ var assert = require('assert'),
     sugarskull = require('../../../lib/sugarskull');
     
 vows.describe('sugarskull/cli/dispatch').addBatch({
-  "An instance of sugarskull.Router": {
+  "An instance of sugarskull.cli.Router": {
     topic: function () {
       var router = new sugarskull.cli.Router(),
           that = this;

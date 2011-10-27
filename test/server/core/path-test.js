@@ -16,37 +16,34 @@ vows.describe('sugarskull/router/path').addBatch({
     topic: function () {
       var that = this;
       that.matched = {};
+      that.matched['foo'] = [];
       that.matched['newyork'] = [];
       
       var router = new sugarskull.Router({
-        '/foo': function () { that.matched.foo.push('foo'); }
+        '/foo': function () { that.matched['foo'].push('foo'); }
       });
-
       return router;
     },
-    "should have the correct context": function (router) {
-      var that = this;
-      
-      router.filter = ['POST', 'DELETE']; // global filters.
-
-      //
-      // there is no `.path()` only `.on`, `.get`, `.post`, `.head`, `.put`, `.delete` etc.
-      //
-      router.on('/regions', function () {
-
-        this.accept = ['POST', 'GET', 'DELETE'];
-        this.filter = ['POST', 'DELETE']; // scoped filters (catches `verb-as-method` and `on`).
-
-        this.on('/:state', function(country) {
-          that.matched.foo.push('before foo')
+    "the path() method": {
+      "should create the correct nested routing table": function (router) {
+        var that = this;
+        router.path('/regions', function () {
+          this.on('/:state', function(country) {
+            that.matched['newyork'].push('new york');
+          });
         });
 
-      });
-    },
-    "the dispatch() method": {
-      "/regions/newyork": function (router) {
-        router.dispatch('on', '/regions');
-        console.log(this.matched);
+        assert.isFunction(router.routes.foo.on);
+        assert.isObject(router.routes.regions);
+        assert.isFunction(router.routes.regions['([a-zA-Z0-9-]+)'].on);
+      },
+      "should dispatch the function correctly": function (router) {
+        router.dispatch('on', '/regions/newyork')
+        router.dispatch('on', '/foo');
+        assert.length(this.matched['foo'], 1);
+        assert.length(this.matched['newyork'], 1);
+        assert.equal(this.matched['foo'][0], 'foo');
+        assert.equal(this.matched['newyork'][0], 'new york');
       }
     }
   }
