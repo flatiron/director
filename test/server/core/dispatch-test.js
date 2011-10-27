@@ -19,7 +19,7 @@ vows.describe('sugarskull/router/dispatch').addBatch({
       that.matched['foo'] = [];
       that.matched['f*'] = []
       
-      return new sugarskull.Router({
+      var router = new sugarskull.Router({
         '/foo': {
           before: function () { that.matched.foo.push('before foo') },
           on: function () { that.matched.foo.push('on foo') },
@@ -34,7 +34,13 @@ vows.describe('sugarskull/router/dispatch').addBatch({
         '/f*': {
           '/barbie': function () { that.matched['f*'].push('f* barbie') }
         }
-      })
+      });
+
+      router.configure({
+        recurse: 'backward'
+      });
+
+      return router;
     },
     "should have the correct routing table": function (router) {
       assert.isObject(router.routes.foo);
@@ -45,13 +51,12 @@ vows.describe('sugarskull/router/dispatch').addBatch({
     "the dispatch() method": {
       "/foo/bar/buzz": function (router) {
         assert.isTrue(router.dispatch('on', '/foo/bar/buzz'));
-        assert.equal(this.matched.foo[0], 'before foo');
-        assert.equal(this.matched.foo[1], 'on foo');
-        assert.equal(this.matched.foo[2], 'before foo bar');
-        assert.equal(this.matched.foo[3], 'foo bar');
-        assert.equal(this.matched.foo[4], 'foo bar buzz');
-        assert.equal(this.matched.foo[5], 'after foo bar');
-        assert.equal(this.matched.foo[6], 'after foo');
+
+        assert.equal(this.matched.foo[0], 'foo bar buzz');
+        assert.equal(this.matched.foo[1], 'before foo bar');
+        assert.equal(this.matched.foo[2], 'foo bar');
+        assert.equal(this.matched.foo[3], 'before foo');
+        assert.equal(this.matched.foo[4], 'on foo');
       },
       "/foo/barbie": function (router) {
         assert.isTrue(router.dispatch('on', '/foo/barbie'));
