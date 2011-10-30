@@ -82,11 +82,31 @@ var dloc = document.location;
 var listener = {
   mode: "modern",
   hash: dloc.hash,
+  iframe: null,
+  updateHistory: true,
+  writingHash: false,
   check: function() {
-    var h = dloc.hash;
-    if (h != this.hash) {
+    var h = dloc.hash,
+        ifrh = this.iframe.location.hash;
+
+    if (h !== this.hash) {
+      //
+      // Case when user traverse routes through anchors.
+      //
+      this.updateHistory = true;
+      this.writingHash = true;
       this.hash = h;
       this.onHashChanged();
+      this.writingHash = false;
+    } else if ((ifrh !== "") && (h !== ifrh) && (!this.writingHash)) {
+      //
+      // Case when user traverse routes through history.
+      //
+      this.updateHistory = false;
+      this.hash = ifrh;
+      dloc.hash = ifrh;
+      this.onHashChanged();
+      this.writingHash = false;
     }
   },
   fire: function() {
@@ -100,33 +120,32 @@ var listener = {
     var self = this;
     if (!window.Router.listeners) {
       window.Router.listeners = [];
+      window.Router.listener = self;
     }
     function onchange() {
       for (var i = 0, l = window.Router.listeners.length; i < l; i++) {
         window.Router.listeners[i]();
       }
     }
-    if ("onhashchange" in window && (document.documentMode === undefined || document.documentMode > 7)) {
+    if("onhashchange" in window && (document.documentMode === undefined || document.documentMode > 7)) {
       window.onhashchange = onchange;
       this.mode = "modern";
     } else {
-      var frame = document.createElement("iframe");
-      frame.id = "state-frame";
-      frame.style.display = "none";
-      document.body.appendChild(frame);
-      this.writeFrame("");
-      if ("onpropertychange" in document && "attachEvent" in document) {
-        document.attachEvent("onpropertychange", function() {
-          if (event.propertyName === "location") {
+      this.mode = "legacy";
+      this.onHashChanged = onchange;
+      this.iframe = this.createFrame();
+      this.setHash(dloc.hash);
+
+      if("onpropertychange" in document && "attachEvent" in document) {
+        document.attachEvent("onpropertychange", function () {
+          if(event.propertyName === "location") {
             self.check();
           }
         });
       }
-      window.setInterval(function() {
+      window.setInterval(function () {
         self.check();
       }, 50);
-      this.onHashChanged = onchange;
-      this.mode = "legacy";
     }
     window.Router.listeners.push(fn);
     return this.mode;
@@ -143,25 +162,26 @@ var listener = {
     }
   },
   setHash: function(s) {
-    if (mode === "legacy") {
-      this.writeFrame(s);
-    }
-    dloc.hash = s[0] === "/" ? s : "/" + s;
-    return this;
+    dloc.hash = s;
+    // 
+    // Update previous state of routed history stored in iframe when
+    // user is traversing through hashed anchors (not through history).
+    //
+    if((this.mode === "legacy") && (this.updateHistory === true)) {
+      this.iframe.document.open().close();
+      this.iframe.location.hash = s;
+     }
+
+     return this;
   },
-  writeFrame: function(s) {
-    var f = document.getElementById("state-frame");
-    var d = f.contentDocument || f.contentWindow.document;
-    d.open();
-    d.write("<script>_hash = '" + s + "'; onload = parent.listener.syncHash;<script>");
-    d.close();
-  },
-  syncHash: function() {
-    var s = this._hash;
-    if (s != dloc.hash) {
-      dloc.hash = s;
-    }
-    return this;
+  createFrame: function () {
+    var frame = document.createElement("iframe");
+    frame.style.display = "none";
+    frame.setAttribute("src", "javascript:0");
+    frame.setAttribute("tabindex", "-1");
+    document.body.appendChild(frame);
+
+    return frame.contentWindow;
   },
   onHashChanged: function() {}
 };
@@ -230,6 +250,7 @@ var Router = w.Router = function(routes) {
   this.insert = this.insertEx;
   this.configure();
   this.mount(routes || {});
+  this.listener = listener;
 };
 
 //
@@ -434,6 +455,10 @@ Router.prototype.traverse = function (method, path, routes, regexp) {
       next,
       that;
 
+  if (this.listener.mode === "legacy") {
+    this.listener.setHash(dloc.hash);
+  }
+      
   for (var r in routes) {
     //
     // We dont have an exact match, lets explore the tree
