@@ -40,8 +40,8 @@ vows.describe('sugarskull/router/path').addBatch({
       "should dispatch the function correctly": function (router) {
         router.dispatch('on', '/regions/newyork')
         router.dispatch('on', '/foo');
-        assert.length(this.matched['foo'], 1);
-        assert.length(this.matched['newyork'], 1);
+        assert.equal(this.matched['foo'].length, 1);
+        assert.equal(this.matched['newyork'].length, 1);
         assert.equal(this.matched['foo'][0], 'foo');
         assert.equal(this.matched['newyork'][0], 'new york');
       }
