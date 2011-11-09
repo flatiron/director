@@ -17,7 +17,7 @@ On the client, SugarSkull has no dependencies---not even jquery.
 
 ## Client-Side Hash Routing
 
-<!-- TODO: Make sure this is right. -->
+<!-- TODO: Run this to make sure it works as-expected. -->
 
 ```html
 <!html>
@@ -27,7 +27,7 @@ On the client, SugarSkull has no dependencies---not even jquery.
     <script>
 
       var meow = function (req, res) { /* ... */ },
-          scratch = function (req, res) { /* . . . */ };
+          scratch = function (req, res) { /* ... */ };
 
       var routes = {
 
