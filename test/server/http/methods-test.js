@@ -12,9 +12,10 @@ var assert = require('assert'),
     
 vows.describe('sugarskull/http/methods').addBatch({
   "When using sugarskull": {
-    "Router.prototype should have all relevant RFC methods": function () {
+    "an instance of sugarskull.http.Router should have all relevant RFC methods": function () {
+      var router = new sugarskull.http.Router();
       sugarskull.http.methods.forEach(function (method) {
-        assert.isFunction(sugarskull.http.Router.prototype[method.toLowerCase()]);
+        assert.isFunction(router[method.toLowerCase()]);
       });
     }
   }
