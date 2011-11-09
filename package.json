@@ -11,6 +11,9 @@
     "type": "git",
     "url": "http://github.com/flatiron/sugarskull.git" 
   },
+  "dependencies": {
+    "optimist": "0.2.x"
+  },
   "devDependencies": {
     "codesurgeon": "0.2.x",
     "eyes": "0.1.x",
