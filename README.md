@@ -1,7 +1,7 @@
 <br/>
 ![/sugarskull/](https://github.com/flatiron/SugarSkull/raw/master/img/sugarskull.png)
 
-**Website:** <http://flatiron.github.com/sugarskull>
+**Website/Demo:** <http://flatiron.github.com/sugarskull>
 
 SugarSkull is a router. Sugarskull can handle `location.hash`-based routing on the server, `url.path`-based routing for HTTP requests, and [optimist](https://github.com/substack/node-optimist)-based routing for cli applications. As a client side router, it's the smallest amount of glue needed for building dynamic single page applications.
 
