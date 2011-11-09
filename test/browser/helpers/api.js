@@ -22,7 +22,7 @@ function createTest(name, config, use, test) {
           context;
 
       if (use !== undefined) {
-        router.use(use);
+        router.configure(use);
       }
 
       router.init();

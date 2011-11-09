@@ -1,7 +1,7 @@
 
 
 //
-// Generated on Wed Nov 09 2011 15:09:37 GMT+0100 (CET) by Nodejitsu, Inc (Using Codesurgeon).
+// Generated on Wed Nov 09 2011 15:24:41 GMT+0100 (CET) by Nodejitsu, Inc (Using Codesurgeon).
 // Version 1.0.0
 //
 
@@ -518,6 +518,16 @@ Router.prototype.extend = function(methods) {
             };
         })(methods[i]);
     }
+};
+
+Router.prototype.runlist = function(fns) {
+    var runlist = this.every && this.every.before ? [ this.every.before ].concat(_flatten(fns)) : _flatten(fns);
+    if (this.every && this.every.on) {
+        runlist.push(this.every.on);
+    }
+    runlist.captures = fns.captures;
+    runlist.source = fns.source;
+    return runlist;
 };
 
 Router.prototype.mount = function(routes, path) {

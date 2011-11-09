@@ -55,6 +55,7 @@ surgeon
     'Router.prototype.insert',
     'Router.prototype.insertEx',
     'Router.prototype.extend',
+    'Router.prototype.runlist',
     'Router.prototype.mount'
   )
   //

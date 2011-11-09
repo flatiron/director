@@ -1,7 +1,7 @@
 {
   "name": "sugarskull",
   "description": "A Client Side Router for Single Page Apps",
-  "version": "0.9.9",
+  "version": "1.0.0",
   "author": "Nodejitsu Inc <info@nodejitsu.com>",
   "contributors": [
     { "name": "Paolo Fragomeni", "email": "hij1nx@nodejitsu.com" },
@@ -23,7 +23,7 @@
     "vows": "0.5.x",
     "colors": "0.5.x"
   },
-  "ender": "./build/ender.js"
+  "ender": "./build/ender.js",
   "main": "./lib/sugarskull",
   "engines": { "node": ">= 0.4.0" },
   "scripts": {

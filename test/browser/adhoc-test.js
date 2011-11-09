@@ -18,7 +18,14 @@ module("SS.js", {
 
 asyncTest("adhoc routing", function() {
 
+  // 
+
   router.path('/a', function() {
+
+    // the bennifit of calling `this.route` as opposed to `this.get` or `this.post` is that
+    // you can continue to define the route structure (ad-hoc) and then assign units of logic
+    // per event type, there will be less repetition of definition, and the code will be more 
+    // readable/centralized.
 
     this.path('/b', {
       on: function() {},
