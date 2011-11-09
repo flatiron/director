@@ -1,5 +1,5 @@
 <br/>
-![Alt text](https://github.com/hij1nx/SugarSkull/raw/master/img/sugarskull.png)
+![Alt text](https://github.com/flatiron/SugarSkull/raw/master/img/sugarskull.png)
 
 # Synopsis
 
@@ -31,7 +31,7 @@ SugarSkull monitors the URL. When the URL changes, and it is a match to one defi
 More specifically the way this works is that we divide the url into two parts. First the server-side (everything 
 before the '#'), and then the client-side (everything after the '#'). The second part is the HashRoute.
 A hash route looks like this...<br/><br/>
-<img src="https://github.com/hij1nx/SugarSkull/raw/master/img/hashRoute.png" width="598" height="113" alt="HashRoute" -->
+<img src="https://github.com/flatiron/SugarSkull/raw/master/img/hashRoute.png" width="598" height="113" alt="HashRoute" -->
 
 ### Compatibility
 - Ender.js Compatibile.
