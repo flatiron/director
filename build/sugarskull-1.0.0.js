@@ -1,7 +1,7 @@
 
 
 //
-// Generated on Wed Nov 09 2011 15:24:41 GMT+0100 (CET) by Nodejitsu, Inc (Using Codesurgeon).
+// Generated on Wed Nov 09 2011 15:32:06 GMT+0100 (CET) by Nodejitsu, Inc (Using Codesurgeon).
 // Version 1.0.0
 //
 
@@ -276,9 +276,9 @@ function _every(arr, iterator) {
 
 function _flatten(arr) {
     var flat = [];
-    arr.forEach(function(a) {
-        flat = flat.concat(a);
-    });
+    for (var i = 0, n = arr.length; i < n; i++) {
+        flat = flat.concat(arr[i]);
+    }
     return flat;
 }
 
