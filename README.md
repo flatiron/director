@@ -1,42 +1,116 @@
 <br/>
-![Alt text](https://github.com/flatiron/SugarSkull/raw/master/img/sugarskull.png)
+![/sugarskull/](https://github.com/flatiron/SugarSkull/raw/master/img/sugarskull.png)
 
-# Synopsis
+**Website:** <http://flatiron.github.com/sugarskull>
 
-SugarSkull is a router. It works with the browser and server (Node.js). As a client side router, it's the smallest amount of glue needed for building dynamic single page applications. Not a jquery plugin, and has no dependencies.
+SugarSkull is a router. Sugarskull can handle `location.hash`-based routing on the server, `url.path`-based routing for HTTP requests, and [optimist](https://github.com/substack/node-optimist)-based routing for cli applications. As a client side router, it's the smallest amount of glue needed for building dynamic single page applications.
+
+On the client, SugarSkull has no dependencies---not even jquery.
+
+# Examples
+
+<!--
+  TODO: These are critical. They need to be short and sweet, and get across the
+  80% use case without making the user read through docs. Examples should use
+  both the routing table and the event methods.
+-->
+
+## Client-Side Hash Routing
+
+<!-- TODO: Make sure this is right. -->
+
+```html
+<!html>
+<html>
+  <head>
+    <script src="/sugarskull.js"></script>
+    <script>
+
+      var meow = function (req, res) { /* ... */ },
+          scratch = function (req, res) { /* . . . */ };
+
+      var routes = {
+
+        '/dog': bark,
+        '/cat': [meow, scratch]
+      };
+
+      var router = Router(routes);
+    </script>
+  </head>
+  <body>
+    <!-- body goes here -->
+  </body>
+</html>
+```
+
+## Server-Side HTTP Routing
+
+```js
+var http = require('http'),
+    sugarskull = require('../lib/sugarskull');
+
+var router = new sugarskull.http.Router();
+
+var server = http.createServer(function (req, res) {
+  router.dispatch(req, res, function (err) {
+    if (err) {
+      res.writeHead(404);
+      res.end();
+    }
+  });
+});
+
+router.get(/foo/, function () {
+  this.res.writeHead(200, { 'Content-Type': 'text/plain' })
+  this.res.end('hello world\n');
+});
+
+server.listen(8080);
+console.log('vanilla http server with sugarskull running on 8080');
+```
+
+<!--
+## Server-Side CLI Routing
+
+```js
+// TODO: Write cli routing example
+```
+-->
 
 # Motivation
 
-### The quick explanation.
+<!--TODO: Rewrite the motivation to reflect flatiron integration and server-side routes. -->
 
 Sometimes you only need a wrench, not the toolbox with a hammer, screwdriver, etc. sugarskull is small. it does one job and does it well. It's not a framework, its a simple tool easy to add or remove. It promotes centralizing router logic so it's not intertwined throughout your code. Sugarskull was intended to replace backbone.js routes and provide a lighter weight, less sinatra-like alternative to sammy.js.
 
-### Enough talk, how about a demo? 
-Ok cool, here you go, <http://hij1nx.github.com/SugarSkull>.
-
-### The longer explanation.
-
 Storing some information about the state of an application within the URL allows the URL of the application to be emailed, bookmarked or copied and pasted. When the URL is visited it restores the state of the application. A client side router will also notify the browser about changes to the page, so even if the page does not reload, the back/forward buttons will give the illusion of navigation.
 
-The HTML5 history API isn't a replacement for using the location hash. The HTML5 history API requires that a URL resolves to real assets on the server. It is also designed around the requirement that all pages *should* load without Javascript. SugarSkull targets script-rich applications who's audience is well-known.
+The HTML5 history API isn't a replacement for using the location hash. The HTML5 history API requires that a URL resolves to real assets on the server. It is also designed around the requirement that all pages *should* load without Javascript. SugarSkull targets script-rich applications whose audience is well-known.
 
-### WHAT ABOUT SEO?
+# Anatomy of a Route
 
-Is using a client side router a problem for SEO? Yes. If advertising is a requirement, you are probably building a "Web Page" and not a "Web Application". SugarSkull is meant for script-heavy Web Applications.
+In general, SugarSkull associates functions with routes. When routing occurs, if the route matches one defined in SugarSkull's routing table then the function(s) associated with that route are executed.
 
-# Anatomy
+The url is divided into two parts, divided by a "#":
 
-SugarSkull monitors the URL. When the URL changes, and it is a match to one defined in your router table, the functions that are associated with that route are executed. You could almost think of the URL as an event emitter.
+## HTTP Routing
 
-More specifically the way this works is that we divide the url into two parts. First the server-side (everything 
-before the '#'), and then the client-side (everything after the '#'). The second part is the HashRoute.
-A hash route looks like this...<br/><br/>
-<img src="https://github.com/flatiron/SugarSkull/raw/master/img/hashRoute.png" width="598" height="113" alt="HashRoute" -->
+### Server-Side
 
-### Compatibility
-- Ender.js Compatibile.
-- Needs Cross Browser testing.
+The part of the url before the "#" is considered a server-side path, and is routed server-side.
 
+### Client-Side
+
+The part of the url after the "#" is not considered part of the document's path, and is routed client-side for single-page apps.
+
+<img src="https://github.com/flatiron/SugarSkull/raw/master/img/hashRoute.png" width="598" height="113" alt="HashRoute" >
+
+## CLI
+
+SugarSkull routes for cli options are based on command line input instead of url, based on the output of [optimist](https://github.com/substack/node-optimist).
+
+<!-- TODO: Be more specific. -->
 
 # Usage
 
@@ -48,7 +122,8 @@ A hash route looks like this...<br/><br/>
 
 ```
 
-### routes (required) 
+### routes (required)
+
 An object literal that contains nested route definitions. A potentially nested set of key/value pairs. The keys in the object literal represent each potential part of the URL. The values in the object literal contain references to the functions that should be associated with them. *bark* and *meow* are two functions that you have defined in your code.
 
 ```javascript
@@ -469,6 +544,16 @@ router.routes('/foo', function() {
 
 });
 ```
+
+# Frequently Asked Questions
+
+## What About SEO?
+
+Is using a client side router a problem for SEO? Yes. If advertising is a requirement, you are probably building a "Web Page" and not a "Web Application". SugarSkull on the client is meant for script-heavy Web Applications.
+
+## Is SugarSkull compatible with X?
+
+SugarSkull is known to be Ender.js compatible. However, the project still needs solid cross-browser testing.
 
 # Licence
 
