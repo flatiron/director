@@ -1,18 +1,32 @@
 {
-  "name": "SugarSkull",
+  "name": "sugarskull",
   "description": "A Client Side Router for Single Page Apps",
-  "version": "0.3.0",
-  "homepage": "http://twitter.com/hij1nx",
-  "author" : "hij1nx <hij1nx@gmail.com> http://twitter.com/hij1nx",
-  "contributers" : [
-    "Charlie Robbins <charlie@nodejitsu.com> http://twitter.com/indexzero",
-    "Dave Geddes <davidcgeddes@gmail.com> http://twitter.com/geddesign"
+  "version": "0.9.9",
+  "author": "Nodejitsu Inc <info@nodejitsu.com>",
+  "contributors": [
+    { "name": "Paolo Fragomeni", "email": "hij1nx@nodejitsu.com" },
+    { "name": "Charlie Robbins", "email": "charlie@nodejitsu.com" },
+    { "name": "Dave Geddes", "email": "davidcgeddes@gmail.com" }
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/hij1nx/SugarSkull.git"
+    "url": "http://github.com/flatiron/sugarskull.git" 
   },
-  "main": "./js/lib/SS.js",
-  "keywords": ["URL", "router", "client side"],
-  "ender": "./js/lib/ender.js"
+  "keywords": ["URL", "router", "http", "cli", "flatiron", "client side"],
+  "dependencies": {
+    "optimist": "0.2.x"
+  },
+  "devDependencies": {
+    "codesurgeon": "0.2.x",
+    "eyes": "0.1.x",
+    "uglify-js": "1.0.6",
+    "vows": "0.5.x",
+    "colors": "0.5.x"
+  },
+  "ender": "./build/ender.js"
+  "main": "./lib/sugarskull",
+  "engines": { "node": ">= 0.4.0" },
+  "scripts": {
+    "test": "vows --spec test/server/*/*-test.js"
+  }
 }

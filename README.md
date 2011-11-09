@@ -3,7 +3,7 @@
 
 # Synopsis
 
-SugarSkull is a client side URL router. It's the smallest amount of glue needed for building dynamic single page applications. Not a jquery plugin, and has no dependencies.
+SugarSkull is a router. It works with the browser and server (Node.js). As a client side router, it's the smallest amount of glue needed for building dynamic single page applications. Not a jquery plugin, and has no dependencies.
 
 # Motivation
 
@@ -331,11 +331,150 @@ Set a segment of the current route.<br/><br/>
 `on` - A function or array of functions to execute when any route is matched.<br/>
 `after` - A function or array of functions to execute when leaving any route.<br/>
 
+### Article 1. the constructor should allow the centralization of the routing table.
+
+```javascript
+var router = new Router({
+  '/foo': fooLogic
+});
+```
+
+### Article 2. the constructor's routing table should allow definition nesting for terseness.
+
+```javascript
+var router = new Router({
+  '/foo': {
+    '/bar': barLogic
+    '/bazz': bazzLogic 
+  }
+});
+```
+
+### Article 3. the constructor's routing table should allow named events to be associated with routing segments
+
+```javascript
+var router = new Router({
+  '/foo': {
+    '/bar': barLogic,
+    '/bazz': {
+      on: bazzOn // any kind of VERB.
+      after: bazzAfter
+    }
+  }
+});
+```
+
+### Article 4. the constructor's routing table should allow special attributes to be associated with routing segments
+
+```javascript
+var router = new Router({
+  '/foo': {
+    '/bar': barLogic,
+    '/bazz': {
+      accept: ['GET', 'POST'], // limit the verbs that on will accept.
+      on: bazzLogic,
+      after: bazzAfter
+    }
+  }
+});
+```
+
+### Article 5. the constructor's routing table should allow event types to be associated with routing segments
+
+```javascript
+var router = new Router({
+  '/foo': {
+    '/bar': barlogic // no event type specified, synonymous with GET
+    '/bazz': {
+      GET: fooGetLogic, // explicitly accept the GET verb
+      POST: fooPostLogic // explicitly accept the POST verb
+    }
+  }
+});
+```
+
+### Article 6. the instance should have a `global` method.
+
+```javascript
+var router = new Router({
+  '/foo': {
+    '/bar': barlogic // no event type specified, defaults to GET
+    GET: fooLogic // explicitly accept the verb GET for `/foo`
+  }
+});
+
+router.global({
+  on: onGlobal // fired for anything.
+});
+```
+
+### Article 7. the constructor's routing table should allow filter definitions to be associated with routing segments, these are simple and resolve to true or false values which permit the execution of the logic associated with the route.
+
+```javascript
+var router = new Router({
+  '/foo': {
+    '/bar': barlogic // no event type specified, synonymous with GET
+    '/bazz': {
+      GET: bazzGetLogic, // explicit activity
+      filter: ['POST', 'DELETE'],
+      on: bazzLogic // any other activity
+    }
+  }
+});
+
+router.global({
+  filterMethod: YAHOO.Auth.Secure(), // define the logic for filtering.
+  filter: ['DELETE'] // all DELETEs will be filtered
+});
+```
+
+### Article 8. the instance should allow for ad-hoc routing.
+
+```js
+  var router = new Router();
+
+  router.global({
+    filterMethod = YAHOO.Auth.Secure();
+    router.filter = ['POST', 'DELETE']; // global filters.
+  });
+
+  router.path('/regions', function () {
+
+    this.accept = ['POST', 'GET', 'DELETE'];
+    this.filter = ['POST', 'DELETE']; // scoped filters (catches `verb-as-method` and `on`).
+
+    this.on('/:state', function(country) {
+      // this.request
+      // this.response
+    });
+
+    this.on('/:provence', function(country) {
+      // this.request
+      // this.response
+    });
+
+  });
+```
+
+### Article 9. the instance should allow for ad-hoc routing with special events.
+
+```javascript
+var router = new Router();
+router.routes('/foo', function() {
+
+  this.route('/bar', barLogic);
+  this.route('/bazz', function() {
+    this.route('bla', { POST: blaPOSTLogic, after: blaAfterLogic });
+  });
+
+});
+```
+
 # Licence
 
 (The MIT License)
 
-Copyright (c) 2010 hij1nx <http://www.twitter.com/hij1nx>
+Copyright (c) 2010 Nodejitsu Inc. <http://www.twitter.com/nodejitsu>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
