@@ -1,5 +1,3 @@
-<br/>
-![/director/](https://github.com/flatiron/director/raw/master/img/director.png)
 
 # Synopsis
 
