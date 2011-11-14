@@ -10,7 +10,7 @@ Director is a router. Routing is the process of determining what code to run whe
 ## Client-Side Hash Routing
  It simply watches the hash of the URL to determine what to do, for example:
 
-```js
+```
 http://foo.com/#/bar
 ```
 
@@ -108,7 +108,7 @@ var http = require('http'),
 //
 function helloWorld(route) {
   this.res.writeHead(200, { 'Content-Type': 'text/plain' })
-  this.res.end('hello world from (' + route + ');
+  this.res.end('hello world from (' + route + ')');
 }
 
 //
