@@ -1,272 +1,306 @@
+# Director
 
-# Synopsis
+# Overview
+Director is a router. Routing is the process of determining what code to run when a URL is requested. Director works on the client and the server. Director is dependency free, on the client it does not require any other libraries (such as jQuery).
 
-Director is a router. Routing is the process of determining what code to run when a URL is requested. Director works on the client and the server. Director is dependency free, on the client it does not require any other libraries (such as jquery).
+* [Client-Side Routing](#client-side)
+* [Server-Side HTTP Routing](#http-routing)
+* [Server-Side CLI Routing](#cli-routing)
+* [API Documentation](#api-documentation)
+* [Frequently Asked Questions](#faq)
 
-# Usage
-
-## Client-Side Hash Routing
- It simply watches the hash of the URL to determine what to do, for example:
+<a name="client-side"></a>
+## Client-side Routing
+It simply watches the hash of the URL to determine what to do, for example:
 
 ```
 http://foo.com/#/bar
 ```
 
-Client side routing (aka hash-routing) allows you to specify some information about the state of the application using the URL. So that when the user visits a specific URL, the application can be transformed accordingly. Here is a simple example:
+Client-side routing (aka hash-routing) allows you to specify some information about the state of the application using the URL. So that when the user visits a specific URL, the application can be transformed accordingly. Because of the additional requirements of Client-side routing `director` exposes additional API methods, see the [Client-side documentation](https://github.com/flatiron/director/tree/master/docs/client-side.md) for more details.
+
+Here is a simple example:
 
 ```html
-<!html>
-<html>
-  <head>
-    <script src="/director.js"></script>
-    <script>
+  <!html>
+  <html>
+    <head>
+      <script src="/director.js"></script>
+      <script>
 
-      var author = function () { /* ... */ },
-          books = function () { /* ... */ };
+        var author = function () { /* ... */ },
+            books = function () { /* ... */ };
 
-      var routes = {
-        '/author': showAuthorInfo,
-        '/books': [showAuthorInfo, listBooks]
-      };
+        var routes = {
+          '/author': showAuthorInfo,
+          '/books': [showAuthorInfo, listBooks]
+        };
 
-      var router = Router(routes);
+        var router = Router(routes);
 
-    </script>
-  </head>
-  <body>
-  </body>
-</html>
+      </script>
+    </head>
+    <body>
+    </body>
+  </html>
 ```
 
 Director works great with your favorite DOM library, such as jQuery.
 
 ```html
-<!html>
-<html>
-  <head>
-    <script src="/director.js"></script>
-    <script>
+  <!html>
+  <html>
+    <head>
+      <script src="/director.js"></script>
+      <script>
 
-      // 
-      // create some functions to be executed when
-      // the correct route is issued by the user.
-      //
-      var author = function () { /* ... */ },
-          books = function () { /* ... */ },
-          allroutes = function(route) {
-            var sections = $('section');
-            sections.hide();
-            sections.find('data-route[' + route + ']').show();
-          };
+        // 
+        // create some functions to be executed when
+        // the correct route is issued by the user.
+        //
+        var author = function () { /* ... */ },
+            books = function () { /* ... */ },
+            allroutes = function(route) {
+              var sections = $('section');
+              sections.hide();
+              sections.find('data-route[' + route + ']').show();
+            };
 
-      //
-      // define the routing table.
-      //
-      var routes = {
-        '/author': showAuthorInfo,
-        '/books': [showAuthorInfo, listBooks]
-      };
+        //
+        // define the routing table.
+        //
+        var routes = {
+          '/author': showAuthorInfo,
+          '/books': [showAuthorInfo, listBooks]
+        };
 
-      //
-      // instantiate the router.
-      //
-      var router = Router(routes);
+        //
+        // instantiate the router.
+        //
+        var router = Router(routes);
       
-      //
-      // a global configuration setting.
-      //
-      router.configure({
-        on: allroutes
-      });
+        //
+        // a global configuration setting.
+        //
+        router.configure({
+          on: allroutes
+        });
 
-    </script>
-  </head>
-  <body>
-    <section data-route="author">Author Name</section>
-    <section data-route="books">Book1, Book2, Book3</section>
-  </body>
-</html>
+      </script>
+    </head>
+    <body>
+      <section data-route="author">Author Name</section>
+      <section data-route="books">Book1, Book2, Book3</section>
+    </body>
+  </html>
 ```
 
-You can find a browser-specific build of Director [here][0] which has all of the server code stripped away.
+You can find a browser-specific build of `director` [here][0] which has all of the server code stripped away.
 
+<a name="http-routing"></a>
 ## Server-Side HTTP Routing
 
-Director handles routing for HTTP requests
+Director handles routing for HTTP requests similar to `journey` or `express`: 
 
 ```js
-//
-// require the native http module, as well as director.
-//
-var http = require('http'),
-    director = require('../lib/director');
+  //
+  // require the native http module, as well as director.
+  //
+  var http = require('http'),
+      director = require('director');
 
-//
-// create some logic to be routed to.
-//
-function helloWorld(route) {
-  this.res.writeHead(200, { 'Content-Type': 'text/plain' })
-  this.res.end('hello world from (' + route + ')');
-}
+  //
+  // create some logic to be routed to.
+  //
+  function helloWorld(route) {
+    this.res.writeHead(200, { 'Content-Type': 'text/plain' })
+    this.res.end('hello world from (' + route + ')');
+  }
 
-//
-// define a routing table.
-//
-var router = new director.http.Router({
-  '/hello': helloWorld
-});
-
-//
-// stup a server and when there is a request, dispatch the
-// route that was requestd in the request object.
-//
-var server = http.createServer(function (req, res) {
-  router.dispatch(req, res, function (err) {
-    if (err) {
-      res.writeHead(404);
-      res.end();
+  //
+  // define a routing table.
+  //
+  var router = new director.http.Router({
+    '/hello': {
+      get: helloWorld
     }
   });
-});
 
-//
-// you can also do ad-hoc routing, similar to `journey` or `express`.
-//
-router.get('/bonjour', heloWorld);
+  //
+  // stup a server and when there is a request, dispatch the
+  // route that was requestd in the request object.
+  //
+  var server = http.createServer(function (req, res) {
+    router.dispatch(req, res, function (err) {
+      if (err) {
+        res.writeHead(404);
+        res.end();
+      }
+    });
+  });
 
-//
-// set the server to listen on port `8080`.
-//
-server.listen(8080);
+  //
+  // You can also do ad-hoc routing, similar to `journey` or `express`.
+  // This can be done with a string or a regexp.
+  //
+  router.get('/bonjour', helloWorld);
+  router.get(/hola/, helloWorld);
+
+  //
+  // set the server to listen on port `8080`.
+  //
+  server.listen(8080);
 ```
 
+<a name="cli-routing"></a>
 ## CLI Routing
 
-Director supports Command Line Interface routing. Routes for cli options are based on command line input instead of a url, based on the output of [optimist](https://github.com/substack/node-optimist).
+Director supports Command Line Interface routing. Routes for cli options are based on command line input (i.e. `process.argv`) instead of a URL.
 
+``` js
+  var director = require('director');
+  
+  var router = new director.cli.Router();
+  
+  router.on('create', function () {
+    console.log('create something');
+  });
+  
+  router.on(/destroy/, function () {
+    console.log('destroy something');
+  });
 ```
-  // TO-DO: Example required.
-```
 
-# Usage
+<a name="api-documentation"></a>
+# API Documentation
 
+* [Constructor](#constructor)
+* [Routing Table](#routing-table)
+* [Adhoc Routing](#adhoc-routing)
+* [Configuration](#configuration)
+* [URL Matching](#url-matching)
+* [URL Params](#url-params)
+* [Async Routing](#async-routing)
+* [Route Recursion](#route-recursion)
+* [Instance Methods](#instance-methods)
+
+<a name="constructor"></a>
 ## Constructor
 
-```javascript
-
+``` js
   var router = Router(routes);
-
 ```
 
-### routes (required)
+<a name="routing-table"></a>
+### Routing Table
 
 An object literal that contains nested route definitions. A potentially nested set of key/value pairs. The keys in the object literal represent each potential part of the URL. The values in the object literal contain references to the functions that should be associated with them. *bark* and *meow* are two functions that you have defined in your code.
 
-```javascript
+``` js
 
-  var routes = { // an object literal.
-
-    '/dog': bark, // a route which assigns the function `bark`.
-    '/cat': [meow, scratch] // a route which assigns the functions `meow` and `scratch`.
+  //
+  // Assign routes to an object literal.
+  //
+  var routes = { 
+    //
+    // a route which assigns the function `bark`.
+    //
+    '/dog': bark,
+    //
+    // a route which assigns the functions `meow` and `scratch`.
+    //
+    '/cat': [meow, scratch]
   };
 
   var router = Router(routes); // Instantiate the router.
 
 ```
 
+<a name="adhoc-routing"></a>
+## Adhoc Routing
+
+<a name="configuration"></a>
+## Configuration
+
+<a name="url-matching"></a>
 ## URL Matching
 
-```javascript
+``` js
 
-  var router = Router({ // given the route '/dog/yella'.
-
+  var router = Router({
+    //
+    // given the route '/dog/yella'.
+    //
     '/dog': {
       '/:color': {
-        on: function(color) { console.log(color) } // this function will return the value 'yella'.
+        //
+        // this function will return the value 'yella'.
+        //
+        on: function (color) { console.log(color) }
       }
     }
-
-  }).init();
+  });
 
 ```
 
 Routes can sometimes become very complex, `simple/:tokens` don't always suffice. Director supports regular expressions inside the route names. The values captured from the regular expressions are passed to your listener function.
 
-```javascript
+``` js
 
-  var router = Router({ // given the route '/hello/world'.
-
+  var router = Router({ 
+    //
+    // given the route '/hello/world'.
+    //
     '/hello': {
       '/(\\w+)': {
-        on: function(who) { console.log(who) } // this function will return the value 'world'.
+        //
+        // this function will return the value 'world'.
+        //
+        on: function (who) { console.log(who) }
       }
     }
-
-  }).init();
+  });
 
 ```
 
-```javascript
+``` js
 
-  var router = Router({ // given the route '/hello/world/johny/appleseed'.
-
+  var router = Router({
+    //
+    // given the route '/hello/world/johny/appleseed'.
+    //
     '/hello': {
-      '/world/?([^\/]*)\/([^\/]*)/?': function(a, b) {
+      '/world/?([^\/]*)\/([^\/]*)/?': function (a, b) {
         console.log(a, b);
       }
     }
 
-  }).init();
+  });
 
 ```
 
-## Special Events
+<a name="url-params"></a>
+## URL Parameters
 
-In some cases a listener should only fire once or only after the user leaves the route. See the API section for more events and details about what events are available.
+<a name="async-routing"></a>
+## Async Routing
 
-```javascript
-
-  var router = Router({
-
-    '/dog': {
-      on: bark
-    },
-
-    '/cat': {
-      on: meow
-      after: function() { /* ... */ }
-    }
-
-  }).configure({ 
-    
-    // In some cases you may want to have these events always fire
-    
-    on: function(value) { console.log('the previous route captured the value ' + value); }, 
-    after: function(value) { console.log('the previous route captured the value ' + value); },
-    
-    // if you use multiple routers and define a notfound route, be cautious about multiple notfound listeners firing.
-    
-    notfound: function(value) { console.log('the route named ' + value + ' could not be found'); }
-
-  }).init();
-
-```
-
-## More Options
-
-### recurse
+<a name="route-recursion"></a>
+## Route Recursion
 
 Can be assigned the value of `forward` or `backward`. The recurse option will determine the order in which to fire the listeners that are associated with your routes. If this option is NOT specified or set to null, then only the listeners associated with an exact match will be fired.
 
-#### No recursion, with the URL /dog/angry
+### No recursion, with the URL /dog/angry
 
-```javascript
+``` js
 
   var routes = {
-
     '/dog': {
       '/angry': {
-        on: growl // this method will be fired.
+        //
+        // Only this method will be fired.
+        //
+        on: growl
       },
       on: bark
     }
@@ -276,172 +310,101 @@ Can be assigned the value of `forward` or `backward`. The recurse option will de
 
 ```
 
-#### Recursion set to true, with the URL /dog/angry
+### Recursion set to `backward`, with the URL /dog/angry
 
-```javascript
+``` js
 
   var routes = {
 
     '/dog': {
       '/angry': {
-        on: growl // this method will be fired second.
+        //
+        // This method will be fired first.
+        //
+        on: growl 
       },
-      on: bark // this method will be fired first.
+      //
+      // This method will be fired second.
+      //
+      on: bark
     }
   };
 
-  var router = Router(routes).configure({ recurse: 'forward' }).init();
+  var router = Router(routes).configure({ recurse: 'backward' });
 
 ```
 
-#### Recursion set to false, with the URL /dog/angry
+### Recursion set to `forward`, with the URL /dog/angry
 
-```javascript
+``` js
 
   var routes = {
-
     '/dog': {
       '/angry': {
-        on: growl // this method will be fired first.
+        //
+        // This method will be fired second.
+        //
+        on: growl
       },
-      on: bark // this method will be fired second.
+      //
+      // This method will be fired first.
+      //
+      on: bark
     }
   };
 
-  var router = Router(routes).configure({ recurse: 'backward' }).init();
+  var router = Router(routes).configure({ recurse: 'forward' });
 
 ```
 
-#### Breaking out of recursion, with the URL /dog/angry
+### Breaking out of recursion, with the URL /dog/angry
 
-```javascript
+``` js
 
   var routes = {
 
     '/dog': {
       '/angry': {
-        on: function() { return false; } // this method will be fired first.
+        //
+        // This method will be fired first.
+        //
+        on: function() { return false; } 
       },
-      on: bark // this method will not be fired.
+      //
+      // This method will not be fired.
+      //
+      on: bark 
     }
   };
   
-  // this feature works in reverse with recursion set to true.
-
-  var router = Router(routes).configure({ recurse: 'backward' }).init();
-
-```
-
-
-### resource
-An object literal containing functions. If a host object is specified, your route definitions can provide string literals that represent the function names inside the host object. A host object can provide the means for better encapsulation and design.
-
-```javascript
-
-  var router = Router({
-
-    '/hello': {
-      '/usa': 'americas',
-      '/china': 'asia'
-    }
-
-  }).configure({ resource: container }).init();
-
-  var container = {
-    americas: function() { return true; },
-    china: function() { return true; }
-  };
+  //
+  // This feature works in reverse with recursion set to true.
+  //
+  var router = Router(routes).configure({ recurse: 'backward' });
 
 ```
 
-## Maintaining State
-
-It is possible to attach state to any segment of the router, so in our case above if `/dog` is reached, the current state will be set to `{ needy: true, fetch: 'possibly' }`. Each nested section will merge into and overwrite the current state. So in the case where the router matches `/cat/hungry`, the state will become `{ needy: true, fetch: 'unlikely', frantic: true }`.
-
-```javascript
-
-  var router = Router({
-
-    '/dog': {
-      on: bark,
-      state: { needy: true, fetch: 'possibly' }
-    },
-
-    '/cat': {
-      '/hungry': {
-        state: { needy: true, frantic: true }
-      },
-      on: meow,
-      state: { needy: false, fetch: 'unlikely' }
-    }
-
-  }).init();
-
-```
-
-
-# API
-
-## Constructor<br/><br/>
-
-### Router(config)<br/>
-`config` {Object} - An object literal representing the router configuration.<br/>
-
-Returns a new instance of the router.<br/><br/>
-
+<a name="instance-methods"></a>
 ## Instance methods
 
-### use([on, after, recurse, resource])
-`on` {Function} or {Array} - A callback or list of callbacks that will fire on every route.<br/>
-`after` {Function} or {Array} - A callback or list of callbacks that will fire after every route.<br/>
-`recurse` {String} - Determines the order in which to fire the listeners that are associated with your routes. can be set to '*backward*' or '*forward*'.<br/>
-`resource` {Object} - An object literal of function declarations.<br/>
-`notfound` {Function} or {Array} - A callback or a list of callbacks to be called when there is no matching route.<br/>
+### configure(settings)
+* `on` {Function} or {Array} - A callback or list of callbacks that will fire on every route.
+* `after` {Function} or {Array} - A callback or list of callbacks that will fire after every route.
+* `recurse` {String} - Determines the order in which to fire the listeners that are associated with your routes. can be set to `backward` or `forward`.
+* `resource` {Object} - An object literal of function declarations.
+* `notfound` {Function} or {Array} - A callback or a list of callbacks to be called when there is no matching route.
 
-Initialize the router, start listening for changes to the URL.<br/><br/>
+### param(token, matcher)
 
-### init()
-Initialize the router, start listening for changes to the URL.<br/><br/>
+### on(method, path, route)
 
-### getState()
-Returns the state object that is relative to the current route.<br/><br/>
+### path(path, routesFn)
 
-### getRoute([index])
-`index` {Numner} - The hash value is divided by forward slashes, each section then has an index, if this is provided, only that section of the route will be returned.<br/>
+### dispatch(method, path[, callback])
 
-Returns the entire route or just a section of it.<br/><br/>
+### mount(routes, path)
 
-### setRoute(route)
-`route` {String} - Supply a route value, such as `home/stats`.<br/>
-
-Set the current route.<br/><br/>
-  
-### setRoute(start, length)
-`start` {Number} - The position at which to start removing items.<br/>
-`length` {Number} - The number of items to remove from the route.<br/>
-
-Remove a segment from the current route.<br/><br/>
-
-### setRoute(index, value)
-`index` {Number} - The hash value is divided by forward slashes, each section then has an index.<br/>
-`value` {String} - The new value to assign the the position indicated by the first parameter.<br/>
-
-Set a segment of the current route.<br/><br/>
-
-## Events
-
-### Events on each route<br/>
-
-`on` - A function or array of functions to execute when the route is matched.<br/>
-`after` - A function or array of functions to execute when leaving a particular route.<br/>
-`once` - A function or array of functions to execute only once for a particular route.<br/><br/>
-
-### Events on all routes<br/>
-
-`on` - A function or array of functions to execute when any route is matched.<br/>
-`after` - A function or array of functions to execute when leaving any route.<br/>
-
-
+<a name="faq"></a>
 # Frequently Asked Questions
 
 ## What About SEO?
@@ -465,4 +428,3 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 [0]: http://github.com/hij1nx/director
-
