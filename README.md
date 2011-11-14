@@ -1,57 +1,127 @@
 <br/>
-![/sugarskull/](https://github.com/flatiron/SugarSkull/raw/master/img/sugarskull.png)
+![/director/](https://github.com/flatiron/director/raw/master/img/director.png)
 
-**Website/Demo:** <http://flatiron.github.com/sugarskull>
+# Synopsis
 
-SugarSkull is a router. Sugarskull can handle `location.hash`-based routing on the server, `url.path`-based routing for HTTP requests, and [optimist](https://github.com/substack/node-optimist)-based routing for cli applications. As a client side router, it's the smallest amount of glue needed for building dynamic single page applications.
+Director is a router. Routing is the process of determining what code to run when a URL is requested. Director works on the client and the server. Director is dependency free, on the client it does not require any other libraries (such as jquery).
 
-On the client, SugarSkull has no dependencies---not even jquery.
-
-# Examples
-
-<!--
-  TODO: These are critical. They need to be short and sweet, and get across the
-  80% use case without making the user read through docs. Examples should use
-  both the routing table and the event methods.
--->
+# Usage
 
 ## Client-Side Hash Routing
+ It simply watches the hash of the URL to determine what to do, for example:
 
-<!-- TODO: Run this to make sure it works as-expected. -->
+```js
+http://foo.com/#/bar
+```
+
+Client side routing (aka hash-routing) allows you to specify some information about the state of the application using the URL. So that when the user visits a specific URL, the application can be transformed accordingly. Here is a simple example:
 
 ```html
 <!html>
 <html>
   <head>
-    <script src="/sugarskull.js"></script>
+    <script src="/director.js"></script>
     <script>
 
-      var meow = function (req, res) { /* ... */ },
-          scratch = function (req, res) { /* ... */ };
+      var author = function () { /* ... */ },
+          books = function () { /* ... */ };
 
       var routes = {
-
-        '/dog': bark,
-        '/cat': [meow, scratch]
+        '/author': showAuthorInfo,
+        '/books': [showAuthorInfo, listBooks]
       };
 
       var router = Router(routes);
+
     </script>
   </head>
   <body>
-    <!-- body goes here -->
   </body>
 </html>
 ```
 
+Director works great with your favorite DOM library, such as jQuery.
+
+```html
+<!html>
+<html>
+  <head>
+    <script src="/director.js"></script>
+    <script>
+
+      // 
+      // create some functions to be executed when
+      // the correct route is issued by the user.
+      //
+      var author = function () { /* ... */ },
+          books = function () { /* ... */ },
+          allroutes = function(route) {
+            var sections = $('section');
+            sections.hide();
+            sections.find('data-route[' + route + ']').show();
+          };
+
+      //
+      // define the routing table.
+      //
+      var routes = {
+        '/author': showAuthorInfo,
+        '/books': [showAuthorInfo, listBooks]
+      };
+
+      //
+      // instantiate the router.
+      //
+      var router = Router(routes);
+      
+      //
+      // a global configuration setting.
+      //
+      router.configure({
+        on: allroutes
+      });
+
+    </script>
+  </head>
+  <body>
+    <section data-route="author">Author Name</section>
+    <section data-route="books">Book1, Book2, Book3</section>
+  </body>
+</html>
+```
+
+You can find a browser-specific build of Director [here][0] which has all of the server code stripped away.
+
 ## Server-Side HTTP Routing
 
+Director handles routing for HTTP requests
+
 ```js
+//
+// require the native http module, as well as director.
+//
 var http = require('http'),
-    sugarskull = require('../lib/sugarskull');
+    director = require('../lib/director');
 
-var router = new sugarskull.http.Router();
+//
+// create some logic to be routed to.
+//
+function helloWorld(route) {
+  this.res.writeHead(200, { 'Content-Type': 'text/plain' })
+  this.res.end('hello world from (' + route + ');
+}
 
+//
+// define a routing table.
+//
+var router = new director.http.Router({
+  '/hello': helloWorld
+});
+
+//
+// stup a server and when there is a request, dispatch the
+// route that was requestd in the request object.
+//
 var server = http.createServer(function (req, res) {
   router.dispatch(req, res, function (err) {
     if (err) {
@@ -61,56 +131,24 @@ var server = http.createServer(function (req, res) {
   });
 });
 
-router.get(/foo/, function () {
-  this.res.writeHead(200, { 'Content-Type': 'text/plain' })
-  this.res.end('hello world\n');
-});
+//
+// you can also do ad-hoc routing, similar to `journey` or `express`.
+//
+router.get('/bonjour', heloWorld);
 
+//
+// set the server to listen on port `8080`.
+//
 server.listen(8080);
-console.log('vanilla http server with sugarskull running on 8080');
 ```
 
-<!--
-## Server-Side CLI Routing
+## CLI Routing
 
-```js
-// TODO: Write cli routing example
+Director supports Command Line Interface routing. Routes for cli options are based on command line input instead of a url, based on the output of [optimist](https://github.com/substack/node-optimist).
+
 ```
--->
-
-# Motivation
-
-<!--TODO: Rewrite the motivation to reflect flatiron integration and server-side routes. -->
-
-Sometimes you only need a wrench, not the toolbox with a hammer, screwdriver, etc. sugarskull is small. it does one job and does it well. It's not a framework, its a simple tool easy to add or remove. It promotes centralizing router logic so it's not intertwined throughout your code. Sugarskull was intended to replace backbone.js routes and provide a lighter weight, less sinatra-like alternative to sammy.js.
-
-Storing some information about the state of an application within the URL allows the URL of the application to be emailed, bookmarked or copied and pasted. When the URL is visited it restores the state of the application. A client side router will also notify the browser about changes to the page, so even if the page does not reload, the back/forward buttons will give the illusion of navigation.
-
-The HTML5 history API isn't a replacement for using the location hash. The HTML5 history API requires that a URL resolves to real assets on the server. It is also designed around the requirement that all pages *should* load without Javascript. SugarSkull targets script-rich applications whose audience is well-known.
-
-# Anatomy of a Route
-
-In general, SugarSkull associates functions with routes. When routing occurs, if the route matches one defined in SugarSkull's routing table then the function(s) associated with that route are executed.
-
-The url is divided into two parts, divided by a "#":
-
-## HTTP Routing
-
-### Server-Side
-
-The part of the url before the "#" is considered a server-side path, and is routed server-side.
-
-### Client-Side
-
-The part of the url after the "#" is not considered part of the document's path, and is routed client-side for single-page apps.
-
-<img src="https://github.com/flatiron/SugarSkull/raw/master/img/hashRoute.png" width="598" height="113" alt="HashRoute" >
-
-## CLI
-
-SugarSkull routes for cli options are based on command line input instead of url, based on the output of [optimist](https://github.com/substack/node-optimist).
-
-<!-- TODO: Be more specific. -->
+  // TO-DO: Example required.
+```
 
 # Usage
 
@@ -154,15 +192,15 @@ An object literal that contains nested route definitions. A potentially nested s
 
 ```
 
-Routes can sometimes become very complex, `simple/:tokens` don't always suffice. SugarSkull supports regular expressions inside the route names. The values captured from the regular expressions are passed to your listener function.
+Routes can sometimes become very complex, `simple/:tokens` don't always suffice. Director supports regular expressions inside the route names. The values captured from the regular expressions are passed to your listener function.
 
 ```javascript
 
-  var router = Router({ // given the route '/dog/yella'.
+  var router = Router({ // given the route '/hello/world'.
 
-    '/dog': {
+    '/hello': {
       '/(\\w+)': {
-        on: function(color) { console.log(color) } // this function will return the value 'yella'.
+        on: function(who) { console.log(who) } // this function will return the value 'world'.
       }
     }
 
@@ -172,10 +210,10 @@ Routes can sometimes become very complex, `simple/:tokens` don't always suffice.
 
 ```javascript
 
-  var router = Router({ // given the route '/ferret/smelly/true/damn'.
+  var router = Router({ // given the route '/hello/world/johny/appleseed'.
 
-    '/ferret': {
-      '/smelly/?([^\/]*)\/([^\/]*)/?': function(a, b) {
+    '/hello': {
+      '/world/?([^\/]*)\/([^\/]*)/?': function(a, b) {
         console.log(a, b);
       }
     }
@@ -183,7 +221,6 @@ Routes can sometimes become very complex, `simple/:tokens` don't always suffice.
   }).init();
 
 ```
-
 
 ## Special Events
 
@@ -199,10 +236,10 @@ In some cases a listener should only fire once or only after the user leaves the
 
     '/cat': {
       on: meow
-      after: function() {}
+      after: function() { /* ... */ }
     }
 
-  }).use({ 
+  }).configure({ 
     
     // In some cases you may want to have these events always fire
     
@@ -255,7 +292,7 @@ Can be assigned the value of `forward` or `backward`. The recurse option will de
     }
   };
 
-  var router = Router(routes).use({ recurse: 'forward' }).init();
+  var router = Router(routes).configure({ recurse: 'forward' }).init();
 
 ```
 
@@ -273,7 +310,7 @@ Can be assigned the value of `forward` or `backward`. The recurse option will de
     }
   };
 
-  var router = Router(routes).use({ recurse: 'backward' }).init();
+  var router = Router(routes).configure({ recurse: 'backward' }).init();
 
 ```
 
@@ -293,7 +330,7 @@ Can be assigned the value of `forward` or `backward`. The recurse option will de
   
   // this feature works in reverse with recursion set to true.
 
-  var router = Router(routes).use({ recurse: 'backward' }).init();
+  var router = Router(routes).configure({ recurse: 'backward' }).init();
 
 ```
 
@@ -305,16 +342,16 @@ An object literal containing functions. If a host object is specified, your rout
 
   var router = Router({
 
-    '/moola': {
-      '/benny': 'hundred',
-      '/sawbuck': 'five'
+    '/hello': {
+      '/usa': 'americas',
+      '/china': 'asia'
     }
 
-  }).use({ resource: container }).init();
+  }).configure({ resource: container }).init();
 
   var container = {
-    hundred: function() { return 100; },
-    five: function() { return 5; }
+    americas: function() { return true; },
+    china: function() { return true; }
   };
 
 ```
@@ -406,154 +443,16 @@ Set a segment of the current route.<br/><br/>
 `on` - A function or array of functions to execute when any route is matched.<br/>
 `after` - A function or array of functions to execute when leaving any route.<br/>
 
-### Article 1. the constructor should allow the centralization of the routing table.
-
-```javascript
-var router = new Router({
-  '/foo': fooLogic
-});
-```
-
-### Article 2. the constructor's routing table should allow definition nesting for terseness.
-
-```javascript
-var router = new Router({
-  '/foo': {
-    '/bar': barLogic
-    '/bazz': bazzLogic 
-  }
-});
-```
-
-### Article 3. the constructor's routing table should allow named events to be associated with routing segments
-
-```javascript
-var router = new Router({
-  '/foo': {
-    '/bar': barLogic,
-    '/bazz': {
-      on: bazzOn // any kind of VERB.
-      after: bazzAfter
-    }
-  }
-});
-```
-
-### Article 4. the constructor's routing table should allow special attributes to be associated with routing segments
-
-```javascript
-var router = new Router({
-  '/foo': {
-    '/bar': barLogic,
-    '/bazz': {
-      accept: ['GET', 'POST'], // limit the verbs that on will accept.
-      on: bazzLogic,
-      after: bazzAfter
-    }
-  }
-});
-```
-
-### Article 5. the constructor's routing table should allow event types to be associated with routing segments
-
-```javascript
-var router = new Router({
-  '/foo': {
-    '/bar': barlogic // no event type specified, synonymous with GET
-    '/bazz': {
-      GET: fooGetLogic, // explicitly accept the GET verb
-      POST: fooPostLogic // explicitly accept the POST verb
-    }
-  }
-});
-```
-
-### Article 6. the instance should have a `global` method.
-
-```javascript
-var router = new Router({
-  '/foo': {
-    '/bar': barlogic // no event type specified, defaults to GET
-    GET: fooLogic // explicitly accept the verb GET for `/foo`
-  }
-});
-
-router.global({
-  on: onGlobal // fired for anything.
-});
-```
-
-### Article 7. the constructor's routing table should allow filter definitions to be associated with routing segments, these are simple and resolve to true or false values which permit the execution of the logic associated with the route.
-
-```javascript
-var router = new Router({
-  '/foo': {
-    '/bar': barlogic // no event type specified, synonymous with GET
-    '/bazz': {
-      GET: bazzGetLogic, // explicit activity
-      filter: ['POST', 'DELETE'],
-      on: bazzLogic // any other activity
-    }
-  }
-});
-
-router.global({
-  filterMethod: YAHOO.Auth.Secure(), // define the logic for filtering.
-  filter: ['DELETE'] // all DELETEs will be filtered
-});
-```
-
-### Article 8. the instance should allow for ad-hoc routing.
-
-```js
-  var router = new Router();
-
-  router.global({
-    filterMethod = YAHOO.Auth.Secure();
-    router.filter = ['POST', 'DELETE']; // global filters.
-  });
-
-  router.path('/regions', function () {
-
-    this.accept = ['POST', 'GET', 'DELETE'];
-    this.filter = ['POST', 'DELETE']; // scoped filters (catches `verb-as-method` and `on`).
-
-    this.on('/:state', function(country) {
-      // this.request
-      // this.response
-    });
-
-    this.on('/:provence', function(country) {
-      // this.request
-      // this.response
-    });
-
-  });
-```
-
-### Article 9. the instance should allow for ad-hoc routing with special events.
-
-```javascript
-var router = new Router();
-router.routes('/foo', function() {
-
-  this.route('/bar', barLogic);
-  this.route('/bazz', function() {
-    this.route('bla', { POST: blaPOSTLogic, after: blaAfterLogic });
-  });
-
-});
-```
 
 # Frequently Asked Questions
 
 ## What About SEO?
 
-Is using a client side router a problem for SEO? Yes. If advertising is a requirement, you are probably building a "Web Page" and not a "Web Application". SugarSkull on the client is meant for script-heavy Web Applications.
+Is using a client side router a problem for SEO? Yes. If advertising is a requirement, you are probably building a "Web Page" and not a "Web Application". Director on the client is meant for script-heavy Web Applications.
 
-## Is SugarSkull compatible with X?
+## Is Director compatible with X?
 
-SugarSkull is known to be Ender.js compatible. However, the project still needs solid cross-browser testing.
+Director is known to be Ender.js compatible. However, the project still needs solid cross-browser testing.
 
 # Licence
 
@@ -566,3 +465,6 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+[0]: http://github.com/hij1nx/director
+

@@ -2,7 +2,7 @@
   "name": "sugarskull",
   "description": "A Client Side Router for Single Page Apps",
   "author": "Nodejitsu Inc <info@nodejitsu.com>",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "contributors": [
     { "name": "Paolo Fragomeni", "email": "hij1nx@nodejitsu.com" },
     { "name": "Charlie Robbins", "email": "charlie@nodejitsu.com" },
