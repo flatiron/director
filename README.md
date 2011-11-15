@@ -177,11 +177,12 @@ Director supports Command Line Interface routing. Routes for cli options are bas
 * [Constructor](#constructor)
 * [Routing Table](#routing-table)
 * [Adhoc Routing](#adhoc-routing)
+* [Routing Events](#routing-events)
 * [Configuration](#configuration)
 * [URL Matching](#url-matching)
 * [URL Params](#url-params)
-* [Async Routing](#async-routing)
 * [Route Recursion](#route-recursion)
+* [Async Routing](#async-routing)
 * [Instance Methods](#instance-methods)
 
 <a name="constructor"></a>
@@ -197,7 +198,6 @@ Director supports Command Line Interface routing. Routes for cli options are bas
 An object literal that contains nested route definitions. A potentially nested set of key/value pairs. The keys in the object literal represent each potential part of the URL. The values in the object literal contain references to the functions that should be associated with them. *bark* and *meow* are two functions that you have defined in your code.
 
 ``` js
-
   //
   // Assign routes to an object literal.
   //
@@ -212,21 +212,81 @@ An object literal that contains nested route definitions. A potentially nested s
     '/cat': [meow, scratch]
   };
 
-  var router = Router(routes); // Instantiate the router.
-
+  //
+  // Instantiate the router.
+  //
+  var router = Router(routes); 
 ```
 
 <a name="adhoc-routing"></a>
 ## Adhoc Routing
 
+When developing large client-side or server-side applications it is not always possible to define routes in one location. Usually individual decoupled components register their own routes with the application router. We refer to this as _Adhoc Routing._ Lets take a look at the API `sugarskull` exposes for adhoc routing:
+
+**Client-side Routing**
+
+``` js
+  var router = new Router().init();
+  
+  router.on('/some/resource', function () {
+    //
+    // Do something on `/#/some/resource`
+    //
+  });
+```
+
+**HTTP Routing**
+
+``` js
+  var router = new director.http.Router();
+  
+  router.get(/\/some\/resource/, function () {
+    //
+    // Do something on an GET to `/some/resource` 
+    //
+  });
+```
+
+<a name="routing-events"></a>
+## Routing Events
+
+In `sugarskull`, a "routing event" is a named property in the [Routing Table](#routing-table) which can be assigned to a function or an Array of functions to be called when a route is matched in a call to `router.dispatch()`.
+
+* **on:** A function or Array of functions to execute when the route is matched.
+* **before:** A function or Array of functions to execute before calling the `on` method(s).
+
+**Client-side only**
+
+* **after:** A function or Array of functions to execute when leaving a particular route.
+* **once:** A function or Array of functions to execute only once for a particular route.
+
 <a name="configuration"></a>
 ## Configuration
+
+Given the flexible nature of `sugarskull` there are several options available for both the [Client-side](#client-side) and [Server-side](#server-side). These options can be set using the `.configure()` method:
+
+``` js
+  var router = new sugarskull.Router(routes).configure(options);
+```
+
+The `options` are:
+
+* **recurse:** Controls [route recursion](#route-recursion). Use `forward`, `backward`, or `false`. Default is `false` Client-side, and `backward` Server-side. 
+* **async:** Controls [async routing](#async-routing). Use `true` or `false`. Default is `false`.
+* **delimiter:** Character separator between route fragments. Default is `/`.
+* **notfound:** A function to call if no route is found on a call to `router.dispatch()`.
+* **on:** A function (or list of functions) to call on every call to `router.dispatch()` when a route is found.
+* **before:** A function (or list of functions) to call before every call to `router.dispatch()` when a route is found.
+
+**Client-side only**
+
+* **resource:** An object to which string-based routes will be bound. This can be especially useful for late-binding to route functions (such as async client-side requires).
+* **after:** A function (or list of functions) to call when a given route is no longer the active route.
 
 <a name="url-matching"></a>
 ## URL Matching
 
 ``` js
-
   var router = Router({
     //
     // given the route '/dog/yella'.
@@ -240,13 +300,11 @@ An object literal that contains nested route definitions. A potentially nested s
       }
     }
   });
-
 ```
 
 Routes can sometimes become very complex, `simple/:tokens` don't always suffice. Director supports regular expressions inside the route names. The values captured from the regular expressions are passed to your listener function.
 
 ``` js
-
   var router = Router({ 
     //
     // given the route '/hello/world'.
@@ -260,11 +318,9 @@ Routes can sometimes become very complex, `simple/:tokens` don't always suffice.
       }
     }
   });
-
 ```
 
 ``` js
-
   var router = Router({
     //
     // given the route '/hello/world/johny/appleseed'.
@@ -274,16 +330,38 @@ Routes can sometimes become very complex, `simple/:tokens` don't always suffice.
         console.log(a, b);
       }
     }
-
   });
-
 ```
 
 <a name="url-params"></a>
 ## URL Parameters
 
-<a name="async-routing"></a>
-## Async Routing
+When you are using the same route fragments it is more descriptive to define these fragments by name and then use them in your [Routing Table](#routing-table) or [Adhoc Routes](#adhoc-routing). Consider a simple example where a `userId` is used repeatedly. 
+
+``` js
+  //
+  // Create a router. This could also be sugarskull.cli.Router() or 
+  // sugarskull.http.Router().
+  //
+  var router = new sugarskull.Router();
+    
+  //
+  // A route could be defined using the `userId` explicitly.
+  //
+  router.on(/([\w-_]+)/, function (userId) { });
+  
+  //
+  // Define a shorthand for this fragment called `userId`.
+  //
+  router.param('userId', /([\\w\\-]+)/);
+  
+  //
+  // Now multiple routes can be defined with the same
+  // regular expression.
+  //
+  router.on('/anything/:userId', function (userId) { });
+  router.on('/something-else/:userId', function (userId) { });
+```
 
 <a name="route-recursion"></a>
 ## Route Recursion
@@ -293,7 +371,6 @@ Can be assigned the value of `forward` or `backward`. The recurse option will de
 ### No recursion, with the URL /dog/angry
 
 ``` js
-
   var routes = {
     '/dog': {
       '/angry': {
@@ -307,15 +384,12 @@ Can be assigned the value of `forward` or `backward`. The recurse option will de
   };
 
   var router = Router(routes);
-
 ```
 
 ### Recursion set to `backward`, with the URL /dog/angry
 
 ``` js
-
   var routes = {
-
     '/dog': {
       '/angry': {
         //
@@ -331,13 +405,11 @@ Can be assigned the value of `forward` or `backward`. The recurse option will de
   };
 
   var router = Router(routes).configure({ recurse: 'backward' });
-
 ```
 
 ### Recursion set to `forward`, with the URL /dog/angry
 
 ``` js
-
   var routes = {
     '/dog': {
       '/angry': {
@@ -354,15 +426,12 @@ Can be assigned the value of `forward` or `backward`. The recurse option will de
   };
 
   var router = Router(routes).configure({ recurse: 'forward' });
-
 ```
 
 ### Breaking out of recursion, with the URL /dog/angry
 
 ``` js
-
   var routes = {
-
     '/dog': {
       '/angry': {
         //
@@ -381,7 +450,43 @@ Can be assigned the value of `forward` or `backward`. The recurse option will de
   // This feature works in reverse with recursion set to true.
   //
   var router = Router(routes).configure({ recurse: 'backward' });
+```
 
+<a name="async-routing"></a>
+## Async Routing
+
+Before diving into how Sugarskull exposes async routing, you should understand [Route Recursion](#route-recursion). At it's core route recursion is about evaluating a series of functions gathered when traversing the [Routing Table](#routing-table). 
+
+Normally this series of functions is evaluated synchronously. In async routing, these functions are evaluated asynchronously. Async routing can be extremely useful both on the client-side and the server-side:
+
+* **Client-side:** To ensure an animation or other async operations (such as HTTP requests for authentication) have completed before continuing evaluation of a route.
+* **Server-side:** To ensure arbitrary async operations (such as performing authentication) have completed before continuing the evaluation of a route.
+
+The method signatures for route functions in synchronous and asynchronous evaluation are different: async route functions take an additional `next()` callback.
+
+**Synchronous route functions**
+
+``` js
+  var router = new director.Router();
+  
+  router.on('/:foo/:bar/:bazz', function (foo, bar, bazz) {
+    //
+    // Do something asynchronous with `foo`, `bar`, and `bazz`.
+    //
+  });
+```
+
+**Asynchronous route functions**
+
+``` js
+  var router = new director.http.Router().configure({ async: true });
+  
+  router.on('/:foo/:bar/:bazz', function (foo, bar, bazz, next) {
+    //
+    // Go do something async, and determine that routing should stop
+    //
+    next(false);
+  });
 ```
 
 <a name="instance-methods"></a>
