@@ -19,7 +19,7 @@ http://foo.com/#/bar
 
 Client-side routing (aka hash-routing) allows you to specify some information about the state of the application using the URL. So that when the user visits a specific URL, the application can be transformed accordingly. 
 
-<img src="https://github.com/flatiron/director/tree/master/img/hashRoute.png" />
+<img src="https://github.com/flatiron/director/raw/master/img/hashRoute.png" />
 
 Here is a simple example:
 
