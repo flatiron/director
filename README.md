@@ -503,7 +503,7 @@ Normally this series of functions is evaluated synchronously. In async routing, 
 
 The method signatures for route functions in synchronous and asynchronous evaluation are different: async route functions take an additional `next()` callback.
 
-**Synchronous route functions**
+### Synchronous route functions
 
 ``` js
   var router = new director.Router();
@@ -515,7 +515,7 @@ The method signatures for route functions in synchronous and asynchronous evalua
   });
 ```
 
-**Asynchronous route functions**
+### Asynchronous route functions
 
 ``` js
   var router = new director.http.Router().configure({ async: true });
