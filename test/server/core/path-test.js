@@ -9,17 +9,17 @@
 var assert = require('assert'),
     vows = require('vows'),
     eyes = require('eyes'),
-    sugarskull = require('../../../lib/sugarskull');
+    director = require('../../../lib/director');
     
-vows.describe('sugarskull/router/path').addBatch({
-  "An instance of sugarskull.Router": {
+vows.describe('director/router/path').addBatch({
+  "An instance of director.Router": {
     topic: function () {
       var that = this;
       that.matched = {};
       that.matched['foo'] = [];
       that.matched['newyork'] = [];
       
-      var router = new sugarskull.Router({
+      var router = new director.Router({
         '/foo': function () { that.matched['foo'].push('foo'); }
       });
       return router;

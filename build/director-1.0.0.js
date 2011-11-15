@@ -9,7 +9,7 @@
 
 
 /*
- * browser.js: Browser specific functionality for sugarskull.
+ * browser.js: Browser specific functionality for director.
  *
  * (C) 2011, Nodejitsu Inc.
  * MIT LICENSE

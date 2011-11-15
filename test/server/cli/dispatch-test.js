@@ -9,12 +9,12 @@
 var assert = require('assert'),
     vows = require('vows'),
     eyes = require('eyes'),
-    sugarskull = require('../../../lib/sugarskull');
+    director = require('../../../lib/director');
     
-vows.describe('sugarskull/cli/dispatch').addBatch({
-  "An instance of sugarskull.cli.Router": {
+vows.describe('director/cli/dispatch').addBatch({
+  "An instance of director.cli.Router": {
     topic: function () {
-      var router = new sugarskull.cli.Router(),
+      var router = new director.cli.Router(),
           that = this;
       
       that.matched = {};

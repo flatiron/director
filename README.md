@@ -223,7 +223,7 @@ An object literal that contains nested route definitions. A potentially nested s
 <a name="adhoc-routing"></a>
 ## Adhoc Routing
 
-When developing large client-side or server-side applications it is not always possible to define routes in one location. Usually individual decoupled components register their own routes with the application router. We refer to this as _Adhoc Routing._ Lets take a look at the API `sugarskull` exposes for adhoc routing:
+When developing large client-side or server-side applications it is not always possible to define routes in one location. Usually individual decoupled components register their own routes with the application router. We refer to this as _Adhoc Routing._ Lets take a look at the API `director` exposes for adhoc routing:
 
 **Client-side Routing**
 
@@ -255,7 +255,7 @@ When developing large client-side or server-side applications it is not always p
 In large web appliations, both [Client-side](#client-side) and [Server-side](#server-side), routes are often scoped within a few individual resources. Director exposes a simple way to do this for [Adhoc Routing](#adhoc-routing) scenarios:
 
 ``` js
-  var router = new sugarskull.http.Router();
+  var router = new director.http.Router();
   
   //
   // Create routes inside the `/users` scope.
@@ -289,7 +289,7 @@ In large web appliations, both [Client-side](#client-side) and [Server-side](#se
 <a name="routing-events"></a>
 ## Routing Events
 
-In `sugarskull`, a "routing event" is a named property in the [Routing Table](#routing-table) which can be assigned to a function or an Array of functions to be called when a route is matched in a call to `router.dispatch()`.
+In `director`, a "routing event" is a named property in the [Routing Table](#routing-table) which can be assigned to a function or an Array of functions to be called when a route is matched in a call to `router.dispatch()`.
 
 * **on:** A function or Array of functions to execute when the route is matched.
 * **before:** A function or Array of functions to execute before calling the `on` method(s).
@@ -302,10 +302,10 @@ In `sugarskull`, a "routing event" is a named property in the [Routing Table](#r
 <a name="configuration"></a>
 ## Configuration
 
-Given the flexible nature of `sugarskull` there are several options available for both the [Client-side](#client-side) and [Server-side](#server-side). These options can be set using the `.configure()` method:
+Given the flexible nature of `director` there are several options available for both the [Client-side](#client-side) and [Server-side](#server-side). These options can be set using the `.configure()` method:
 
 ``` js
-  var router = new sugarskull.Router(routes).configure(options);
+  var router = new director.Router(routes).configure(options);
 ```
 
 The `options` are:
@@ -379,10 +379,10 @@ When you are using the same route fragments it is more descriptive to define the
 
 ``` js
   //
-  // Create a router. This could also be sugarskull.cli.Router() or 
-  // sugarskull.http.Router().
+  // Create a router. This could also be director.cli.Router() or 
+  // director.http.Router().
   //
-  var router = new sugarskull.Router();
+  var router = new director.Router();
     
   //
   // A route could be defined using the `userId` explicitly.
@@ -494,7 +494,7 @@ Can be assigned the value of `forward` or `backward`. The recurse option will de
 <a name="async-routing"></a>
 ## Async Routing
 
-Before diving into how Sugarskull exposes async routing, you should understand [Route Recursion](#route-recursion). At it's core route recursion is about evaluating a series of functions gathered when traversing the [Routing Table](#routing-table). 
+Before diving into how Director exposes async routing, you should understand [Route Recursion](#route-recursion). At it's core route recursion is about evaluating a series of functions gathered when traversing the [Routing Table](#routing-table). 
 
 Normally this series of functions is evaluated synchronously. In async routing, these functions are evaluated asynchronously. Async routing can be extremely useful both on the client-side and the server-side:
 

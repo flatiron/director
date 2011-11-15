@@ -1,4 +1,4 @@
-module("SugarSkull.js", {
+module("Director.js", {
   setup: function() {
     window.location.hash = "";
     shared = {};

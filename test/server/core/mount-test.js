@@ -9,7 +9,7 @@
 var assert = require('assert'),
     vows = require('vows'),
     eyes = require('eyes'),
-    sugarskull = require('../../../lib/sugarskull');
+    director = require('../../../lib/director');
 
 function assertRoute (fn, path, route) {
   if (path.length === 1) {
@@ -21,10 +21,10 @@ function assertRoute (fn, path, route) {
   assertRoute(fn, path, route);
 }
 
-vows.describe('sugarskull/router/mount').addBatch({
-  "An instance of sugarskull.Router": {
+vows.describe('director/router/mount').addBatch({
+  "An instance of director.Router": {
     "with no preconfigured params": {
-      topic: new sugarskull.Router(),
+      topic: new director.Router(),
       "the mount() method": {
         "should sanitize the routes correctly": function (router) {
           function foobar () { }
@@ -63,7 +63,7 @@ vows.describe('sugarskull/router/mount').addBatch({
     },
     "with preconfigured params": {
       topic: function () {
-        var router = new sugarskull.Router();
+        var router = new director.Router();
         router.param('city', '([\\w\\-]+)');
         router.param(':country', /([A-Z][A-Za-z]+)/);
         router.param(':zip', /([\d]{5})/);

@@ -1,7 +1,7 @@
 var http = require('http'),
-    sugarskull = require('../lib/sugarskull');
+    director = require('../lib/director');
 
-var router = new sugarskull.http.Router();
+var router = new director.http.Router();
 
 var server = http.createServer(function (req, res) {
   router.dispatch(req, res, function (err) {
@@ -18,4 +18,4 @@ router.get(/foo/, function () {
 });
 
 server.listen(8080);
-console.log('vanilla http server with sugarskull running on 8080');
+console.log('vanilla http server with director running on 8080');

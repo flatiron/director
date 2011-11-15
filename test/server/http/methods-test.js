@@ -8,13 +8,13 @@
 
 var assert = require('assert'),
     vows = require('vows'),
-    sugarskull = require('../../../lib/sugarskull');
+    director = require('../../../lib/director');
     
-vows.describe('sugarskull/http/methods').addBatch({
-  "When using sugarskull": {
-    "an instance of sugarskull.http.Router should have all relevant RFC methods": function () {
-      var router = new sugarskull.http.Router();
-      sugarskull.http.methods.forEach(function (method) {
+vows.describe('director/http/methods').addBatch({
+  "When using director": {
+    "an instance of director.http.Router should have all relevant RFC methods": function () {
+      var router = new director.http.Router();
+      director.http.methods.forEach(function (method) {
         assert.isFunction(router[method.toLowerCase()]);
       });
     }

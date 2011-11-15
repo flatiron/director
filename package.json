@@ -1,5 +1,5 @@
 {
-  "name": "sugarskull",
+  "name": "director",
   "description": "A Client Side Router for Single Page Apps",
   "author": "Nodejitsu Inc <info@nodejitsu.com>",
   "version": "1.0.1",
@@ -10,7 +10,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "http://github.com/flatiron/sugarskull.git" 
+    "url": "http://github.com/flatiron/director.git" 
   },
   "keywords": ["URL", "router", "http", "cli", "flatiron", "client side"],
   "dependencies": {
@@ -24,7 +24,7 @@
     "colors": "0.5.x"
   },
   "ender": "./build/ender.js",
-  "main": "./lib/sugarskull",
+  "main": "./lib/director",
   "engines": { "node": ">= 0.4.0" },
   "scripts": {
     "test": "vows --spec test/server/*/*-test.js"

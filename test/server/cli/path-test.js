@@ -9,11 +9,11 @@
 var assert = require('assert'),
     vows = require('vows'),
     eyes = require('eyes'),
-    sugarskull = require('../../../lib/sugarskull');
+    director = require('../../../lib/director');
     
-vows.describe('sugarskull/cli/path').addBatch({
-  "An instance of sugarskull.cli.Router": {
-    topic: new sugarskull.cli.Router(),
+vows.describe('director/cli/path').addBatch({
+  "An instance of director.cli.Router": {
+    topic: new director.cli.Router(),
     "the path() method": {
       "should create the correct nested routing table": function (router) {
         function noop () {}

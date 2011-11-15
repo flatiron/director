@@ -8,11 +8,11 @@
 
 var assert = require('assert'),
     vows = require('vows'),
-    sugarskull = require('../../../lib/sugarskull');
+    director = require('../../../lib/director');
     
-vows.describe('sugarskull/router/insert').addBatch({
-  "An instance of sugarskull.Router": {
-    topic: new sugarskull.Router(),
+vows.describe('director/router/insert').addBatch({
+  "An instance of director.Router": {
+    topic: new director.Router(),
     "the insert() method": {
       "'on', ['foo', 'bar']": function (router) {
         function route () { }

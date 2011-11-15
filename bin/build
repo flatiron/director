@@ -6,7 +6,7 @@ var surgeon = new Codesurgeon;
 var path    = require('path');
 
 var root    = path.join(__dirname, '..');
-var lib     = path.join(root, 'lib', 'sugarskull');
+var lib     = path.join(root, 'lib', 'director');
 
 //
 // Distill and package the browser version.
@@ -68,10 +68,10 @@ surgeon
   // write the debuggable version of the file. This file will
   // get renamed to include the version from the package.json
   //
-  .write(root + '/build/sugarskull.js')
+  .write(root + '/build/director.js')
   //
   // now lets make a minified version for production use.
   //
   .uglify()
-  .write(root + '/build/sugarskull.min.js')
+  .write(root + '/build/director.min.js')
 ;
