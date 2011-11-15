@@ -177,12 +177,14 @@ Director supports Command Line Interface routing. Routes for cli options are bas
 * [Constructor](#constructor)
 * [Routing Table](#routing-table)
 * [Adhoc Routing](#adhoc-routing)
+* [Scoped Routing](#scoped-routing)
 * [Routing Events](#routing-events)
 * [Configuration](#configuration)
 * [URL Matching](#url-matching)
 * [URL Params](#url-params)
 * [Route Recursion](#route-recursion)
 * [Async Routing](#async-routing)
+* [Resources](#resources)
 * [Instance Methods](#instance-methods)
 
 <a name="constructor"></a>
@@ -244,6 +246,43 @@ When developing large client-side or server-side applications it is not always p
     //
     // Do something on an GET to `/some/resource` 
     //
+  });
+```
+
+<a name="scoped-routing"></a>
+## Scoped Routing
+
+In large web appliations, both [Client-side](#client-side) and [Server-side](#server-side), routes are often scoped within a few individual resources. Director exposes a simple way to do this for [Adhoc Routing](#adhoc-routing) scenarios:
+
+``` js
+  var router = new sugarskull.http.Router();
+  
+  //
+  // Create routes inside the `/users` scope.
+  //
+  router.path(/\/users\/(\w+)/, function () {
+    //
+    // The `this` context of the function passed to `.path()`
+    // is the Router itself.
+    //
+    
+    this.post(function (id) {
+      //
+      // Create the user with the specified `id`.
+      //
+    });
+    
+    this.get(function (id) {
+      //
+      // Retreive the user with the specified `id`.
+      //
+    });
+    
+    this.get(/\/friends/, function (id) {
+      //
+      // Get the friends for the user with the specified `id`.
+      //
+    });
   });
 ```
 
@@ -489,32 +528,105 @@ The method signatures for route functions in synchronous and asynchronous evalua
   });
 ```
 
+<a name="resources"></a>
+### Resources
+
+**Available on the Client-side only.** An object literal containing functions. If a host object is specified, your route definitions can provide string literals that represent the function names inside the host object. A host object can provide the means for better encapsulation and design.
+
+``` js
+
+  var router = Router({
+
+    '/hello': {
+      '/usa': 'americas',
+      '/china': 'asia'
+    }
+
+  }).configure({ resource: container }).init();
+
+  var container = {
+    americas: function() { return true; },
+    china: function() { return true; }
+  };
+
+```
+
 <a name="instance-methods"></a>
 ## Instance methods
 
-### configure(settings)
-* `on` {Function} or {Array} - A callback or list of callbacks that will fire on every route.
-* `after` {Function} or {Array} - A callback or list of callbacks that will fire after every route.
-* `recurse` {String} - Determines the order in which to fire the listeners that are associated with your routes. can be set to `backward` or `forward`.
-* `resource` {Object} - An object literal of function declarations.
-* `notfound` {Function} or {Array} - A callback or a list of callbacks to be called when there is no matching route.
+### configure(options)
+* `options` {Object}: Options to configure this instance with.
+
+Configures the Router instance with the specified `options`. See [Configuration](#configuration) for more documentation.
 
 ### param(token, matcher)
+* token {string}: Named parameter token to set to the specified `matcher`
+* matcher {string|Regexp}: Matcher for the specified `token`.
+
+Adds a route fragment for the given string `token` to the specified regex `matcher` to this Router instance. See [URL Parameters](#url-parameters) for more documentation.
 
 ### on(method, path, route)
+* `method` {string}: Method to insert within the Routing Table (e.g. `on`, `get`, etc.).
+* `path` {string}: Path within the Routing Table to set the `route` to.
+* `route` {function|Array}: Route handler to invoke for the `method` and `path`.
+
+Adds the `route` handler for the specified `method` and `path` within the [Routing Table](#routing-table). 
 
 ### path(path, routesFn)
+* `path` {string|Regexp}: Scope within the Routing Table to invoke the `routesFn` within.
+* `routesFn` {function}: Adhoc Routing function with calls to `this.on()`, `this.get()` etc.
+
+Invokes the `routesFn` within the scope of the specified `path` for this Router instance.
 
 ### dispatch(method, path[, callback])
+* method {string}: Method to invoke handlers for within the Routing Table
+* path {string}: Path within the Routing Table to match
+* callback {function}: Invoked once all route handlers have been called.
+
+Dispatches the route handlers matched within the [Routing Table](#routing-table) for this instance for the specified `method` and `path`.
 
 ### mount(routes, path)
+* routes {object}: Partial routing table to insert into this instance.
+* path {string|Regexp}: Path within the Routing Table to insert the `routes` into.
+
+Inserts the partial [Routing Table](#routing-table), `routes`, into the Routing Table for this Router instance at the specified `path`.
+
+**Client-side only**
+
+### init()
+Initialize the router, start listening for changes to the URL.
+
+### getState()
+Returns the state object that is relative to the current route.
+
+### getRoute([index])
+* `index` {Number}: The hash value is divided by forward slashes, each section then has an index, if this is provided, only that section of the route will be returned. 
+
+Returns the entire route or just a section of it.
+
+### setRoute(route)
+* `route` {String}: Supply a route value, such as `home/stats`. 
+
+Set the current route.
+  
+### setRoute(start, length)
+* `start` {Number} - The position at which to start removing items.
+* `length` {Number} - The number of items to remove from the route.
+
+Remove a segment from the current route.
+
+### setRoute(index, value)
+* `index` {Number} - The hash value is divided by forward slashes, each section then has an index.
+* `value` {String} - The new value to assign the the position indicated by the first parameter.
+
+Set a segment of the current route.
 
 <a name="faq"></a>
 # Frequently Asked Questions
 
 ## What About SEO?
 
-Is using a client side router a problem for SEO? Yes. If advertising is a requirement, you are probably building a "Web Page" and not a "Web Application". Director on the client is meant for script-heavy Web Applications.
+Is using a Client-side router a problem for SEO? Yes. If advertising is a requirement, you are probably building a "Web Page" and not a "Web Application". Director on the client is meant for script-heavy Web Applications.
 
 ## Is Director compatible with X?
 
