@@ -591,7 +591,7 @@ Dispatches the route handlers matched within the [Routing Table](#routing-table)
 
 Inserts the partial [Routing Table](#routing-table), `routes`, into the Routing Table for this Router instance at the specified `path`.
 
-**Client-side only**
+## Instance methods (Client-side only)
 
 ### init()
 Initialize the router, start listening for changes to the URL.
