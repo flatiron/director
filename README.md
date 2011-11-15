@@ -529,7 +529,7 @@ The method signatures for route functions in synchronous and asynchronous evalua
 ```
 
 <a name="resources"></a>
-### Resources
+## Resources
 
 **Available on the Client-side only.** An object literal containing functions. If a host object is specified, your route definitions can provide string literals that represent the function names inside the host object. A host object can provide the means for better encapsulation and design.
 
