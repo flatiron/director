@@ -17,7 +17,9 @@ It simply watches the hash of the URL to determine what to do, for example:
 http://foo.com/#/bar
 ```
 
-Client-side routing (aka hash-routing) allows you to specify some information about the state of the application using the URL. So that when the user visits a specific URL, the application can be transformed accordingly. Because of the additional requirements of Client-side routing `director` exposes additional API methods, see the [Client-side documentation](https://github.com/flatiron/director/tree/master/docs/client-side.md) for more details.
+Client-side routing (aka hash-routing) allows you to specify some information about the state of the application using the URL. So that when the user visits a specific URL, the application can be transformed accordingly. 
+
+<img src="https://github.com/flatiron/director/tree/master/img/hashRoute.png" />
 
 Here is a simple example:
 
