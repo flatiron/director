@@ -193,7 +193,7 @@ Director supports Command Line Interface routing. Routes for cli options are bas
 ```
 
 <a name="routing-table"></a>
-### Routing Table
+## Routing Table
 
 An object literal that contains nested route definitions. A potentially nested set of key/value pairs. The keys in the object literal represent each potential part of the URL. The values in the object literal contain references to the functions that should be associated with them. *bark* and *meow* are two functions that you have defined in your code.
 
