@@ -1,4 +1,4 @@
-# Director
+# Director [![Build Status](https://secure.travis-ci.org/flatiron/director.png)](http://travis-ci.org/flatiron/director)
 
 # Overview
 Director is a router. Routing is the process of determining what code to run when a URL is requested. Director works on the client and the server. Director is dependency free, on the client it does not require any other libraries (such as jQuery).
@@ -647,3 +647,4 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 [0]: http://github.com/flatiron/director
+
