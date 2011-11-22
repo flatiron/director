@@ -99,6 +99,15 @@ vows.describe('director/router/dispatch').addBatch({
           assert.isTrue(router.dispatch('on', '/foo/barbie/'));
           assert.equal(this.matched['f*'][0], 'f* barbie');
         },
+        "/foo/bar/buzz": function (router) {
+          assert.isTrue(router.dispatch('on', '/foo/bar/buzz'));
+
+          assert.equal(this.matched.foo[0], 'foo bar buzz');
+          assert.equal(this.matched.foo[1], 'before foo bar');
+          assert.equal(this.matched.foo[2], 'foo bar');
+          assert.equal(this.matched.foo[3], 'before foo');
+          assert.equal(this.matched.foo[4], 'on foo');
+        },
       }
     }    
   }
