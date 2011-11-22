@@ -57,6 +57,7 @@ vows.describe('director/router/dispatch').addBatch({
     "the dispatch() method": {
       "/": function (router) {
         assert.isTrue(router.dispatch('on', '/'));
+        assert.isTrue(router.dispatch('on', '/'));
 
         assert.equal(this.matched['/'][0], 'before /');
         assert.equal(this.matched['/'][1], 'on /');

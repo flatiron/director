@@ -31,9 +31,19 @@ vows.describe('director/router/mount').addBatch({
           function foostar () { }
           function foobazzbuzz () { }
           function foodog () { }
+          function root () {}
           var fnArray = [foobar, foostar];
 
           router.mount({
+            '/': {
+              before: root,
+              on: root,
+              after: root,
+              '/nesting': {
+                on: foobar,
+                '/deep': foostar
+              }
+            },
             '/foo': {
               '/bar': foobar,
               '/*': foostar,
@@ -50,7 +60,12 @@ vows.describe('director/router/mount').addBatch({
             '/foo/jitsu/then/now': foostar,
             '/foo/:dog': foodog
           });
-
+          
+          assertRoute(root,        ['on'],                                      router.routes);
+          assertRoute(root,        ['after'],                                   router.routes);
+          assertRoute(root,        ['before'],                                  router.routes);
+          assertRoute(foobar,      ['nesting', 'on'],                           router.routes);
+          assertRoute(foostar,     ['nesting', 'deep', 'on'],                   router.routes);
           assertRoute(foobar,      [ 'foo', 'bar', 'on'],                       router.routes);
           assertRoute(foostar,     ['foo', '([_.()!\\ %@&a-zA-Z0-9-]+)', 'on'], router.routes);
           assertRoute(fnArray,     ['foo', 'jitsu', 'then', 'on'],              router.routes);
