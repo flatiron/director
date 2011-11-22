@@ -1,8 +1,8 @@
 
 
 //
-// Generated on Wed Nov 09 2011 15:32:06 GMT+0100 (CET) by Nodejitsu, Inc (Using Codesurgeon).
-// Version 1.0.0
+// Generated on Tue Nov 22 2011 18:01:18 GMT-0500 (EST) by Nodejitsu, Inc (Using Codesurgeon).
+// Version 1.0.1
 //
 
 (function (exports) {
@@ -255,18 +255,7 @@ Router.prototype.getRoute = function (v) {
 Router.prototype.destroy = function () {
   listener.destroy(this.handler);
   return this;
-};
-
-Router.prototype.recurse = function (value) {
-  if (value === undefined) {
-    return recurse;
-  }
-
-  this.add = (this._recurse = value) === 'forward'
-    ? 'unshift'
-    : 'push';
-};
-function _every(arr, iterator) {
+};function _every(arr, iterator) {
     for (var i = 0; i < arr.length; i += 1) {
         if (iterator(arr[i], i, arr) === false) {
             return;
@@ -336,7 +325,7 @@ Router.prototype.configure = function(options) {
     for (var i = 0; i < this.methods.length; i++) {
         this._methods[this.methods[i]] = true;
     }
-    this.recurse = options.recurse || false;
+    this.recurse = options.recurse || this.recurse || false;
     this.async = options.async || false;
     this.delimiter = options.delimiter || "/";
     this.notfound = options.notfound;
@@ -415,7 +404,10 @@ Router.prototype.invoke = function(fns, thisArg, callback) {
     var self = this;
     if (this.async) {
         _asyncEverySeries(fns, function(fn, next) {
-            fn.apply(thisArg, fns.captures.concat(next));
+            if (typeof fn == "function") {
+                fn.apply(thisArg, fns.captures.concat(next));
+            }
+            next();
         }, function() {
             if (callback) {
                 callback.apply(null, arguments);
@@ -436,6 +428,13 @@ Router.prototype.invoke = function(fns, thisArg, callback) {
 
 Router.prototype.traverse = function(method, path, routes, regexp) {
     var fns = [], current, match, next, that;
+    if (path === this.delimiter && routes[method]) {
+        next = [ [ routes.before, routes[method] ].filter(Boolean) ];
+        next.after = [ routes.after ].filter(Boolean);
+        next.matched = true;
+        next.captures = [];
+        return next;
+    }
     for (var r in routes) {
         if (routes.hasOwnProperty(r) && !this._methods[r]) {
             current = regexp + this.delimiter + r;
@@ -483,6 +482,21 @@ Router.prototype.insert = function(method, path, route, parent) {
         parent[part] = parent[part] || {};
         return this.insert(method, path, route, parent[part]);
     }
+    if (!part && !path.length && parent === this.routes) {
+        methodType = typeof parent[method];
+        switch (methodType) {
+          case "function":
+            parent[method] = [ parent[method], route ];
+            return;
+          case "object":
+            parent[method].push(route);
+            return;
+          case "undefined":
+            parent[method] = route;
+            return;
+        }
+        return;
+    }
     parentType = typeof parent[part];
     isArray = Array.isArray(parent[part]);
     if (parent[part] && !isArray && parentType == "object") {
@@ -513,6 +527,7 @@ Router.prototype.extend = function(methods) {
     var self = this, len = methods.length, i;
     for (i = 0; i < len; i++) {
         (function(method) {
+            self._methods[method] = true;
             self[method] = function() {
                 self.on.apply(self, [ method ].concat(Array.prototype.slice.call(arguments)));
             };
