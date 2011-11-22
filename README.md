@@ -313,6 +313,7 @@ Given the flexible nature of `director` there are several options available for 
 The `options` are:
 
 * **recurse:** Controls [route recursion](#route-recursion). Use `forward`, `backward`, or `false`. Default is `false` Client-side, and `backward` Server-side. 
+* **strict:** If set to `false`, then trailing slashes (or other delimiters) are allowed in routes. Default is `true`.
 * **async:** Controls [async routing](#async-routing). Use `true` or `false`. Default is `false`.
 * **delimiter:** Character separator between route fragments. Default is `/`.
 * **notfound:** A function to call if no route is found on a call to `router.dispatch()`.
