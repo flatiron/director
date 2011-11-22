@@ -76,12 +76,30 @@ vows.describe('director/router/dispatch').addBatch({
         assert.isTrue(router.dispatch('on', '/foo/barbie'));
         assert.equal(this.matched['f*'][0], 'f* barbie');
       },
+      "/foo/barbie/": function (router) {
+        assert.isFalse(router.dispatch('on', '/foo/barbie/'));
+      },
       "/foo/BAD": function (router) {
         assert.isFalse(router.dispatch('on', '/foo/BAD'));
       },
       "/bar/bar": function (router) {
         assert.isFalse(router.dispatch('on', '/bar/bar'));
+      },
+      "with the strict option disabled": {
+        topic: function (router) {
+          return router.configure({
+            recurse: 'backward',
+            strict: false
+          });
+        },
+        "should have the proper configuration set": function (router) {
+          assert.isFalse(router.strict);
+        },
+        "/foo/barbie/": function (router) {
+          assert.isTrue(router.dispatch('on', '/foo/barbie/'));
+          assert.equal(this.matched['f*'][0], 'f* barbie');
+        },
       }
-    }
+    }    
   }
 }).export(module);
