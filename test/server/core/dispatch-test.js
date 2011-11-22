@@ -16,10 +16,16 @@ vows.describe('director/router/dispatch').addBatch({
     topic: function () {
       var that = this;
       that.matched = {};
+      that.matched['/'] = [];
       that.matched['foo'] = [];
       that.matched['f*'] = []
       
       var router = new director.Router({
+        '/': {
+          before: function () { that.matched['/'].push('before /') },
+          on: function () { that.matched['/'].push('on /') },
+          after: function () { that.matched['/'].push('after /') }
+        },
         '/foo': {
           before: function () { that.matched.foo.push('before foo') },
           on: function () { that.matched.foo.push('on foo') },
@@ -49,6 +55,13 @@ vows.describe('director/router/dispatch').addBatch({
       assert.isFunction(router.routes.foo.bar.buzz.on);
     },
     "the dispatch() method": {
+      "/": function (router) {
+        assert.isTrue(router.dispatch('on', '/'));
+
+        assert.equal(this.matched['/'][0], 'before /');
+        assert.equal(this.matched['/'][1], 'on /');
+        assert.equal(this.matched['/'][2], 'after /');
+      },
       "/foo/bar/buzz": function (router) {
         assert.isTrue(router.dispatch('on', '/foo/bar/buzz'));
 
