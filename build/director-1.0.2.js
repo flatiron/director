@@ -1,8 +1,8 @@
 
 
 //
-// Generated on Tue Nov 22 2011 18:01:18 GMT-0500 (EST) by Nodejitsu, Inc (Using Codesurgeon).
-// Version 1.0.1
+// Generated on Tue Nov 22 2011 18:22:41 GMT-0500 (EST) by Nodejitsu, Inc (Using Codesurgeon).
+// Version 1.0.2
 //
 
 (function (exports) {
@@ -328,6 +328,7 @@ Router.prototype.configure = function(options) {
     this.recurse = options.recurse || this.recurse || false;
     this.async = options.async || false;
     this.delimiter = options.delimiter || "/";
+    this.strict = typeof options.strict === "undefined" ? true : options.strict;
     this.notfound = options.notfound;
     this.resource = options.resource;
     this.every = {
@@ -438,6 +439,9 @@ Router.prototype.traverse = function(method, path, routes, regexp) {
     for (var r in routes) {
         if (routes.hasOwnProperty(r) && !this._methods[r]) {
             current = regexp + this.delimiter + r;
+            if (!this.strict) {
+                current += "[" + this.delimiter + "]?";
+            }
             match = path.match(new RegExp("^" + current));
             if (!match) {
                 continue;
