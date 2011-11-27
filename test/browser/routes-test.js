@@ -614,3 +614,19 @@ createTest('functions should have |this| context of the router instance.', {
     this.finish();
   });
 });
+
+createTest('setRoute with a single parameter should change location correctly', {
+  '/bonk': {
+    on: function() {
+      shared.fired.push(window.location.hash);
+    }
+  }
+}, function() {
+  var self = this;
+  shared.fired = [];
+  this.router.setRoute('/bonk');
+  setTimeout(function() {
+    deepEqual(shared.fired, ['#/bonk']);
+    self.finish();
+  }, 14)
+});
