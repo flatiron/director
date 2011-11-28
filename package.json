@@ -1,8 +1,9 @@
 {
   "name": "director",
-  "description": "A Client Side Router for Single Page Apps",
+  "description": "A client Side/Server Side Router",
   "author": "Nodejitsu Inc <info@nodejitsu.com>",
-  "version": "1.0.3",
+  "version": "1.0.4",
+  "maintainers": [ "hij1nx <hij1nx@me.com>", "indexzero <charlie.robbins@gmail.com>" ],
   "contributors": [
     { "name": "Paolo Fragomeni", "email": "hij1nx@nodejitsu.com" },
     { "name": "Charlie Robbins", "email": "charlie@nodejitsu.com" },
