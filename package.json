@@ -19,10 +19,11 @@
   },
   "devDependencies": {
     "codesurgeon": "0.2.x",
+    "colors": "0.5.x",
     "eyes": "0.1.x",
     "uglify-js": "1.0.6",
-    "vows": "0.5.x",
-    "colors": "0.5.x"
+    "request": "2.0.x",
+    "vows": "0.5.x"
   },
   "ender": "./build/ender.js",
   "main": "./lib/director",

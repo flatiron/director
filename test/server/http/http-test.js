@@ -9,12 +9,24 @@
 var assert = require('assert'),
     http = require('http'),
     vows = require('vows'),
+    request = require('request'),
     director = require('../../../lib/director');
 
-function helloWorld(route) {
+function helloWorld(id) {
   this.res.writeHead(200, { 'Content-Type': 'text/plain' })
-  this.res.end('hello world from (' + route + ')');
-}    
+  this.res.end('hello from (' + id + ')');
+}
+
+function createServer (router) {
+  return http.createServer(function (req, res) {
+    router.dispatch(req, res, function (err) {
+      if (err) {
+        res.writeHead(404);
+        res.end();
+      }
+    });
+  });
+}
 
 vows.describe('director/server/http').addBatch({
   "An instance of director.http.Router": {
@@ -27,6 +39,23 @@ vows.describe('director/server/http').addBatch({
       "should have the correct routes defined": function (router) {
         assert.isObject(router.routes.hello);
         assert.isFunction(router.routes.hello.get);
+      },
+      "when passed to an http.Server instance": {
+        topic: function (router) {
+          router.get(/foo\/bar\/(\w+)/, helloWorld);
+          
+          var server = createServer(router),
+              that = this;
+              
+          server.listen(9090, function () {
+            request({ uri: 'http://localhost:9090/foo/bar/bark' }, that.callback);
+          });
+        },
+        "should respond with `hello from (bark)`": function (err, res, body) {
+          assert.isNull(err);
+          assert.equal(res.statusCode, 200);
+          assert.equal(body, 'hello from (bark)')
+        }
       }
     }
   }
