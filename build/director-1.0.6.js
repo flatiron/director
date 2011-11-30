@@ -1,8 +1,8 @@
 
 
 //
-// Generated on Tue Nov 29 2011 21:57:46 GMT-0500 (EST) by Nodejitsu, Inc (Using Codesurgeon).
-// Version 1.0.5
+// Generated on Tue Nov 29 2011 23:34:27 GMT-0500 (EST) by Nodejitsu, Inc (Using Codesurgeon).
+// Version 1.0.6
 //
 
 (function (exports) {
@@ -436,7 +436,7 @@ Router.prototype.traverse = function(method, path, routes, regexp) {
         return next;
     }
     for (var r in routes) {
-        if (routes.hasOwnProperty(r) && !this._methods[r]) {
+        if (routes.hasOwnProperty(r) && (!this._methods[r] || this._methods[r] && typeof routes[r] === "object" && !Array.isArray(routes[r]))) {
             current = exact = regexp + this.delimiter + r;
             if (!this.strict) {
                 exact += "[" + this.delimiter + "]?";
@@ -532,7 +532,8 @@ Router.prototype.extend = function(methods) {
         (function(method) {
             self._methods[method] = true;
             self[method] = function() {
-                self.on.apply(self, [ method ].concat(Array.prototype.slice.call(arguments)));
+                var extra = arguments.length === 1 ? [ method, "" ] : [ method ];
+                self.on.apply(self, extra.concat(Array.prototype.slice.call(arguments)));
             };
         })(methods[i]);
     }
