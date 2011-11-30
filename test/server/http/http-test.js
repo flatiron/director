@@ -56,6 +56,7 @@ vows.describe('director/server/http').addBatch({
       "when passed to an http.Server instance": {
         topic: function (router) {
           router.get(/foo\/bar\/(\w+)/, helloWorld);
+          router.get(/foo\/update\/(\w+)/, helloWorld);
           router.path(/bar\/bazz\//, function () {
             this.get(/(\w+)/, helloWorld)
           });
@@ -66,6 +67,7 @@ vows.describe('director/server/http').addBatch({
           server.listen(9090, this.callback);
         },
         "a request to foo/bar/bark": assertGet('foo/bar/bark'),
+        "a request to foo/update/bark": assertGet('foo/update/bark'),
         "a request to bar/bazz/bark": assertGet('bar/bazz/bark')
       }
     }
