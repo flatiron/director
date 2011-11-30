@@ -1,8 +1,8 @@
 
 
 //
-// Generated on Wed Nov 23 2011 23:42:39 GMT-0500 (EST) by Nodejitsu, Inc (Using Codesurgeon).
-// Version 1.0.3
+// Generated on Tue Nov 29 2011 21:57:46 GMT-0500 (EST) by Nodejitsu, Inc (Using Codesurgeon).
+// Version 1.0.5
 //
 
 (function (exports) {
@@ -121,7 +121,7 @@ var listener = {
 
   setHash: function (s) {
     // Mozilla always adds an entry to the history
-    if (mode === 'legacy') {
+    if (this.mode === 'legacy') {
       this.writeFrame(s);
     }
 
@@ -357,7 +357,7 @@ Router.prototype.on = Router.prototype.route = function(method, path, route) {
         method = "on";
     }
     if (path.source) {
-        path = path.source;
+        path = path.source.replace(/\\\//ig, "/");
     }
     if (Array.isArray(method)) {
         return method.forEach(function(m) {
