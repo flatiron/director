@@ -14,9 +14,6 @@
     "url": "http://github.com/flatiron/director.git" 
   },
   "keywords": ["URL", "router", "http", "cli", "flatiron", "client side"],
-  "dependencies": {
-    "optimist": "0.2.x"
-  },
   "devDependencies": {
     "codesurgeon": "0.2.x",
     "colors": "0.5.x",
