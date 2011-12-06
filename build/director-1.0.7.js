@@ -1,8 +1,8 @@
 
 
 //
-// Generated on Tue Nov 29 2011 23:34:27 GMT-0500 (EST) by Nodejitsu, Inc (Using Codesurgeon).
-// Version 1.0.6
+// Generated on Tue Dec 06 2011 04:47:21 GMT-0500 (EST) by Nodejitsu, Inc (Using Codesurgeon).
+// Version 1.0.7
 //
 
 (function (exports) {
@@ -361,7 +361,7 @@ Router.prototype.on = Router.prototype.route = function(method, path, route) {
     }
     if (Array.isArray(method)) {
         return method.forEach(function(m) {
-            self.on(m, path, route);
+            self.on(m.toLowerCase(), path, route);
         });
     }
     this.insert(method, this.scope.concat(path.split(new RegExp(this.delimiter))), route);
@@ -410,7 +410,7 @@ Router.prototype.invoke = function(fns, thisArg, callback) {
             }
         }, function() {
             if (callback) {
-                callback.apply(null, arguments);
+                callback.apply(thisArg, arguments);
             }
         });
     } else {
@@ -450,6 +450,10 @@ Router.prototype.traverse = function(method, path, routes, regexp) {
                 next.after = [ routes[r].after ].filter(Boolean);
                 next.matched = true;
                 next.captures = match.slice(1);
+                if (this.recurse && routes === this.routes) {
+                    next.push([ routes["before"], routes["on"] ].filter(Boolean));
+                    next.after = next.after.concat([ routes["after"] ].filter(Boolean));
+                }
                 return next;
             }
             next = this.traverse(method, path, routes[r], current);
@@ -460,6 +464,10 @@ Router.prototype.traverse = function(method, path, routes, regexp) {
                 if (this.recurse) {
                     fns.push([ routes[r].before, routes[r].on ].filter(Boolean));
                     next.after = next.after.concat([ routes[r].after ].filter(Boolean));
+                    if (routes === this.routes) {
+                        fns.push([ routes["before"], routes["on"] ].filter(Boolean));
+                        next.after = next.after.concat([ routes["after"] ].filter(Boolean));
+                    }
                 }
                 fns.matched = true;
                 fns.captures = next.captures;
@@ -478,7 +486,7 @@ Router.prototype.insert = function(method, path, route, parent) {
     });
     parent = parent || this.routes;
     part = path.shift();
-    if (/\:|\*/.test(part)) {
+    if (/\:|\*/.test(part) && !/\\d|\\w/.test(part)) {
         part = regifyString(part, this.params);
     }
     if (path.length > 0) {
