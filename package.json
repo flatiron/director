@@ -20,7 +20,7 @@
     "eyes": "0.1.x",
     "uglify-js": "1.0.6",
     "request": "2.0.x",
-    "vows": "0.5.x"
+    "vows": "0.6.x"
   },
   "ender": "./build/ender.js",
   "main": "./lib/director",
