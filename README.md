@@ -97,7 +97,7 @@ Director works great with your favorite DOM library, such as jQuery.
   </html>
 ```
 
-You can find a browser-specific build of `director` [here][0] which has all of the server code stripped away.
+You can find a browser-specific build of `director` [here][1] which has all of the server code stripped away.
 
 <a name="http-routing"></a>
 ## Server-Side HTTP Routing
@@ -648,4 +648,4 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 [0]: http://github.com/flatiron/director
-
+[1]: https://github.com/flatiron/director/blob/master/build/director-1.0.7.min.js
