@@ -68,7 +68,8 @@ vows.describe('director/server/http').addBatch({
         },
         "a request to foo/bar/bark": assertGet('foo/bar/bark'),
         "a request to foo/update/bark": assertGet('foo/update/bark'),
-        "a request to bar/bazz/bark": assertGet('bar/bazz/bark')
+        "a request to bar/bazz/bark": assertGet('bar/bazz/bark'),
+        "a request to foo/bar/bark?test=test": assertGet('foo/bar/bark?test=test')
       }
     }
   }
