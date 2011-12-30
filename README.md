@@ -172,15 +172,16 @@ Director supports Command Line Interface routing. Routes for cli options are bas
     console.log('destroy something');
   });
 
+  // You will need to dispatch the cli arguments yourself
   router.dispatch('on', process.argv.slice(2).join(' '));
 ```
 
-When the script is run (we'll call it `cli-program.js`), it will route based on the command you give it:
+Using the cli router, you can dispatch commands by passing them as a string. For example, if this example is in a file called `foo.js`:
 
 ``` bash
-$ node cli-program.js create
+$ node foo.js create
 create something
-$ node cli-program.js destroy
+$ node foo.js destroy
 destroy something
 ```
 
