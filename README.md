@@ -129,7 +129,7 @@ Director handles routing for HTTP requests similar to `journey` or `express`:
   });
 
   //
-  // stup a server and when there is a request, dispatch the
+  // setup a server and when there is a request, dispatch the
   // route that was requestd in the request object.
   //
   var server = http.createServer(function (req, res) {
