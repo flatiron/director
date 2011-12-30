@@ -19,7 +19,7 @@
     "colors": "0.5.x",
     "eyes": "0.1.x",
     "uglify-js": "1.0.6",
-    "request": "2.0.x",
+    "request": "2.1.x",
     "vows": "0.6.x"
   },
   "ender": "./build/ender.js",
@@ -29,3 +29,4 @@
     "test": "vows --spec test/server/*/*-test.js"
   }
 }
+
