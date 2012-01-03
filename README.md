@@ -31,14 +31,17 @@ Here is a simple example:
       <script>
 
         var author = function () { /* ... */ },
-            books = function () { /* ... */ };
+            books = function () { /* ... */ },
+            viewBook = function(bookId) { /* bookId is populated. */ };
 
         var routes = {
-          '/author': showAuthorInfo,
-          '/books': [showAuthorInfo, listBooks]
+          '/author': author,
+          '/books': [books, function() { /* An inline route handler. */ }],
+          '/books/view/:bookId': viewBook
         };
 
         var router = Router(routes);
+        router.init();
 
       </script>
     </head>
@@ -87,6 +90,7 @@ Director works great with your favorite DOM library, such as jQuery.
         router.configure({
           on: allroutes
         });
+        router.init();
 
       </script>
     </head>
