@@ -630,3 +630,18 @@ createTest('setRoute with a single parameter should change location correctly', 
     self.finish();
   }, 14)
 });
+
+createTest('route should accept _ and . within parameters', {
+  '/:a': {
+    on: function root() {
+      shared.fired.push(location.hash);
+    }
+  }
+}, function() {
+  shared.fired = [];
+  this.navigate('/a_complex_route.co.uk', function root() {
+    deepEqual(shared.fired, ['#/a_complex_route.co.uk']);
+    this.finish();
+  });
+});
+
