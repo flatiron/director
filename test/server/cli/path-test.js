@@ -8,7 +8,6 @@
  
 var assert = require('assert'),
     vows = require('vows'),
-    eyes = require('eyes'),
     director = require('../../../lib/director');
     
 vows.describe('director/cli/path').addBatch({
@@ -37,3 +36,4 @@ vows.describe('director/cli/path').addBatch({
     }
   }
 }).export(module);
+

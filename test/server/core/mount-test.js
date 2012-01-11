@@ -8,7 +8,6 @@
  
 var assert = require('assert'),
     vows = require('vows'),
-    eyes = require('eyes'),
     director = require('../../../lib/director');
 
 function assertRoute (fn, path, route) {

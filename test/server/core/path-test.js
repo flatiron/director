@@ -8,7 +8,6 @@
  
 var assert = require('assert'),
     vows = require('vows'),
-    eyes = require('eyes'),
     director = require('../../../lib/director');
     
 vows.describe('director/router/path').addBatch({
