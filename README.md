@@ -1,21 +1,21 @@
 
 <img src="https://github.com/flatiron/director/raw/master/img/director.png" />
 
-## Synopsis
+# Synopsis
 Director is a router. Routing is the process of determining what code to run when a URL is requested.
 
-## Motivation
+# Motivation
 A routing library that works in both the browser and node.js environments with as few differences as possible. Simplifies the development of Single Page Apps and Node.js applications. Dependency free (doesn't require jQuery or Express, etc).
 
-## Status
+# Status
 [![Build Status](https://secure.travis-ci.org/flatiron/director.png)](http://travis-ci.org/flatiron/director)
 
-## Features
+# Features
 * [Client-Side Routing](#client-side)
 * [Server-Side HTTP Routing](#http-routing)
 * [Server-Side CLI Routing](#cli-routing)
 
-## Usage
+# Usage
 * [API Documentation](#api-documentation)
 * [Frequently Asked Questions](#faq)
 
