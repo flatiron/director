@@ -589,7 +589,7 @@ The method signatures for route functions in synchronous and asynchronous evalua
 
 Using the API gives you cleaner URIs but they come with a cost. Unlike with hash fragments your route URIs must exist. When the client enters a page, say http://foo.com/bar/baz, the web server must respond with something meaningful. Usually this means that your web server checks the URI points to something that, in a sense, exists, and then serves the client the JavaScript application.
 
-If you're after a single-page application you can not use plain old `<a href="/bar/baz">` tags for navigation anymore. When such link is clicked, web browsers try to ask for the resource from server which is not of course desired for a single-page application. Instead you need to use e.g. click handlers and call the `setRoute()` method instead.
+If you're after a single-page application you can not use plain old `<a href="/bar/baz">` tags for navigation anymore. When such link is clicked, web browsers try to ask for the resource from server which is not of course desired for a single-page application. Instead you need to use e.g. click handlers and call the `setRoute()` method yourself.
 
 <a name="instance-methods"></a>
 ## Instance methods
