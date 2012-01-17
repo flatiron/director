@@ -27,7 +27,7 @@ It simply watches the hash of the URL to determine what to do, for example:
 http://foo.com/#/bar
 ```
 
-Client-side routing (aka hash-routing) allows you to specify some information about the state of the application using the URL. So that when the user visits a specific URL, the application can be transformed accordingly. 
+Client-side routing (aka hash-routing) allows you to specify some information about the state of the application using the URL. So that when the user visits a specific URL, the application can be transformed accordingly.
 
 <img src="https://github.com/flatiron/director/raw/master/img/hashRoute.png" />
 
@@ -69,7 +69,7 @@ Director works great with your favorite DOM library, such as jQuery.
       <script src="/director.js"></script>
       <script>
 
-        // 
+        //
         // create some functions to be executed when
         // the correct route is issued by the user.
         //
@@ -93,7 +93,7 @@ Director works great with your favorite DOM library, such as jQuery.
         // instantiate the router.
         //
         var router = Router(routes);
-      
+
         //
         // a global configuration setting.
         //
@@ -116,7 +116,7 @@ You can find a browser-specific build of `director` [here][1] which has all of t
 <a name="http-routing"></a>
 ## Server-Side HTTP Routing
 
-Director handles routing for HTTP requests similar to `journey` or `express`: 
+Director handles routing for HTTP requests similar to `journey` or `express`:
 
 ```js
   //
@@ -175,13 +175,13 @@ Director supports Command Line Interface routing. Routes for cli options are bas
 
 ``` js
   var director = require('director');
-  
+
   var router = new director.cli.Router();
-  
+
   router.on('create', function () {
     console.log('create something');
   });
-  
+
   router.on(/destroy/, function () {
     console.log('destroy something');
   });
@@ -213,6 +213,7 @@ destroy something
 * [Route Recursion](#route-recursion)
 * [Async Routing](#async-routing)
 * [Resources](#resources)
+* [History API](#history-api)
 * [Instance Methods](#instance-methods)
 
 <a name="constructor"></a>
@@ -231,7 +232,7 @@ An object literal that contains nested route definitions. A potentially nested s
   //
   // Assign routes to an object literal.
   //
-  var routes = { 
+  var routes = {
     //
     // a route which assigns the function `bark`.
     //
@@ -245,7 +246,7 @@ An object literal that contains nested route definitions. A potentially nested s
   //
   // Instantiate the router.
   //
-  var router = Router(routes); 
+  var router = Router(routes);
 ```
 
 <a name="adhoc-routing"></a>
@@ -257,7 +258,7 @@ When developing large client-side or server-side applications it is not always p
 
 ``` js
   var router = new Router().init();
-  
+
   router.on('/some/resource', function () {
     //
     // Do something on `/#/some/resource`
@@ -269,10 +270,10 @@ When developing large client-side or server-side applications it is not always p
 
 ``` js
   var router = new director.http.Router();
-  
+
   router.get(/\/some\/resource/, function () {
     //
-    // Do something on an GET to `/some/resource` 
+    // Do something on an GET to `/some/resource`
     //
   });
 ```
@@ -284,7 +285,7 @@ In large web appliations, both [Client-side](#client-side) and [Server-side](#se
 
 ``` js
   var router = new director.http.Router();
-  
+
   //
   // Create routes inside the `/users` scope.
   //
@@ -293,19 +294,19 @@ In large web appliations, both [Client-side](#client-side) and [Server-side](#se
     // The `this` context of the function passed to `.path()`
     // is the Router itself.
     //
-    
+
     this.post(function (id) {
       //
       // Create the user with the specified `id`.
       //
     });
-    
+
     this.get(function (id) {
       //
       // Retreive the user with the specified `id`.
       //
     });
-    
+
     this.get(/\/friends/, function (id) {
       //
       // Get the friends for the user with the specified `id`.
@@ -338,7 +339,7 @@ Given the flexible nature of `director` there are several options available for 
 
 The `options` are:
 
-* **recurse:** Controls [route recursion](#route-recursion). Use `forward`, `backward`, or `false`. Default is `false` Client-side, and `backward` Server-side. 
+* **recurse:** Controls [route recursion](#route-recursion). Use `forward`, `backward`, or `false`. Default is `false` Client-side, and `backward` Server-side.
 * **strict:** If set to `false`, then trailing slashes (or other delimiters) are allowed in routes. Default is `true`.
 * **async:** Controls [async routing](#async-routing). Use `true` or `false`. Default is `false`.
 * **delimiter:** Character separator between route fragments. Default is `/`.
@@ -350,6 +351,7 @@ The `options` are:
 
 * **resource:** An object to which string-based routes will be bound. This can be especially useful for late-binding to route functions (such as async client-side requires).
 * **after:** A function (or list of functions) to call when a given route is no longer the active route.
+* **html5history:** If set to `true` and client supports `pushState()`, then uses HTML5 History API instead of hash fragments. See [Instance Methods](#instance-methods) for more information and constraints.
 
 <a name="url-matching"></a>
 ## URL Matching
@@ -373,7 +375,7 @@ The `options` are:
 Routes can sometimes become very complex, `simple/:tokens` don't always suffice. Director supports regular expressions inside the route names. The values captured from the regular expressions are passed to your listener function.
 
 ``` js
-  var router = Router({ 
+  var router = Router({
     //
     // given the route '/hello/world'.
     //
@@ -404,25 +406,25 @@ Routes can sometimes become very complex, `simple/:tokens` don't always suffice.
 <a name="url-params"></a>
 ## URL Parameters
 
-When you are using the same route fragments it is more descriptive to define these fragments by name and then use them in your [Routing Table](#routing-table) or [Adhoc Routes](#adhoc-routing). Consider a simple example where a `userId` is used repeatedly. 
+When you are using the same route fragments it is more descriptive to define these fragments by name and then use them in your [Routing Table](#routing-table) or [Adhoc Routes](#adhoc-routing). Consider a simple example where a `userId` is used repeatedly.
 
 ``` js
   //
-  // Create a router. This could also be director.cli.Router() or 
+  // Create a router. This could also be director.cli.Router() or
   // director.http.Router().
   //
   var router = new director.Router();
-    
+
   //
   // A route could be defined using the `userId` explicitly.
   //
   router.on(/([\w-_]+)/, function (userId) { });
-  
+
   //
   // Define a shorthand for this fragment called `userId`.
   //
   router.param('userId', /([\\w\\-]+)/);
-  
+
   //
   // Now multiple routes can be defined with the same
   // regular expression.
@@ -463,7 +465,7 @@ Can be assigned the value of `forward` or `backward`. The recurse option will de
         //
         // This method will be fired first.
         //
-        on: growl 
+        on: growl
       },
       //
       // This method will be fired second.
@@ -505,15 +507,15 @@ Can be assigned the value of `forward` or `backward`. The recurse option will de
         //
         // This method will be fired first.
         //
-        on: function() { return false; } 
+        on: function() { return false; }
       },
       //
       // This method will not be fired.
       //
-      on: bark 
+      on: bark
     }
   };
-  
+
   //
   // This feature works in reverse with recursion set to true.
   //
@@ -523,7 +525,7 @@ Can be assigned the value of `forward` or `backward`. The recurse option will de
 <a name="async-routing"></a>
 ## Async Routing
 
-Before diving into how Director exposes async routing, you should understand [Route Recursion](#route-recursion). At it's core route recursion is about evaluating a series of functions gathered when traversing the [Routing Table](#routing-table). 
+Before diving into how Director exposes async routing, you should understand [Route Recursion](#route-recursion). At it's core route recursion is about evaluating a series of functions gathered when traversing the [Routing Table](#routing-table).
 
 Normally this series of functions is evaluated synchronously. In async routing, these functions are evaluated asynchronously. Async routing can be extremely useful both on the client-side and the server-side:
 
@@ -536,7 +538,7 @@ The method signatures for route functions in synchronous and asynchronous evalua
 
 ``` js
   var router = new director.Router();
-  
+
   router.on('/:foo/:bar/:bazz', function (foo, bar, bazz) {
     //
     // Do something asynchronous with `foo`, `bar`, and `bazz`.
@@ -548,7 +550,7 @@ The method signatures for route functions in synchronous and asynchronous evalua
 
 ``` js
   var router = new director.http.Router().configure({ async: true });
-  
+
   router.on('/:foo/:bar/:bazz', function (foo, bar, bazz, next) {
     //
     // Go do something async, and determine that routing should stop
@@ -580,6 +582,15 @@ The method signatures for route functions in synchronous and asynchronous evalua
 
 ```
 
+<a name="history-api"></a>
+## History API
+
+**Available on the Client-side only.** Director supports using HTML5 History API instead of hash fragments for navigation. To use the API, pass `{html5history: true}` to `configure()`. Use of the API is enabled only if the client supports `pushState()`.
+
+Using the API gives you cleaner URIs but they come with a cost. Unlike with hash fragments your route URIs must exist. When the client enters a page, say http://foo.com/bar/baz, the web server must respond with something meaningful. Usually this means that your web server checks the URI points to something that, in a sense, exists, and then serves the client the JavaScript application.
+
+If you're after a single-page application, in addition to server side support you can not use plain old `<a href="/bar/baz">` tags for navigation anymore. When such link is clicked, web browsers try to ask for the resource from server which is not of course desired for a single-page application. Instead you need to use e.g. click handlers and call the `setRoute()` method instead.
+
 <a name="instance-methods"></a>
 ## Instance methods
 
@@ -599,7 +610,7 @@ Adds a route fragment for the given string `token` to the specified regex `match
 * `path` {string}: Path within the Routing Table to set the `route` to.
 * `route` {function|Array}: Route handler to invoke for the `method` and `path`.
 
-Adds the `route` handler for the specified `method` and `path` within the [Routing Table](#routing-table). 
+Adds the `route` handler for the specified `method` and `path` within the [Routing Table](#routing-table).
 
 ### path(path, routesFn)
 * `path` {string|Regexp}: Scope within the Routing Table to invoke the `routesFn` within.
@@ -629,15 +640,15 @@ Initialize the router, start listening for changes to the URL.
 Returns the state object that is relative to the current route.
 
 ### getRoute([index])
-* `index` {Number}: The hash value is divided by forward slashes, each section then has an index, if this is provided, only that section of the route will be returned. 
+* `index` {Number}: The hash value is divided by forward slashes, each section then has an index, if this is provided, only that section of the route will be returned.
 
 Returns the entire route or just a section of it.
 
 ### setRoute(route)
-* `route` {String}: Supply a route value, such as `home/stats`. 
+* `route` {String}: Supply a route value, such as `home/stats`.
 
 Set the current route.
-  
+
 ### setRoute(start, length)
 * `start` {Number} - The position at which to start removing items.
 * `length` {Number} - The number of items to remove from the route.
