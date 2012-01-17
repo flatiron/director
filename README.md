@@ -351,7 +351,7 @@ The `options` are:
 
 * **resource:** An object to which string-based routes will be bound. This can be especially useful for late-binding to route functions (such as async client-side requires).
 * **after:** A function (or list of functions) to call when a given route is no longer the active route.
-* **html5history:** If set to `true` and client supports `pushState()`, then uses HTML5 History API instead of hash fragments. See [Instance Methods](#instance-methods) for more information and constraints.
+* **html5history:** If set to `true` and client supports `pushState()`, then uses HTML5 History API instead of hash fragments. See [History API](#history-api) for more information.
 
 <a name="url-matching"></a>
 ## URL Matching
