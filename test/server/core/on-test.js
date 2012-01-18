@@ -27,7 +27,7 @@ vows.describe('director/router/insert').addBatch({
         router.on('baz', noop);
         assert.strictEqual(router.routes.baz.on, noop);
       },
-      "'insert', 'baz'": function (router) {
+      "'after', 'baz'": function (router) {
         function noop () { }
         
         router.on('after', 'boo', noop);
