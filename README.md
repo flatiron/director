@@ -33,81 +33,99 @@ Client-side routing (aka hash-routing) allows you to specify some information ab
 Here is a simple example:
 
 ```html
-  <!html>
-  <html>
-    <head>
-      <script src="/director.js"></script>
-      <script>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>A Gentle Introduction</title>
+    <script src="https://raw.github.com/flatiron/director/master/build/director-1.0.7.min.js"></script>
+    <script>
 
-        var author = function () { /* ... */ },
-            books = function () { /* ... */ },
-            viewBook = function(bookId) { /* bookId is populated. */ };
+      var author = function () { console.log("author"); },
+          books = function () { console.log("books"); },
+          viewBook = function(bookId) { console.log("viewBook: bookId is populated: " + bookId); };
 
-        var routes = {
-          '/author': author,
-          '/books': [books, function() { /* An inline route handler. */ }],
-          '/books/view/:bookId': viewBook
-        };
+      var routes = {
+        '/author': author,
+        '/books': [books, function() { console.log("An inline route handler."); }],
+        '/books/view/:bookId': viewBook
+      };
 
-        var router = Router(routes);
-        router.init();
+      var router = Router(routes);
+      router.init();
 
-      </script>
-    </head>
-    <body>
-    </body>
-  </html>
+    </script>
+  </head>
+  <body>
+    <ul>
+      <li><a href="#/author">#/author</a></li>
+      <li><a href="#/books">#/books</a></li>
+      <li><a href="#/books/view/1">#/books/view/1</a></li>
+    </ul>
+  </body>
+</html>
 ```
 
 Director works great with your favorite DOM library, such as jQuery.
 
 ```html
-  <!html>
-  <html>
-    <head>
-      <script src="/director.js"></script>
-      <script>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>A Gentle Introduction 2</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="https://raw.github.com/flatiron/director/master/build/director-1.0.7.min.js"></script>
+    <script>
+    $('document').ready(function(){
+      //
+      // create some functions to be executed when
+      // the correct route is issued by the user.
+      //
+      var showAuthorInfo = function () { console.log("showAuthorInfo"); },
+          listBooks = function () { console.log("listBooks"); },
+          allroutes = function() {
+            var route = window.location.hash.slice(2),
+                sections = $('section'),
+                section;
+            if ((section = sections.filter('[data-route=' + route + ']')).length) {
+              sections.hide(250);
+              section.show(250);
+            }
+          };
 
-        // 
-        // create some functions to be executed when
-        // the correct route is issued by the user.
-        //
-        var author = function () { /* ... */ },
-            books = function () { /* ... */ },
-            allroutes = function(route) {
-              var sections = $('section');
-              sections.hide();
-              sections.find('data-route[' + route + ']').show();
-            };
+      //
+      // define the routing table.
+      //
+      var routes = {
+        '/author': showAuthorInfo,
+        '/books': listBooks
+      };
 
-        //
-        // define the routing table.
-        //
-        var routes = {
-          '/author': showAuthorInfo,
-          '/books': [showAuthorInfo, listBooks]
-        };
+      //
+      // instantiate the router.
+      //
+      var router = Router(routes);
 
-        //
-        // instantiate the router.
-        //
-        var router = Router(routes);
-      
-        //
-        // a global configuration setting.
-        //
-        router.configure({
-          on: allroutes
-        });
-        router.init();
-
-      </script>
-    </head>
-    <body>
-      <section data-route="author">Author Name</section>
-      <section data-route="books">Book1, Book2, Book3</section>
-    </body>
-  </html>
+      //
+      // a global configuration setting.
+      //
+      router.configure({
+        on: allroutes
+      });
+      router.init();
+    });
+    </script>
+  </head>
+  <body>
+    <section data-route="author">Author Name</section>
+    <section data-route="books">Book1, Book2, Book3</section>
+    <ul>
+      <li><a href="#/author">#/author</a></li>
+      <li><a href="#/books">#/books</a></li>
+    </ul>
+  </body>
+</html>
 ```
 
 You can find a browser-specific build of `director` [here][1] which has all of the server code stripped away.
