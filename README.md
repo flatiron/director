@@ -214,6 +214,7 @@ destroy something
 * [Async Routing](#async-routing)
 * [Resources](#resources)
 * [Instance Methods](#instance-methods)
+* [Attach to this](#attach-to-this)
 
 <a name="constructor"></a>
 ## Constructor
@@ -578,6 +579,30 @@ The method signatures for route functions in synchronous and asynchronous evalua
     china: function() { return true; }
   };
 
+```
+
+<a name="attach-to-this"></a>
+## Attach to this
+
+Generally, `this` object inside a function which is passed to the http router, will contain the request in `this.req` and the response in `this.res`.
+We can also ask the router to attach additional objects to `this` using the following api.
+
+```js
+var director = require('director');
+
+var routes = {
+  '/hello': {
+    get: function () {
+      console.log(this.data); // outputs [1,2,3]
+    }
+  }
+};
+
+var router = new director.http.router(routes).configure(options);
+
+router.attach(function () {
+  this.data = [1,2,3];
+});
 ```
 
 <a name="instance-methods"></a>
