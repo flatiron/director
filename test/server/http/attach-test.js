@@ -36,7 +36,7 @@ function assertGet (uri) {
     "should respond with `this.data`": function (err, res, body) {
       assert.isNull(err);
       assert.equal(res.statusCode, 200);
-      assert.equal(body, '[1,2,3]')
+      assert.deepEqual(JSON.parse(body), [1,2,3])
     }
   }
 }
