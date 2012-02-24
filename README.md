@@ -214,7 +214,7 @@ destroy something
 * [Async Routing](#async-routing)
 * [Resources](#resources)
 * [Instance Methods](#instance-methods)
-* [Attach to this](#attach-to-this)
+* [Attach Properties to `this`](#attach-to-this)
 
 <a name="constructor"></a>
 ## Constructor
@@ -582,28 +582,30 @@ The method signatures for route functions in synchronous and asynchronous evalua
 ```
 
 <a name="attach-to-this"></a>
-## Attach to this
+## Attach Properties To `this`
 
-Generally, `this` object inside a function which is passed to the http router, will contain the request in `this.req` and the response in `this.res`.
-We can also ask the router to attach additional objects to `this` using the following api.
+Generally, the `this` object bound to route handlers, will contain the request in `this.req` and the response in `this.res`. One may attach additional properties to `this` with the `router.attach` method:
 
 ```js
 var director = require('director');
 
-var routes = {
-  '/hello': {
-    get: function () {
-      console.log(this.data); // outputs [1,2,3]
-    }
-  }
-};
+var router = new director.http.router().configure(options);
 
-var router = new director.http.router(routes).configure(options);
-
+// Attach properties to `this`
 router.attach(function () {
   this.data = [1,2,3];
 });
+
+// Access properties attached to `this` in your routes!
+router.get('/hello', function () {
+  this.res.writeHead(200, { 'content-type': 'text/plain' });
+
+  // Response will be `[1,2,3]`!
+  this.res.end(this.data);
+});
 ```
+
+This api may be used to attach convenience methods to `this`.
 
 <a name="instance-methods"></a>
 ## Instance methods
