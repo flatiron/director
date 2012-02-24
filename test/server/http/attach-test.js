@@ -1,5 +1,5 @@
 /*
- * http-test.js: Tests for basic HTTP server(s). 
+ * attach-test.js: Tests 'router.attach' functionality.
  *
  * (C) 2011, Nodejitsu Inc.
  * MIT LICENSE
