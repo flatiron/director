@@ -215,6 +215,7 @@ destroy something
 * [Resources](#resources)
 * [History API](#history-api)
 * [Instance Methods](#instance-methods)
+* [Attach Properties to `this`](#attach-to-this)
 
 <a name="constructor"></a>
 ## Constructor
@@ -582,6 +583,7 @@ The method signatures for route functions in synchronous and asynchronous evalua
 
 ```
 
+<<<<<<< HEAD
 <a name="history-api"></a>
 ## History API
 
@@ -590,6 +592,33 @@ The method signatures for route functions in synchronous and asynchronous evalua
 Using the API gives you cleaner URIs but they come with a cost. Unlike with hash fragments your route URIs must exist. When the client enters a page, say http://foo.com/bar/baz, the web server must respond with something meaningful. Usually this means that your web server checks the URI points to something that, in a sense, exists, and then serves the client the JavaScript application.
 
 If you're after a single-page application you can not use plain old `<a href="/bar/baz">` tags for navigation anymore. When such link is clicked, web browsers try to ask for the resource from server which is not of course desired for a single-page application. Instead you need to use e.g. click handlers and call the `setRoute()` method yourself.
+=======
+<a name="attach-to-this"></a>
+## Attach Properties To `this`
+
+Generally, the `this` object bound to route handlers, will contain the request in `this.req` and the response in `this.res`. One may attach additional properties to `this` with the `router.attach` method:
+
+```js
+var director = require('director');
+
+var router = new director.http.router().configure(options);
+
+// Attach properties to `this`
+router.attach(function () {
+  this.data = [1,2,3];
+});
+
+// Access properties attached to `this` in your routes!
+router.get('/hello', function () {
+  this.res.writeHead(200, { 'content-type': 'text/plain' });
+
+  // Response will be `[1,2,3]`!
+  this.res.end(this.data);
+});
+```
+
+This api may be used to attach convenience methods to `this`.
+>>>>>>> master
 
 <a name="instance-methods"></a>
 ## Instance methods
