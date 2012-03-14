@@ -38,7 +38,7 @@ function assertGet (uri) {
       assert.equal(res.statusCode, 200);
       // Why the body needs to be stringified, I don't know.
       // Someone should look into this.
-      assert.equal(JSON.stringify(body), '[1,2,3]')
+      assert.deepEqual(JSON.parse(body), [1, 2, 3]);
     }
   }
 }
