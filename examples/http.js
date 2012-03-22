@@ -17,5 +17,10 @@ router.get(/foo/, function () {
   this.res.end('hello world\n');
 });
 
+router.post(/foo/, function () {
+  this.res.writeHead(200, { 'Content-Type': 'application/json' })
+  this.res.end(JSON.stringify(this.req.body));
+});
+
 server.listen(8080);
 console.log('vanilla http server with director running on 8080');
