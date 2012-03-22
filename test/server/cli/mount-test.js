@@ -21,7 +21,6 @@ vows.describe('director/cli/path').addBatch({
       }
     }),
     "should create the correct nested routing table": function (router) {
-      console.log(router.routes);
       assert.isObject(router.routes.apps);
       assert.isFunction(router.routes.apps.on);
       assert.isObject(router.routes.users);
