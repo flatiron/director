@@ -1,4 +1,3 @@
-
 <img src="https://github.com/flatiron/director/raw/master/img/director.png" />
 
 # Synopsis
@@ -702,3 +701,4 @@ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 [0]: http://github.com/flatiron/director
 [1]: https://github.com/flatiron/director/blob/master/build/director-1.0.7.min.js
+
