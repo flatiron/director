@@ -651,9 +651,6 @@ Inserts the partial [Routing Table](#routing-table), `routes`, into the Routing 
 ### init()
 Initialize the router, start listening for changes to the URL.
 
-### getState()
-Returns the state object that is relative to the current route.
-
 ### getRoute([index])
 * `index` {Number}: The hash value is divided by forward slashes, each section then has an index, if this is provided, only that section of the route will be returned. 
 
@@ -682,10 +679,6 @@ Set a segment of the current route.
 ## What About SEO?
 
 Is using a Client-side router a problem for SEO? Yes. If advertising is a requirement, you are probably building a "Web Page" and not a "Web Application". Director on the client is meant for script-heavy Web Applications.
-
-## Is Director compatible with X?
-
-Director is known to be Ender.js compatible. However, the project still needs solid cross-browser testing.
 
 # Licence
 
