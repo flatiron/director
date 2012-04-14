@@ -11,7 +11,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "http://github.com/flatiron/director.git" 
+    "url": "http://github.com/flatiron/director.git"
   },
   "keywords": ["URL", "router", "http", "cli", "flatiron", "client side"],
   "devDependencies": {
