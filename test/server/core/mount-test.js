@@ -20,7 +20,7 @@ function assertRoute (fn, path, route) {
   assertRoute(fn, path, route);
 }
 
-vows.describe('director/router/mount').addBatch({
+vows.describe('director/core/mount').addBatch({
   "An instance of director.Router": {
     "with no preconfigured params": {
       topic: new director.Router(),

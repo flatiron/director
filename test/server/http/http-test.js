@@ -10,43 +10,25 @@ var assert = require('assert'),
     http = require('http'),
     vows = require('vows'),
     request = require('request'),
-    director = require('../../../lib/director');
+    director = require('../../../lib/director'),
+    helpers = require('../helpers'),
+    handlers = helpers.handlers,
+    macros = helpers.macros;
 
-function helloWorld(id) {
-  this.res.writeHead(200, { 'Content-Type': 'text/plain' })
-  this.res.end('hello from (' + id + ')');
+function assertBark(uri) {
+  return macros.assertGet(
+    9090,
+    uri,
+    'hello from (bark)'
+  );
 }
 
-function createServer (router) {
-  return http.createServer(function (req, res) {
-    router.dispatch(req, res, function (err) {
-      if (err) {
-        res.writeHead(404);
-        res.end();
-      }
-    });
-  });
-}
-
-function assertGet (uri) {
-  return {
-    topic: function () {
-      request({ uri: 'http://localhost:9090/' + uri }, this.callback);
-    },
-    "should respond with `hello from (bark)`": function (err, res, body) {
-      assert.isNull(err);
-      assert.equal(res.statusCode, 200);
-      assert.equal(body, 'hello from (bark)')
-    }
-  }
-}
-
-vows.describe('director/server/http').addBatch({
+vows.describe('director/http').addBatch({
   "An instance of director.http.Router": {
     "instantiated with a Routing table": {
       topic: new director.http.Router({
         '/hello': {
-          get: helloWorld
+          get: handlers.respondWithId
         }
       }),
       "should have the correct routes defined": function (router) {
@@ -55,21 +37,19 @@ vows.describe('director/server/http').addBatch({
       },
       "when passed to an http.Server instance": {
         topic: function (router) {
-          router.get(/foo\/bar\/(\w+)/, helloWorld);
-          router.get(/foo\/update\/(\w+)/, helloWorld);
+          router.get(/foo\/bar\/(\w+)/, handlers.respondWithId);
+          router.get(/foo\/update\/(\w+)/, handlers.respondWithId);
           router.path(/bar\/bazz\//, function () {
-            this.get(/(\w+)/, helloWorld)
+            this.get(/(\w+)/, handlers.respondWithId);
           });
           
-          var server = createServer(router),
-              that = this;
-              
-          server.listen(9090, this.callback);
+          helpers.createServer(router)
+            .listen(9090, this.callback);
         },
-        "a request to foo/bar/bark": assertGet('foo/bar/bark'),
-        "a request to foo/update/bark": assertGet('foo/update/bark'),
-        "a request to bar/bazz/bark": assertGet('bar/bazz/bark'),
-        "a request to foo/bar/bark?test=test": assertGet('foo/bar/bark?test=test')
+        "a request to foo/bar/bark": assertBark('foo/bar/bark'),
+        "a request to foo/update/bark": assertBark('foo/update/bark'),
+        "a request to bar/bazz/bark": assertBark('bar/bazz/bark'),
+        "a request to foo/bar/bark?test=test": assertBark('foo/bar/bark?test=test')
       }
     }
   }
