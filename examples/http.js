@@ -4,11 +4,18 @@ var http = require('http'),
 var router = new director.http.Router();
 
 var server = http.createServer(function (req, res) {
+  req.chunks = [];
+  req.on('data', function (chunk) {
+    req.chunks.push(chunk.toString());
+  });
+
   router.dispatch(req, res, function (err) {
     if (err) {
       res.writeHead(404);
       res.end();
     }
+
+    console.log('Served ' + req.url);
   });
 });
 

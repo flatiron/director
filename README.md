@@ -214,6 +214,7 @@ destroy something
 * [Resources](#resources)
 * [Instance Methods](#instance-methods)
 * [Attach Properties to `this`](#attach-to-this)
+* [HTTP Streaming and Body Parsing](#http-streaming-body-parsing)
 
 <a name="constructor"></a>
 ## Constructor
@@ -586,25 +587,109 @@ The method signatures for route functions in synchronous and asynchronous evalua
 Generally, the `this` object bound to route handlers, will contain the request in `this.req` and the response in `this.res`. One may attach additional properties to `this` with the `router.attach` method:
 
 ```js
-var director = require('director');
+  var director = require('director');
 
-var router = new director.http.router().configure(options);
+  var router = new director.http.Router().configure(options);
 
-// Attach properties to `this`
-router.attach(function () {
-  this.data = [1,2,3];
-});
+  //
+  // Attach properties to `this`
+  //
+  router.attach(function () {
+    this.data = [1,2,3];
+  });
 
-// Access properties attached to `this` in your routes!
-router.get('/hello', function () {
-  this.res.writeHead(200, { 'content-type': 'text/plain' });
+  //
+  // Access properties attached to `this` in your routes!
+  //
+  router.get('/hello', function () {
+    this.res.writeHead(200, { 'content-type': 'text/plain' });
 
-  // Response will be `[1,2,3]`!
-  this.res.end(this.data);
-});
+    //
+    // Response will be `[1,2,3]`!
+    //
+    this.res.end(this.data);
+  });
 ```
 
-This api may be used to attach convenience methods to `this`.
+This API may be used to attach convenience methods to the `this` context of route handlers.
+
+<a name="http-streaming-body-parsing">
+## HTTP Streaming and Body Parsing
+
+When you are performing HTTP routing there are two common scenarios:
+
+* Buffer the request body and parse it according to the `Content-Type` header (usually `application/json` or `application/x-www-form-urlencoded`). 
+* Stream the request body by manually calling `.pipe` or listening to the `data` and `end` events.
+
+By default `director.http.Router()` will attempt to parse either the `.chunks` or `.body` properties set on the request parameter passed to `router.dispatch(request, response, callback)`. The router instance will also wait for the `end` event before firing any routes. 
+
+**Default Behavior**
+
+``` js
+  var director = require('director');
+  
+  var router = new director.http.Router();
+
+  router.get('/', function () {
+    //
+    // This will not work, because all of the data
+    // events and the end event have already fired. 
+    //
+    this.req.on('data', function (chunk) {
+      console.log(chunk)
+    });
+  });
+```
+
+In [flatiron][2], `director` is used in conjunction with [union][3] which uses a `BufferedStream` proxy to the raw `http.Request` instance. [union][3] will set the `req.chunks` property for you and director will automatically parse the body. If you wish to perform this buffering yourself directly with `director` you can use a simple request handler in your http server:
+
+``` js
+  var http = require('http'),
+      director = require('director');
+  
+  var router = new director.http.Router();
+
+  var server = http.createServer(function (req, res) {
+    req.chunks = [];
+    req.on('data', function (chunk) {
+      req.chunks.push(chunk.toString());
+    });
+    
+    router.dispatch(req, res, function (err) {
+      if (err) {
+        res.writeHead(404);
+        res.end();
+      }
+      
+      console.log('Served ' + req.url);
+    });
+  });
+  
+  router.post('/', function () {
+    this.res.writeHead(200, { 'Content-Type': 'application/json' })
+    this.res.end(JSON.stringify(this.req.body));
+  });
+```
+
+**Streaming Support** 
+
+If you wish to get access to the request stream before the `end` event is fired, you can pass the `{ stream: true }` options to the route.
+
+``` js
+  var director = require('director');
+
+  var router = new director.http.Router();
+
+  router.get('/', { stream: true }, function () {
+    //
+    // This will work because the route handler is invoked 
+    // immediately without waiting for the `end` event. 
+    //
+    this.req.on('data', function (chunk) {
+      console.log(chunk);
+    });
+  });
+```
 
 <a name="instance-methods"></a>
 ## Instance methods
@@ -694,4 +779,5 @@ THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 [0]: http://github.com/flatiron/director
 [1]: https://github.com/flatiron/director/blob/master/build/director-1.0.7.min.js
-
+[2]: http://github.com/flatiron/flatiron
+[3]: http://github.com/flatiron/union
