@@ -61,12 +61,12 @@ var router = new director.http.Router({
 			get: fileServer
 		}
 	}
-}).configure();
+});
 
 var server = http.createServer(function (req, res) {
 	router.dispatch(req, res, function (err) {
 		if (err && req.url != '/favicon.ico') {
-			console.log(err);
+			// By default just reply with the index page
 			this.res.writeHead(200, {'Content-Type': 'text/html'});
 			this.res.end(index);
 		}
