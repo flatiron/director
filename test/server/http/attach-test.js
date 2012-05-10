@@ -10,45 +10,25 @@ var assert = require('assert'),
     http = require('http'),
     vows = require('vows'),
     request = require('request'),
-    director = require('../../../lib/director');
+    director = require('../../../lib/director'),
+    helpers = require('../helpers'),
+    handlers = helpers.handlers,
+    macros = helpers.macros;
 
-function helloWorld() {
-  this.res.writeHead(200, { 'Content-Type': 'application/json' })
-  this.res.end(JSON.stringify(this.data));
+function assertData(uri) {
+  return macros.assertGet(
+    9091,
+    uri,
+    JSON.stringify([1,2,3])
+  );
 }
 
-function createServer (router) {
-  return http.createServer(function (req, res) {
-    router.dispatch(req, res, function (err) {
-      if (err) {
-        res.writeHead(404);
-        res.end();
-      }
-    });
-  });
-}
-
-function assertGet (uri) {
-  return {
-    topic: function () {
-      request({ uri: 'http://localhost:9091/' + uri }, this.callback);
-    },
-    "should respond with `this.data`": function (err, res, body) {
-      assert.isNull(err);
-      assert.equal(res.statusCode, 200);
-      // Why the body needs to be stringified, I don't know.
-      // Someone should look into this.
-      assert.equal(JSON.stringify(body), '[1,2,3]')
-    }
-  }
-}
-
-vows.describe('director/server/http/attach').addBatch({
+vows.describe('director/http/attach').addBatch({
   "An instance of director.http.Router": {
     "instantiated with a Routing table": {
       topic: new director.http.Router({
         '/hello': {
-          get: helloWorld
+          get: handlers.respondWithData
         }
       }),
       "should have the correct routes defined": function (router) {
@@ -61,10 +41,10 @@ vows.describe('director/server/http/attach').addBatch({
             this.data = [1,2,3];
           });
 
-          var server = createServer(router);
-          server.listen(9091, this.callback);
+          helpers.createServer(router)
+            .listen(9091, this.callback);
         },
-        "a request to hello": assertGet('hello'),
+        "a request to hello": assertData('hello'),
       }
     }
   }

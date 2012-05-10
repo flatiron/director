@@ -10,7 +10,7 @@ var assert = require('assert'),
     vows = require('vows'),
     director = require('../../../lib/director');
     
-vows.describe('director/router/dispatch').addBatch({
+vows.describe('director/core/dispatch').addBatch({
   "An instance of director.Router": {
     topic: function () {
       var that = this;

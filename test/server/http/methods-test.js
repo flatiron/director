@@ -17,6 +17,26 @@ vows.describe('director/http/methods').addBatch({
       director.http.methods.forEach(function (method) {
         assert.isFunction(router[method.toLowerCase()]);
       });
+    },
+    "the path() method": {
+      topic: new director.http.Router(),
+      "/resource": {
+        "should insert nested routes correct": function (router) {
+          function getResource() {}
+          function modifyResource() {}
+          
+          router.path(/\/resource/, function () {
+            this.get(getResource);
+            
+            this.put(/\/update/, modifyResource);
+            this.post(/create/, modifyResource);
+          });
+          
+          assert.equal(router.routes.resource.get, getResource);
+          assert.equal(router.routes.resource.update.put, modifyResource);
+          assert.equal(router.routes.resource.create.post, modifyResource);
+        }
+      }
     }
   }
 }).export(module);

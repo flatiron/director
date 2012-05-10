@@ -1,5 +1,5 @@
 /*
- * path-test.js: Tests for the core dispatch method. 
+ * path-test.js: Tests for the core `.path()` method. 
  *
  * (C) 2011, Nodejitsu Inc.
  * MIT LICENSE
@@ -10,7 +10,7 @@ var assert = require('assert'),
     vows = require('vows'),
     director = require('../../../lib/director');
     
-vows.describe('director/router/path').addBatch({
+vows.describe('director/core/path').addBatch({
   "An instance of director.Router": {
     topic: function () {
       var that = this;

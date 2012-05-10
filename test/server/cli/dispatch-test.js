@@ -27,7 +27,7 @@ vows.describe('director/cli/dispatch').addBatch({
       router.on(/apps (\w+\s\w+)/, function () {
         assert.equal(arguments.length, 1);
         that.matched['apps'].push('on apps (\\w+\\s\\w+)');
-      })
+      });
       
       return router;
     },

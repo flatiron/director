@@ -1,19 +1,24 @@
 {
   "name": "director",
   "description": "A client Side/Server Side Router",
-  "author": "Nodejitsu Inc <info@nodejitsu.com>",
-  "version": "1.0.9-1",
-  "maintainers": [ "hij1nx <hij1nx@me.com>", "indexzero <charlie.robbins@gmail.com>" ],
-  "contributors": [
-    { "name": "Paolo Fragomeni", "email": "hij1nx@nodejitsu.com" },
-    { "name": "Charlie Robbins", "email": "charlie@nodejitsu.com" },
-    { "name": "Dave Geddes", "email": "davidcgeddes@gmail.com" }
+  "author": "Nodejitsu Inc. <info@nodejitsu.com>",
+  "version": "1.0.10",
+  "maintainers": [
+    "hij1nx <paolo@nodejitsu.com>",
+    "indexzero <charlie@nodejitsu.com>"
   ],
   "repository": {
     "type": "git",
-    "url": "http://github.com/flatiron/director.git" 
+    "url": "http://github.com/flatiron/director.git"
   },
-  "keywords": ["URL", "router", "http", "cli", "flatiron", "client side"],
+  "keywords": [
+    "URL",
+    "router",
+    "http",
+    "cli",
+    "flatiron",
+    "client side"
+  ],
   "devDependencies": {
     "codesurgeon": "0.2.x",
     "colors": "0.5.x",
@@ -23,9 +28,11 @@
   },
   "ender": "./build/ender.js",
   "main": "./lib/director",
-  "engines": { "node": ">= 0.4.0" },
+  "engines": {
+    "node": ">= 0.4.0"
+  },
   "scripts": {
-    "test": "vows --spec test/server/*/*-test.js"
+    "test": "vows test/server/*/*-test.js --spec"
   }
 }
 

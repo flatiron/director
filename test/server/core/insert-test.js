@@ -10,7 +10,7 @@ var assert = require('assert'),
     vows = require('vows'),
     director = require('../../../lib/director');
     
-vows.describe('director/router/insert').addBatch({
+vows.describe('director/core/insert').addBatch({
   "An instance of director.Router": {
     topic: new director.Router(),
     "the insert() method": {
