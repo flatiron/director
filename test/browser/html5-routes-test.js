@@ -1,9 +1,14 @@
+var browser_history_support = (window.history != null ? window.history.pushState : null) != null;
 
 createTest('Nested route with the many children as a tokens, callbacks should yield historic params', {
   '/a': {
     '/:id': {
       '/:id': function(a, b) {
-        shared.fired.push(location.pathname, a, b);
+        if (!browser_history_support) {
+          shared.fired.push(location.hash.replace(/^#/, ''), a, b);
+        } else {
+          shared.fired.push(location.pathname, a, b);
+        }
       }
     }
   }
@@ -18,7 +23,11 @@ createTest('Nested route with the first child as a token, callback should yield 
   '/foo': {
     '/:id': {
       on: function(id) {
-        shared.fired.push(location.pathname, id);
+        if (!browser_history_support) {
+          shared.fired.push(location.hash.replace(/^#/, ''), id);
+        } else {
+          shared.fired.push(location.pathname, id);
+        }
       }
     }
   }
@@ -35,7 +44,11 @@ createTest('Nested route with the first child as a regexp, callback should yield
   '/foo': {
     '/(\\w+)': {
       on: function(value) {
-        shared.fired.push(location.pathname, value);
+        if (!browser_history_support) {
+          shared.fired.push(location.hash.replace(/^#/, ''), value);
+        } else {
+          shared.fired.push(location.pathname, value);
+        }
       }
     }
   }
@@ -67,7 +80,11 @@ createTest('Single nested route with on member containing function value', {
   '/a': {
     '/b': {
       on: function() {
-        shared.fired.push(location.pathname);
+        if (!browser_history_support) {
+          shared.fired.push(location.hash.replace(/^#/, ''));
+        } else {
+          shared.fired.push(location.pathname);
+        }
       }
     }
   }
@@ -81,7 +98,11 @@ createTest('Single nested route with on member containing function value', {
 createTest('Single non-nested route with on member containing function value', {
   '/a/b': {
     on: function() {
-      shared.fired.push(location.pathname);
+      if (!browser_history_support) {
+        shared.fired.push(location.hash.replace(/^#/, ''));
+      } else {
+        shared.fired.push(location.pathname);
+      }
     }
   }
 }, function() {
@@ -94,8 +115,20 @@ createTest('Single non-nested route with on member containing function value', {
 createTest('Single nested route with on member containing array of function values', {
   '/a': {
     '/b': {
-      on: [function() { shared.fired.push(location.pathname); },
-        function() { shared.fired.push(location.pathname); }]
+      on: [function() { 
+        if (!browser_history_support) {
+          shared.fired.push(location.hash.replace(/^#/, ''));
+        } else {
+          shared.fired.push(location.pathname); 
+        }
+      },
+        function() { 
+          if (!browser_history_support) {
+            shared.fired.push(location.hash.replace(/^#/, ''));
+          } else {
+            shared.fired.push(location.pathname); 
+          }
+      }]
     }
   }
 }, function() {
@@ -126,19 +159,19 @@ createTest('method should only fire once on the route.', {
 
 createTest('method should only fire once on the route, multiple nesting.', {
   '/a': {
-    on: function() { shared.fired++; },
-    once: function() { shared.fired++; }
+    on: function() { shared.fired_count++; },
+    once: function() { shared.fired_count++; }
   },
   '/b': {
-    on: function() { shared.fired++; },
-    once: function() { shared.fired++; }
+    on: function() { shared.fired_count++; },
+    once: function() { shared.fired_count++; }
   }
 }, function() {
   this.navigate('/a', function() {
     this.navigate('/b', function() {
       this.navigate('/a', function() {
         this.navigate('/b', function() {
-          deepEqual(shared.fired, 6);
+          deepEqual(shared.fired_count, 6);
           this.finish();
         });
       });
@@ -148,10 +181,18 @@ createTest('method should only fire once on the route, multiple nesting.', {
 
 createTest('overlapping routes with tokens.', {
   '/a/:b/c' : function() {
-    shared.fired.push(location.pathname);
+    if (!browser_history_support) {
+      shared.fired.push(location.hash.replace(/^#/, ''));
+    } else {
+      shared.fired.push(location.pathname);
+    }
   },
   '/a/:b/c/:d' : function() {
-    shared.fired.push(location.pathname);
+    if (!browser_history_support) {
+      shared.fired.push(location.hash.replace(/^#/, ''));
+    } else {
+      shared.fired.push(location.pathname);
+    }
   }
 }, function() {
   this.navigate('/a/b/c', function() {
@@ -538,7 +579,11 @@ createTest('`/` route should not override a `/:token` route', {
 createTest('should accept the root as a token.', {
   '/:a': {
     on: function root() {
-      shared.fired.push(location.pathname);
+      if (!browser_history_support) {
+        shared.fired.push(location.hash.replace(/^#/, ''));
+      } else {
+        shared.fired.push(location.pathname);
+      }
     }
   }
 }, function() {
@@ -551,7 +596,11 @@ createTest('should accept the root as a token.', {
 createTest('routes should allow wildcards.', {
   '/:a/b*d': {
     on: function() {
-      shared.fired.push(location.pathname);
+      if (!browser_history_support) {
+        shared.fired.push(location.hash.replace(/^#/, ''));
+      } else {
+        shared.fired.push(location.pathname);
+      }
     }
   }
 }, function() {
@@ -577,7 +626,11 @@ createTest('functions should have |this| context of the router instance.', {
 createTest('setRoute with a single parameter should change location correctly', {
   '/bonk': {
     on: function() {
-      shared.fired.push(window.location.pathname);
+      if (!browser_history_support) {
+        shared.fired.push(location.hash.replace(/^#/, ''));
+      } else {
+        shared.fired.push(window.location.pathname);
+      }
     }
   }
 }, function() {
@@ -592,7 +645,11 @@ createTest('setRoute with a single parameter should change location correctly', 
 createTest('route should accept _ and . within parameters', {
   '/:a': {
     on: function root() {
-      shared.fired.push(location.pathname);
+      if (!browser_history_support) {
+        shared.fired.push(location.hash.replace(/^#/, ''));
+      } else {
+        shared.fired.push(location.pathname);
+      }
     }
   }
 }, function() {
@@ -605,7 +662,11 @@ createTest('route should accept _ and . within parameters', {
 createTest('Route handler should be executed in init() unless disabled', {
   '/a': {
       on: function() {
-        shared.fired.push(location.pathname);
+        if (!browser_history_support) {
+          shared.fired.push(location.hash.replace(/^#/, ''));
+        } else {
+          shared.fired.push(location.pathname);
+        }
       }
     }
   },
@@ -614,7 +675,7 @@ createTest('Route handler should be executed in init() unless disabled', {
     run_handler_in_init: true
   }, function() {
     // Route to '/a' so we're initially in the URI the test expects
-    var r = new Router({'/b': function() {}});
+    var r = new Router({'/a': function() {}});
     r.configure({html5history: true});
     r.init();
     r.setRoute('/a');
