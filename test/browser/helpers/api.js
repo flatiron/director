@@ -24,10 +24,15 @@ function createTest(name, config, use, test) {
     use = undefined;
   }
 
-  if (HTML5TEST && use === undefined) {
-    use = {};
+  if (HTML5TEST) {
+    if (use === undefined) {
+      use = {};
+    }
+
+    if (use.run_handler_in_init === undefined) {
+      use.run_handler_in_init = false;
+    }
     use.html5history        = true;
-    use.run_handler_in_init = false;
   }
 
   // Because of the use of setTimeout when defining onpopstate
