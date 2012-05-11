@@ -17,7 +17,8 @@
     "http",
     "cli",
     "flatiron",
-    "client side"
+    "client side",
+    "ender"
   ],
   "devDependencies": {
     "codesurgeon": "0.2.x",
