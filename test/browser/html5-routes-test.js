@@ -613,6 +613,12 @@ createTest('Route handler should be executed in init() unless disabled', {
     html5history: true,
     run_handler_in_init: true
   }, function() {
+    // Route to '/a' so we're initially in the URI the test expects
+    var r = new Router({'/b': function() {}});
+    r.configure({html5history: true});
+    r.init();
+    r.setRoute('/a');
+
     this.navigate('/a', function() {
       deepEqual(shared.fired, ['/a', '/a']);
       this.finish();
