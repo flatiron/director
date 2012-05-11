@@ -353,6 +353,7 @@ The `options` are:
 * **resource:** An object to which string-based routes will be bound. This can be especially useful for late-binding to route functions (such as async client-side requires).
 * **after:** A function (or list of functions) to call when a given route is no longer the active route.
 * **html5history:** If set to `true` and client supports `pushState()`, then uses HTML5 History API instead of hash fragments. See [History API](#history-api) for more information.
+* **run_handler_in_init:** If `html5history` is enabled, the route handler by default is executed upon `Router.init()` since with real URIs the router can not know if it should call a route handler or not. Setting this to `false` disables the route handler initial execution.
 
 <a name="url-matching"></a>
 ## URL Matching
@@ -629,22 +630,22 @@ This API may be used to attach convenience methods to the `this` context of rout
 
 When you are performing HTTP routing there are two common scenarios:
 
-* Buffer the request body and parse it according to the `Content-Type` header (usually `application/json` or `application/x-www-form-urlencoded`). 
+* Buffer the request body and parse it according to the `Content-Type` header (usually `application/json` or `application/x-www-form-urlencoded`).
 * Stream the request body by manually calling `.pipe` or listening to the `data` and `end` events.
 
-By default `director.http.Router()` will attempt to parse either the `.chunks` or `.body` properties set on the request parameter passed to `router.dispatch(request, response, callback)`. The router instance will also wait for the `end` event before firing any routes. 
+By default `director.http.Router()` will attempt to parse either the `.chunks` or `.body` properties set on the request parameter passed to `router.dispatch(request, response, callback)`. The router instance will also wait for the `end` event before firing any routes.
 
 **Default Behavior**
 
 ``` js
   var director = require('director');
-  
+
   var router = new director.http.Router();
 
   router.get('/', function () {
     //
     // This will not work, because all of the data
-    // events and the end event have already fired. 
+    // events and the end event have already fired.
     //
     this.req.on('data', function (chunk) {
       console.log(chunk)
@@ -657,7 +658,7 @@ In [flatiron][2], `director` is used in conjunction with [union][3] which uses a
 ``` js
   var http = require('http'),
       director = require('director');
-  
+
   var router = new director.http.Router();
 
   var server = http.createServer(function (req, res) {
@@ -665,24 +666,24 @@ In [flatiron][2], `director` is used in conjunction with [union][3] which uses a
     req.on('data', function (chunk) {
       req.chunks.push(chunk.toString());
     });
-    
+
     router.dispatch(req, res, function (err) {
       if (err) {
         res.writeHead(404);
         res.end();
       }
-      
+
       console.log('Served ' + req.url);
     });
   });
-  
+
   router.post('/', function () {
     this.res.writeHead(200, { 'Content-Type': 'application/json' })
     this.res.end(JSON.stringify(this.req.body));
   });
 ```
 
-**Streaming Support** 
+**Streaming Support**
 
 If you wish to get access to the request stream before the `end` event is fired, you can pass the `{ stream: true }` options to the route.
 
@@ -693,8 +694,8 @@ If you wish to get access to the request stream before the `end` event is fired,
 
   router.get('/', { stream: true }, function () {
     //
-    // This will work because the route handler is invoked 
-    // immediately without waiting for the `end` event. 
+    // This will work because the route handler is invoked
+    // immediately without waiting for the `end` event.
     //
     this.req.on('data', function (chunk) {
       console.log(chunk);
