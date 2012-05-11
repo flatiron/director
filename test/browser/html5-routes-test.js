@@ -610,7 +610,8 @@ createTest('Route handler should be executed in init() unless disabled', {
     }
   },
   {
-    html5history: true
+    html5history: true,
+    run_handler_in_init: true
   }, function() {
     this.navigate('/a', function() {
       deepEqual(shared.fired, ['/a', '/a']);
