@@ -2,12 +2,17 @@ module("Director.js", {
   setup: function() {
     window.location.hash = "";
     shared = {};
-    shared.fired = [];
+    // Init needed keys earlier because of in HTML5 mode the route handler
+    // is executed upon Router.init() and due to that setting shared.fired
+    // in the param test of createTest is too late
+    if (HTML5TEST) {
+      shared.fired       = [];
+      shared.fired_count = 0;
+    }
   },
   teardown: function() {
     window.location.hash = "";
     shared = {};
-    shared.fired = [];
   }
 });
 
@@ -19,14 +24,14 @@ function createTest(name, config, use, test) {
     use = undefined;
   }
 
-  var innerTimeout = 0;
-  if (HTML5TEST) {
-    if (use === undefined) {
-      use = {};
-    }
-    use.html5history = true;
-    innerTimeout     = 500; // Because of the use of setTimeout when defining onpopstate
+  if (HTML5TEST && use === undefined) {
+    use = {};
+    use.html5history        = true;
+    use.run_handler_in_init = false;
   }
+
+  // Because of the use of setTimeout when defining onpopstate
+  var innerTimeout = HTML5TEST === true ? 500 : 0;
 
   asyncTest(name, function() {
     setTimeout(function() {

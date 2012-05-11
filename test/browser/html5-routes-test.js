@@ -8,7 +8,6 @@ createTest('Nested route with the many children as a tokens, callbacks should yi
     }
   }
 }, function() {
-  shared.fired = [];
   this.navigate('/a/b/c', function() {
     deepEqual(shared.fired, ['/a/b/c', 'b', 'c']);
     this.finish();
@@ -24,7 +23,6 @@ createTest('Nested route with the first child as a token, callback should yield 
     }
   }
 }, function() {
-  shared.fired = [];
   this.navigate('/foo/a', function() {
     this.navigate('/foo/b/c', function() {
       deepEqual(shared.fired, ['/foo/a', 'a']);
@@ -42,7 +40,6 @@ createTest('Nested route with the first child as a regexp, callback should yield
     }
   }
 }, function() {
-  shared.fired = [];
   this.navigate('/foo/a', function() {
     this.navigate('/foo/b/c', function() {
       deepEqual(shared.fired, ['/foo/a', 'a']);
@@ -60,14 +57,11 @@ createTest('Nested route with the several regular expressions, callback should y
     }
   }
 }, function() {
-  shared.fired = [];
   this.navigate('/a/b/c', function() {
     deepEqual(shared.fired, ['b', 'c']);
     this.finish();
   });
 });
-
-
 
 createTest('Single nested route with on member containing function value', {
   '/a': {
@@ -78,7 +72,6 @@ createTest('Single nested route with on member containing function value', {
     }
   }
 }, function() {
-  shared.fired = [];
   this.navigate('/a/b', function() {
       deepEqual(shared.fired, ['/a/b']);
       this.finish();
@@ -92,7 +85,6 @@ createTest('Single non-nested route with on member containing function value', {
     }
   }
 }, function() {
-  shared.fired = [];
   this.navigate('/a/b', function() {
     deepEqual(shared.fired, ['/a/b']);
     this.finish();
@@ -107,7 +99,6 @@ createTest('Single nested route with on member containing array of function valu
     }
   }
 }, function() {
-  shared.fired = [];
   this.navigate('/a/b', function() {
       deepEqual(shared.fired, ['/a/b', '/a/b']);
       this.finish();
@@ -118,16 +109,15 @@ createTest('method should only fire once on the route.', {
   '/a': {
     '/b': {
       once: function() {
-        shared.fired++;
+        shared.fired_count++;
       }
     }
   }
 }, function() {
-  shared.fired = 0;
   this.navigate('/a/b', function() {
     this.navigate('/a/b', function() {
       this.navigate('/a/b', function() {
-        deepEqual(shared.fired, 1);
+        deepEqual(shared.fired_count, 1);
         this.finish();
       });
     });
@@ -144,7 +134,6 @@ createTest('method should only fire once on the route, multiple nesting.', {
     once: function() { shared.fired++; }
   }
 }, function() {
-  shared.fired = 0;
   this.navigate('/a', function() {
     this.navigate('/b', function() {
       this.navigate('/a', function() {
@@ -165,7 +154,6 @@ createTest('overlapping routes with tokens.', {
     shared.fired.push(location.pathname);
   }
 }, function() {
-  shared.fired = [];
   this.navigate('/a/b/c', function() {
 
     this.navigate('/a/b/c/d', function() {
@@ -196,8 +184,6 @@ createTest('Nested routes with no recursion', {
     }
   }
 }, function() {
-  shared.fired = [];
-
   this.navigate('/a/b/c', function() {
     deepEqual(shared.fired, ['c']);
     this.finish();
@@ -223,8 +209,6 @@ createTest('Nested routes with backward recursion', {
 }, {
   recurse: 'backward'
 }, function() {
-  shared.fired = [];
-
   this.navigate('/a/b/c', function() {
     deepEqual(shared.fired, ['c', 'b', 'a']);
     this.finish();
@@ -251,8 +235,6 @@ createTest('Breaking out of nested routes with backward recursion', {
 }, {
   recurse: 'backward'
 }, function() {
-  shared.fired = [];
-
   this.navigate('/a/b/c', function() {
     deepEqual(shared.fired, ['c', 'b']);
     this.finish();
@@ -278,8 +260,6 @@ createTest('Nested routes with forward recursion', {
 }, {
   recurse: 'forward'
 }, function() {
-  shared.fired = [];
-
   this.navigate('/a/b/c', function() {
     deepEqual(shared.fired, ['a', 'b', 'c']);
     this.finish();
@@ -308,8 +288,6 @@ createTest('Nested routes with forward recursion, single route with an after eve
 }, {
   recurse: 'forward'
 }, function() {
-  shared.fired = [];
-
   this.navigate('/a/b/c', function() {
     this.navigate('/a/b', function() {
       deepEqual(shared.fired, ['a', 'b', 'c', 'c-after', 'a', 'b']);
@@ -338,8 +316,6 @@ createTest('Breaking out of nested routes with forward recursion', {
 }, {
   recurse: 'forward'
 }, function() {
-  shared.fired = [];
-
   this.navigate('/a/b/c', function() {
     deepEqual(shared.fired, ['a', 'b']);
     this.finish();
@@ -379,8 +355,6 @@ createTest('All global event should fire after every route', {
     shared.fired.push('b');
   }
 }, function() {
-  shared.fired = [];
-
   this.navigate('/a', function() {
     this.navigate('/b/c', function() {
       this.navigate('/d/e', function() {
@@ -408,8 +382,6 @@ createTest('Not found.', {
     shared.fired.push('notfound');
   }
 }, function() {
-  shared.fired = [];
-
   this.navigate('/c', function() {
     this.navigate('/d', function() {
       deepEqual(shared.fired, ['notfound', 'notfound']);
@@ -434,8 +406,6 @@ createTest('On all.', {
     shared.fired.push('c');
   }
 }, function() {
-  shared.fired = [];
-
   this.navigate('/a', function() {
     this.navigate('/b', function() {
       deepEqual(shared.fired, ['a', 'c', 'b', 'c']);
@@ -461,8 +431,6 @@ createTest('After all.', {
     shared.fired.push('c');
   }
 }, function() {
-  shared.fired = [];
-
   this.navigate('/a', function() {
     this.navigate('/b', function() {
       deepEqual(shared.fired, ['a', 'c', 'b']);
@@ -492,8 +460,6 @@ createTest('resource object.', {
     }
   }
 }, function() {
-  shared.fired = [];
-
   this.navigate('/a/b/c', function() {
     this.navigate('/d', function() {
       deepEqual(shared.fired, ['f1-c', 'f1-undefined', 'f2']);
@@ -509,7 +475,6 @@ createTest('argument matching should be case agnostic', {
       }
     }
 }, function() {
-  shared.fired = [];
   this.navigate('/fooBar/tesTing', function() {
     deepEqual(shared.fired, ['fooBar-tesTing']);
     this.finish();
@@ -528,7 +493,6 @@ createTest('sanity test', {
     }
   }
 }, function() {
-  shared.fired = [];
   this.navigate('/is/there/sanity', function() {
     deepEqual(shared.fired, ['yes there is sanity']);
     this.finish();
@@ -547,7 +511,6 @@ createTest('`/` route should be navigable from the routing table', {
     }
   }
 }, function() {
-  shared.fired = [];
   this.navigate('/', function root() {
     deepEqual(shared.fired, ['/']);
     this.finish();
@@ -566,7 +529,6 @@ createTest('`/` route should not override a `/:token` route', {
     }
   }
 }, function() {
-  shared.fired = [];
   this.navigate('/a', function afunc() {
     deepEqual(shared.fired, ['/a']);
     this.finish();
@@ -580,7 +542,6 @@ createTest('should accept the root as a token.', {
     }
   }
 }, function() {
-  shared.fired = [];
   this.navigate('/a', function root() {
     deepEqual(shared.fired, ['/a']);
     this.finish();
@@ -594,7 +555,6 @@ createTest('routes should allow wildcards.', {
     }
   }
 }, function() {
-  shared.fired = [];
   this.navigate('/a/bcd', function root() {
     deepEqual(shared.fired, ['/a/bcd']);
     this.finish();
@@ -608,7 +568,6 @@ createTest('functions should have |this| context of the router instance.', {
     }
   }
 }, function() {
-  shared.fired = [];
   this.navigate('/', function root() {
     deepEqual(shared.fired, [true]);
     this.finish();
@@ -623,7 +582,6 @@ createTest('setRoute with a single parameter should change location correctly', 
   }
 }, function() {
   var self = this;
-  shared.fired = [];
   this.router.setRoute('/bonk');
   setTimeout(function() {
     deepEqual(shared.fired, ['/bonk']);
@@ -638,10 +596,25 @@ createTest('route should accept _ and . within parameters', {
     }
   }
 }, function() {
-  shared.fired = [];
-  this.navigate('/a_complex_route.co.uk', function root() {
+    this.navigate('/a_complex_route.co.uk', function root() {
     deepEqual(shared.fired, ['/a_complex_route.co.uk']);
     this.finish();
   });
 });
 
+createTest('Route handler should be executed in init() unless disabled', {
+  '/a': {
+      on: function() {
+        shared.fired.push(location.pathname);
+      }
+    }
+  },
+  {
+    html5history: true
+  }, function() {
+    this.navigate('/a', function() {
+      deepEqual(shared.fired, ['/a', '/a']);
+      this.finish();
+    });
+  }
+);
