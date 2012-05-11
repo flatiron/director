@@ -2,10 +2,12 @@ module("Director.js", {
   setup: function() {
     window.location.hash = "";
     shared = {};
+    shared.fired = [];
   },
   teardown: function() {
     window.location.hash = "";
     shared = {};
+    shared.fired = [];
   }
 });
 
