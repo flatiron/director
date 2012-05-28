@@ -1,11 +1,11 @@
 /*
- * mount-test.js: Tests for mounting and normalizing routes into a Router instance. 
+ * mount-test.js: Tests for mounting and normalizing routes into a Router instance.
  *
  * (C) 2011, Nodejitsu Inc.
  * MIT LICENSE
  *
  */
- 
+
 var assert = require('assert'),
     vows = require('vows'),
     director = require('../../../lib/director');
@@ -59,7 +59,7 @@ vows.describe('director/core/mount').addBatch({
             '/foo/jitsu/then/now': foostar,
             '/foo/:dog': foodog
           });
-          
+
           assertRoute(root,        ['on'],                                      router.routes);
           assertRoute(root,        ['after'],                                   router.routes);
           assertRoute(root,        ['before'],                                  router.routes);
@@ -72,6 +72,19 @@ vows.describe('director/core/mount').addBatch({
           assertRoute(foobazzbuzz, ['foo', 'bazz', 'buzz', 'on'],               router.routes);
           assertRoute(foostar,     ['foo', 'jitsu', 'then', 'now', 'on'],       router.routes);
           assertRoute(foodog,      ['foo', '([._a-zA-Z0-9-]+)', 'on'],          router.routes);
+        },
+
+        "should accept string path": function(router) {
+          function dogs () { }
+
+          router.mount({
+            '/dogs': {
+              on: dogs
+            }
+          },
+          '/api');
+
+          assertRoute(dogs, ['api', 'dogs', 'on'], router.routes);
         }
       }
     },
@@ -86,7 +99,7 @@ vows.describe('director/core/mount').addBatch({
       "should sanitize the routes correctly": function (router) {
         function usaCityZip () { }
         function countryCityZip () { }
-        
+
         router.mount({
           '/usa/:city/:zip': usaCityZip,
           '/world': {
@@ -95,7 +108,7 @@ vows.describe('director/core/mount').addBatch({
             }
           }
         });
-        
+
         assertRoute(usaCityZip, ['usa', '([\\w\\-]+)', '([\\d]{5})', 'on'], router.routes);
         assertRoute(countryCityZip, ['world', '([A-Z][A-Za-z]+)', '([\\w\\-]+)', '([\\d]{5})', 'on'], router.routes);
       }
