@@ -733,7 +733,9 @@ Inserts the partial [Routing Table](#routing-table), `routes`, into the Routing 
 
 ## Instance methods (Client-side only)
 
-### init()
+### init([redirect])
+* `redirect` {String}: This value will be used if '/#/' is not found in the URL. (e.g., init('/') will resolve to '/#/', init('foo') will resolve to '/#foo').
+
 Initialize the router, start listening for changes to the URL.
 
 ### getRoute([index])
