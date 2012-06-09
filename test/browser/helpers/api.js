@@ -11,7 +11,7 @@ module("Director.js", {
 
 var shared;
 
-function createTest(name, config, use, test) {
+function createTest(name, config, use, test, initialRoute) {
   if (typeof use === 'function') {
     test = use;
     use = undefined;
@@ -25,7 +25,7 @@ function createTest(name, config, use, test) {
         router.configure(use);
       }
 
-      router.init();
+      router.init(initialRoute);
 
       test.call(context = {
         router: router,
