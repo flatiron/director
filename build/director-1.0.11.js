@@ -1,8 +1,8 @@
 
 
 //
-// Generated on Tue Dec 06 2011 04:47:21 GMT-0500 (EST) by Nodejitsu, Inc (Using Codesurgeon).
-// Version 1.0.7
+// Generated on Sat Jun 09 2012 23:33:06 GMT+0530 (IST) by Nodejitsu, Inc (Using Codesurgeon).
+// Version 1.0.11
 //
 
 (function (exports) {
@@ -64,9 +64,9 @@ var listener = {
       window.Router.listeners = [];
     }
 
-    function onchange() {
+    function onchange(onChangeEvent) {
       for (var i = 0, l = window.Router.listeners.length; i < l; i++) {
-        window.Router.listeners[i]();
+        window.Router.listeners[i](onChangeEvent);
       }
     }
 
@@ -167,20 +167,19 @@ var Router = exports.Router = function (routes) {
 
 Router.prototype.init = function (r) {
   var self = this;
-  this.handler = function() {
-    var hash = dloc.hash.replace(/^#/, '');
+  this.handler = function(onChangeEvent) {
+    var hash = onChangeEvent.newURL.replace(/^#/, '');
     self.dispatch('on', hash);
   };
 
+  listener.init(this.handler);
+
   if (dloc.hash === '' && r) {
     dloc.hash = r;
+  } else if (dloc.hash.length > 0) {
+    self.dispatch('on', dloc.hash.replace(/^#/, ''));
   }
 
-  if (dloc.hash.length > 0) {
-    this.handler();
-  }
-
-  listener.init(this.handler);
   return this;
 };
 
@@ -230,11 +229,6 @@ Router.prototype.insertEx = function(method, path, route, parent) {
   return this._insert(method, path, route, parent);
 };
 
-
-Router.prototype.getState = function () {
-  return this.state;
-};
-
 Router.prototype.getRoute = function (v) {
   var ret = v;
 
@@ -255,7 +249,8 @@ Router.prototype.getRoute = function (v) {
 Router.prototype.destroy = function () {
   listener.destroy(this.handler);
   return this;
-};function _every(arr, iterator) {
+};
+function _every(arr, iterator) {
     for (var i = 0; i < arr.length; i += 1) {
         if (iterator(arr[i], i, arr) === false) {
             return;
@@ -303,7 +298,7 @@ function paramifyString(str, params, mod) {
             }
         }
     }
-    return mod === str ? "([a-zA-Z0-9-]+)" : mod;
+    return mod === str ? "([._a-zA-Z0-9-]+)" : mod;
 }
 
 function regifyString(str, params) {
@@ -356,6 +351,11 @@ Router.prototype.on = Router.prototype.route = function(method, path, route) {
         path = method;
         method = "on";
     }
+    if (Array.isArray(path)) {
+        return path.forEach(function(p) {
+            self.on(method, p, route);
+        });
+    }
     if (path.source) {
         path = path.source.replace(/\\\//ig, "/");
     }
@@ -404,8 +404,10 @@ Router.prototype.dispatch = function(method, path, callback) {
 Router.prototype.invoke = function(fns, thisArg, callback) {
     var self = this;
     if (this.async) {
-        _asyncEverySeries(fns, function(fn, next) {
-            if (typeof fn == "function") {
+        _asyncEverySeries(fns, function apply(fn, next) {
+            if (Array.isArray(fn)) {
+                return _asyncEverySeries(fn, apply, next);
+            } else if (typeof fn == "function") {
                 fn.apply(thisArg, fns.captures.concat(next));
             }
         }, function() {
@@ -563,10 +565,13 @@ Router.prototype.mount = function(routes, path) {
     }
     var self = this;
     path = path || [];
+    if (!Array.isArray(path)) {
+        path = path.split(self.delimiter);
+    }
     function insertOrMount(route, local) {
         var rename = route, parts = route.split(self.delimiter), routeType = typeof routes[route], isRoute = parts[0] === "" || !self._methods[parts[0]], event = isRoute ? "on" : rename;
         if (isRoute) {
-            rename = rename.slice(self.delimiter.length);
+            rename = rename.slice((rename.match(new RegExp(self.delimiter)) || [ "" ])[0].length);
             parts.shift();
         }
         if (isRoute && routeType === "object" && !Array.isArray(routes[route])) {
@@ -588,4 +593,4 @@ Router.prototype.mount = function(routes, path) {
 
 
 
-}(window));
+}(typeof process !== "undefined" && process.title ? module : window));
