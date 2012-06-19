@@ -2,7 +2,7 @@
   "name": "director",
   "description": "A client Side/Server Side Router",
   "author": "Nodejitsu Inc. <info@nodejitsu.com>",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "maintainers": [
     "hij1nx <paolo@nodejitsu.com>",
     "indexzero <charlie@nodejitsu.com>"
@@ -17,7 +17,8 @@
     "http",
     "cli",
     "flatiron",
-    "client side"
+    "client side",
+    "ender"
   ],
   "devDependencies": {
     "codesurgeon": "0.2.x",

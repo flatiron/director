@@ -645,3 +645,50 @@ createTest('route should accept _ and . within parameters', {
   });
 });
 
+createTest('initializing with a default route should only result in one route handling', {
+    '/': {
+      on: function root() {
+        if (!shared.init){
+            shared.init = 0;
+        }
+        shared.init++;
+      }
+    },
+    '/test': {
+      on: function root() {
+        if (!shared.test){
+            shared.test = 0;
+        }
+        shared.test++;
+      }
+    }
+  }, function() {
+    this.navigate('/test', function root() {
+      equal(shared.init, 1);
+      equal(shared.test, 1);
+      this.finish();
+    });
+  },
+  null,
+  '/');
+
+createTest('changing the hash twice should call each route once', {
+    '/hash1': {
+      on: function root() {
+          shared.fired.push('hash1');
+      }
+    },
+    '/hash2': {
+        on: function root() {
+            shared.fired.push('hash2');
+        }
+      }
+  }, function() {
+    shared.fired = [];
+    this.navigate('/hash1', function(){});
+    this.navigate('/hash2', function(){
+      deepEqual(shared.fired, ['hash1', 'hash2']);
+      this.finish();
+    });
+  }
+);
