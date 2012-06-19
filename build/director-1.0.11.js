@@ -1,7 +1,7 @@
 
 
 //
-// Generated on Tue Jun 19 2012 14:22:05 GMT+0300 (EEST) by Nodejitsu, Inc (Using Codesurgeon).
+// Generated on Tue Jun 19 2012 14:56:55 GMT+0300 (EEST) by Nodejitsu, Inc (Using Codesurgeon).
 // Version 1.0.11
 //
 
@@ -215,8 +215,6 @@ Router.prototype.init = function (r) {
     // Router has been initialized, but due to the chrome bug it will not
     // yet actually route HTML5 history state changes. Thus, decide if should route.
     if (routeTo || this.run_in_init === true) {
-      console.log("EXECUTING HANDLER: ");
-      console.log(this.run_in_init);
       this.handler();
     }
   }
