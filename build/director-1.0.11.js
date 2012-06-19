@@ -1,7 +1,7 @@
 
 
 //
-// Generated on Tue Jun 19 2012 14:56:55 GMT+0300 (EEST) by Nodejitsu, Inc (Using Codesurgeon).
+// Generated on Tue Jun 19 2012 15:13:01 GMT+0300 (EEST) by Nodejitsu, Inc (Using Codesurgeon).
 // Version 1.0.11
 //
 
@@ -206,7 +206,6 @@ Router.prototype.init = function (r) {
     }
   }
   else {
-    console.log(this.run_in_init);
     routeTo = dloc.hash === '' && r ? r : dloc.hash.length > 0 ? dloc.hash.replace(/^#/, '') : null;
     if (routeTo) {
       window.history.replaceState({}, document.title, routeTo);
