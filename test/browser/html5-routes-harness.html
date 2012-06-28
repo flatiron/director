@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title>Director HTML5 Tests</title>
+    <link rel="stylesheet" type="text/css" href="/files/helpers/qunit.css" media="all">
+</head>
+<body>
+	<p>Note: in order to execute HTML5 mode test this file needs to be served with provided nodejs backend. Start the server from <span style="font-family: 'Courier New', monotype;">director/test/browser/backend</span> and go to <span style="font-family: Courier, monotype;">http://localhost:8080/</span> to launch the tests.</p>
+	<h2  id="qunit-banner"></h2>
+	<div id="qunit-testrunner-toolbar"></div>
+	<h2  id="qunit-userAgent"></h2>
+	<ol  id="qunit-tests"></ol>
+	<div id="qunit-fixture">test markup, will be hidden</div>
+	<script type="text/javascript">
+		var HTML5TEST = true;
+	</script>
+	<script type="text/javascript" src="/files/helpers/jquery.js"></script>
+	<script type="text/javascript" src="/files/helpers/qunit.js"></script>
+	<script type="text/javascript" src="/files/build/director-1.0.11.js"></script>
+	<script type="text/javascript" src="/files/helpers/api.js"></script>
+	<script type="text/javascript" src="/files/html5-routes-test.js"></script>
+</body>
+</html>

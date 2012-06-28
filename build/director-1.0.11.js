@@ -1,7 +1,7 @@
 
 
 //
-// Generated on Sat Jun 09 2012 23:33:06 GMT+0530 (IST) by Nodejitsu, Inc (Using Codesurgeon).
+// Generated on Tue Jun 19 2012 15:13:01 GMT+0300 (EEST) by Nodejitsu, Inc (Using Codesurgeon).
 // Version 1.0.11
 //
 
@@ -39,6 +39,7 @@ var dloc = document.location;
 var listener = {
   mode: 'modern',
   hash: dloc.hash,
+  history: false,
 
   check: function () {
     var h = dloc.hash;
@@ -50,15 +51,16 @@ var listener = {
 
   fire: function () {
     if (this.mode === 'modern') {
-      window.onhashchange();
+      this.history === true ? window.onpopstate() : window.onhashchange();
     }
     else {
       this.onHashChanged();
     }
   },
 
-  init: function (fn) {
+  init: function (fn, history) {
     var self = this;
+    this.history = history;
 
     if (!window.Router.listeners) {
       window.Router.listeners = [];
@@ -73,7 +75,20 @@ var listener = {
     //note IE8 is being counted as 'modern' because it has the hashchange event
     if ('onhashchange' in window && (document.documentMode === undefined
       || document.documentMode > 7)) {
-      window.onhashchange = onchange;
+      // At least for now HTML5 history is available for 'modern' browsers only
+      if (this.history === true) {
+        // There is an old bug in Chrome that causes onpopstate to fire even
+        // upon initial page load. Since the handler is run manually in init(),
+        // this would cause Chrome to run it twise. Currently the only
+        // workaround seems to be to set the handler after the initial page load
+        // http://code.google.com/p/chromium/issues/detail?id=63040
+        setTimeout(function() {
+          window.onpopstate = onchange;
+        }, 500);
+      }
+      else {
+        window.onhashchange = onchange;
+      }
       this.mode = 'modern';
     }
     else {
@@ -125,7 +140,14 @@ var listener = {
       this.writeFrame(s);
     }
 
-    dloc.hash = (s[0] === '/') ? s : '/' + s;
+    if (this.history === true) {
+      window.history.pushState({}, document.title, s);
+      // Fire an onpopstate event manually since pushing does not obviously
+      // trigger the pop event.
+      this.fire();
+    } else {
+      dloc.hash = (s[0] === '/') ? s : '/' + s;
+    }
     return this;
   },
 
@@ -161,6 +183,8 @@ var Router = exports.Router = function (routes) {
   this._insert = this.insert;
   this.insert = this.insertEx;
 
+  this.historySupport = (window.history != null ? window.history.pushState : null) != null
+
   this.configure();
   this.mount(routes || {});
 };
@@ -168,23 +192,37 @@ var Router = exports.Router = function (routes) {
 Router.prototype.init = function (r) {
   var self = this;
   this.handler = function(onChangeEvent) {
-    var hash = onChangeEvent.newURL.replace(/^#/, '');
-    self.dispatch('on', hash);
+    var url = self.history === true ? self.getPath() : onChangeEvent.newURL.replace(/.*#/, '');
+    self.dispatch('on', url);
   };
 
-  listener.init(this.handler);
+  listener.init(this.handler, this.history);
 
-  if (dloc.hash === '' && r) {
-    dloc.hash = r;
-  } else if (dloc.hash.length > 0) {
-    self.dispatch('on', dloc.hash.replace(/^#/, ''));
+  if (this.history === false) {
+    if (dloc.hash === '' && r) {
+      dloc.hash = r;
+    } else if (dloc.hash.length > 0) {
+      self.dispatch('on', dloc.hash.replace(/^#/, ''));
+    }
+  }
+  else {
+    routeTo = dloc.hash === '' && r ? r : dloc.hash.length > 0 ? dloc.hash.replace(/^#/, '') : null;
+    if (routeTo) {
+      window.history.replaceState({}, document.title, routeTo);
+    }
+
+    // Router has been initialized, but due to the chrome bug it will not
+    // yet actually route HTML5 history state changes. Thus, decide if should route.
+    if (routeTo || this.run_in_init === true) {
+      this.handler();
+    }
   }
 
   return this;
 };
 
 Router.prototype.explode = function () {
-  var v = dloc.hash;
+  var v = this.history === true ? this.getPath() : dloc.hash;
   if (v[1] === '/') { v=v.slice(1) }
   return v.slice(1, v.length).split("/");
 };
@@ -249,6 +287,14 @@ Router.prototype.getRoute = function (v) {
 Router.prototype.destroy = function () {
   listener.destroy(this.handler);
   return this;
+};
+
+Router.prototype.getPath = function () {
+  var path = window.location.pathname;
+  if (path.substr(0, 1) !== '/') {
+    path = '/' + path;
+  }
+  return path;
 };
 function _every(arr, iterator) {
     for (var i = 0; i < arr.length; i += 1) {
@@ -326,6 +372,8 @@ Router.prototype.configure = function(options) {
     this.strict = typeof options.strict === "undefined" ? true : options.strict;
     this.notfound = options.notfound;
     this.resource = options.resource;
+    this.history = options.html5history && this.historySupport || false;
+    this.run_in_init = this.history === true && options.run_handler_in_init !== false;
     this.every = {
         after: options.after || null,
         before: options.before || null,
