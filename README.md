@@ -161,7 +161,7 @@ Director handles routing for HTTP requests similar to `journey` or `express`:
 
   //
   // setup a server and when there is a request, dispatch the
-  // route that was requestd in the request object.
+  // route that was requested in the request object.
   //
   var server = http.createServer(function (req, res) {
     router.dispatch(req, res, function (err) {
