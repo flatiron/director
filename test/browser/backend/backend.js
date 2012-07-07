@@ -33,7 +33,7 @@ function fileServer(folder, file) {
 
 	var res = this.res;
 
-	path.exists(filepath, function (exists) {
+	(fs.exists || path.exists)(filepath, function (exists) {
 		if (exists) {
 			fs.readFile(filepath, function (err, data) {
 				if (err) {
