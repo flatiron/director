@@ -1,5 +1,5 @@
 /*
- * index.js: Test helpers for director. 
+ * index.js: Test helpers for director.
  *
  * (C) 2011, Nodejitsu Inc.
  * MIT LICENSE
@@ -31,11 +31,11 @@ exports.handlers = {
   streamBody: function () {
     var body = '',
         res = this.res;
-    
+
     this.req.on('data', function (chunk) {
       body += chunk;
     });
-    
+
     this.req.on('end', function () {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(body);

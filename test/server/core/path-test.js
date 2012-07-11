@@ -1,15 +1,15 @@
 /*
- * path-test.js: Tests for the core `.path()` method. 
+ * path-test.js: Tests for the core `.path()` method.
  *
  * (C) 2011, Nodejitsu Inc.
  * MIT LICENSE
  *
  */
- 
+
 var assert = require('assert'),
     vows = require('vows'),
     director = require('../../../lib/director');
-    
+
 vows.describe('director/core/path').addBatch({
   "An instance of director.Router": {
     topic: function () {
@@ -17,7 +17,7 @@ vows.describe('director/core/path').addBatch({
       that.matched = {};
       that.matched['foo'] = [];
       that.matched['newyork'] = [];
-      
+
       var router = new director.Router({
         '/foo': function () { that.matched['foo'].push('foo'); }
       });

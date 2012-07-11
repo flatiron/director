@@ -175,7 +175,7 @@ createTest('overlapping routes with tokens.', {
   });
 });
 
-// // // 
+// // //
 // // // Recursion features
 // // // ----------------------------------------------------------
 
@@ -350,7 +350,7 @@ createTest('Breaking out of nested routes with forward recursion', {
 // ABOVE IS WORKING
 //
 
-// // 
+// //
 // // Special Events
 // // ----------------------------------------------------------
 
@@ -478,7 +478,7 @@ createTest('resource object.', {
     },
     on: 'f2'
   },
-  '/d': { 
+  '/d': {
     on: ['f1', 'f2']
   }
 },

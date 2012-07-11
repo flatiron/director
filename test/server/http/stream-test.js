@@ -5,7 +5,7 @@
  * MIT LICENSE
  *
  */
- 
+
 var assert = require('assert'),
     http = require('http'),
     vows = require('vows'),
@@ -14,7 +14,7 @@ var assert = require('assert'),
     helpers = require('../helpers'),
     macros = helpers.macros,
     handlers = helpers.handlers
-    
+
 vows.describe('director/http/stream').addBatch({
   "An instance of director.http.Router": {
     "with streaming routes": {

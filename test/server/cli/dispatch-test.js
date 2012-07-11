@@ -1,21 +1,21 @@
 /*
- * dispatch-test.js: Tests for the core dispatch method. 
+ * dispatch-test.js: Tests for the core dispatch method.
  *
  * (C) 2011, Nodejitsu Inc.
  * MIT LICENSE
  *
  */
- 
+
 var assert = require('assert'),
     vows = require('vows'),
     director = require('../../../lib/director');
-    
+
 vows.describe('director/cli/dispatch').addBatch({
   "An instance of director.cli.Router": {
     topic: function () {
       var router = new director.cli.Router(),
           that = this;
-      
+
       that.matched = {};
       that.matched['users'] = [];
       that.matched['apps'] = []
@@ -23,12 +23,12 @@ vows.describe('director/cli/dispatch').addBatch({
       router.on('users create', function () {
         that.matched['users'].push('on users create');
       });
-      
+
       router.on(/apps (\w+\s\w+)/, function () {
         assert.equal(arguments.length, 1);
         that.matched['apps'].push('on apps (\\w+\\s\\w+)');
       });
-      
+
       return router;
     },
     "should have the correct routing table": function (router) {

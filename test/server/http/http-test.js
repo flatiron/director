@@ -1,11 +1,11 @@
 /*
- * http-test.js: Tests for basic HTTP server(s). 
+ * http-test.js: Tests for basic HTTP server(s).
  *
  * (C) 2011, Nodejitsu Inc.
  * MIT LICENSE
  *
  */
- 
+
 var assert = require('assert'),
     http = require('http'),
     vows = require('vows'),
@@ -42,7 +42,7 @@ vows.describe('director/http').addBatch({
           router.path(/bar\/bazz\//, function () {
             this.get(/(\w+)/, handlers.respondWithId);
           });
-          
+
           helpers.createServer(router)
             .listen(9090, this.callback);
         },

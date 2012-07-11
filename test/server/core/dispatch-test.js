@@ -1,15 +1,15 @@
 /*
- * dispatch-test.js: Tests for the core dispatch method. 
+ * dispatch-test.js: Tests for the core dispatch method.
  *
  * (C) 2011, Nodejitsu Inc.
  * MIT LICENSE
  *
  */
- 
+
 var assert = require('assert'),
     vows = require('vows'),
     director = require('../../../lib/director');
-    
+
 vows.describe('director/core/dispatch').addBatch({
   "An instance of director.Router": {
     topic: function () {
@@ -18,7 +18,7 @@ vows.describe('director/core/dispatch').addBatch({
       that.matched['/'] = [];
       that.matched['foo'] = [];
       that.matched['f*'] = []
-      
+
       var router = new director.Router({
         '/': {
           before: function () { that.matched['/'].push('before /') },
@@ -108,6 +108,6 @@ vows.describe('director/core/dispatch').addBatch({
           assert.equal(this.matched.foo[4], 'on foo');
         },
       }
-    }    
+    }
   }
 }).export(module);
