@@ -1,7 +1,5 @@
 language: node_js
-branches:
-  only:
-    - master
+
 node_js:
   - 0.6
   - 0.8
