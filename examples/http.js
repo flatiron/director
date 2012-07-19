@@ -20,12 +20,12 @@ var server = http.createServer(function (req, res) {
 });
 
 router.get(/foo/, function () {
-  this.res.writeHead(200, { 'Content-Type': 'text/plain' })
+  this.res.writeHead(200, { 'Content-Type': 'text/plain' });
   this.res.end('hello world\n');
 });
 
 router.post(/foo/, function () {
-  this.res.writeHead(200, { 'Content-Type': 'application/json' })
+  this.res.writeHead(200, { 'Content-Type': 'application/json' });
   this.res.end(JSON.stringify(this.req.body));
 });
 
