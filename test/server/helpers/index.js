@@ -28,6 +28,12 @@ exports.handlers = {
     this.res.writeHead(200, { 'Content-Type': 'application/json' })
     this.res.end(JSON.stringify(this.data));
   },
+  respondWithOk: function () {
+    return function () {
+      this.res.writeHead(200);
+      this.res.end('ok');
+    };
+  },
   streamBody: function () {
     var body = '',
         res = this.res;
