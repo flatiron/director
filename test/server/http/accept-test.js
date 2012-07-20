@@ -25,6 +25,14 @@ apiEasy.describe('director/http/accept')
           router.get('/txt', { accept: 'text/plain' }, handlers.respondWithOk());
           router.get('/both', { accept: ['text/plain', 'application/json'] }, handlers.respondWithOk());
           router.get('/regex', { accept: /.+\/x\-.+/ }, handlers.respondWithOk());
+
+          router.get('/weird', { accept: 'application/json' }, function () {
+            this.res.writeHead(400);
+            this.res.end();
+          });
+
+          router.get('/weird', handlers.respondWithOk());
+
           helpers.createServer(router).listen(PORT, this.callback);
         },
         "should be created": function (err) {
@@ -44,6 +52,8 @@ apiEasy.describe('director/http/accept')
       .expect(200)
     .get('/regex')
       .expect(404)
+    .get('/weird')
+      .expect(400)
   .undiscuss()
   .next()
   .discuss('with `content-type: text/plain`')
@@ -56,6 +66,8 @@ apiEasy.describe('director/http/accept')
       .expect(200)
     .get('/regex')
       .expect(404)
+    .get('/weird')
+      .expect(200)
   .undiscuss()
   .next()
   .discuss('with `content-type: application/x-tar-gz`')
@@ -68,6 +80,8 @@ apiEasy.describe('director/http/accept')
     .get('/both')
       .expect(404)
     .get('/regex')
+      .expect(200)
+    .get('/weird')
       .expect(200)
   .undiscuss()
   .export(module);
