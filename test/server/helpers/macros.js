@@ -25,6 +25,18 @@ exports.assertGet = function(port, uri, expected) {
   return context;
 };
 
+exports.assert404 = function (port, uri) {
+  return {
+    topic: function () {
+      request({ uri: 'http://localhost:' + port + '/' + uri }, this.callback);
+    },
+    "should respond with 404": function (err, res, body) {
+      assert.isNull(err);
+      assert.equal(res.statusCode, 404);
+    }
+  };
+};
+
 exports.assertPost = function(port, uri, expected) {
   return {
     topic: function () {

@@ -49,7 +49,8 @@ vows.describe('director/http').addBatch({
         "a request to foo/bar/bark": assertBark('foo/bar/bark'),
         "a request to foo/update/bark": assertBark('foo/update/bark'),
         "a request to bar/bazz/bark": assertBark('bar/bazz/bark'),
-        "a request to foo/bar/bark?test=test": assertBark('foo/bar/bark?test=test')
+        "a request to foo/bar/bark?test=test": assertBark('foo/bar/bark?test=test'),
+        "a request to foo/%RT": macros.assert404(9090, 'foo/%RT')
       }
     }
   }
