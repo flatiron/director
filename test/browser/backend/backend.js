@@ -19,17 +19,12 @@ var CONTENT_TYPES = {
 
 // Dummy file server
 function fileServer(folder, file) {
-	var filepath = folder;
-	if (file) {
-		filepath += "/" + file;
+	var root = path.resolve(__dirname, '..');
+	if (folder === 'build') {
+		root = path.resolve(root, '..', '..');
 	}
 
-	// Special case
-	if (folder == "build") {
-		filepath = "../../../" + filepath;
-	} else {
-		filepath = "../" + filepath;
-	}
+	var filepath = path.resolve(root, folder, file);
 
 	var res = this.res;
 
