@@ -20,7 +20,7 @@ var CONTENT_TYPES = {
 // Dummy file server
 function fileServer(folder, file) {
 	var root = path.resolve(__dirname, '..');
-	if (folder === 'build') {
+	if (folder === 'build' || folder === 'node_modules') {
 		root = path.resolve(root, '..', '..');
 	}
 
@@ -49,7 +49,7 @@ function fileServer(folder, file) {
 var router = new director.http.Router({
 	'/files': {
 		'/:folder': {
-			'/:file': {
+			'/(.+)': {
 				get: fileServer
 			},
 

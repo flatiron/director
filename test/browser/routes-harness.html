@@ -1,27 +1,21 @@
 <!DOCTYPE HTML>
-<html lang="en-US">
+<html>
 <head>
     <meta charset="UTF-8">
     <title>Director Tests</title>
-    <link rel="stylesheet" type="text/css" href="helpers/qunit.css" media="all">
+    <link rel="stylesheet" href="../../node_modules/qunitjs/qunit/qunit.css">
 </head>
 <body>
-<h1 id="qunit-header">
-  <img src="../../img/director.png" width="448" height="80" alt="Director">
-</h1><br/>
-<h2 id="qunit-banner"></h2>
-<div id="qunit-testrunner-toolbar"></div>
-<h2 id="qunit-userAgent"></h2>
-<ol id="qunit-tests"></ol>
-<div id="qunit-fixture">test markup, will be hidden</div>
+    <div id="qunit">
+    <div id="qunit-fixture"></div>
 
-<script type="text/javascript">
-	var HTML5TEST = false;
-</script>
-<script type="text/javascript" src="helpers/jquery.js"></script>
-<script type="text/javascript" src="helpers/qunit.js"></script>
-<script type="text/javascript" src="../../build/director-1.1.3.js"></script>
-<script type="text/javascript" src="helpers/api.js"></script>
-<script type="text/javascript" src="routes-test.js"></script>
+    <script>
+        var HTML5TEST = false;
+    </script>
+
+    <script src="../../node_modules/qunitjs/qunit/qunit.js"></script>
+    <script src="../../build/director-1.1.3.js"></script>
+    <script src="helpers/api.js"></script>
+    <script src="routes-test.js"></script>
 </body>
 </html>
