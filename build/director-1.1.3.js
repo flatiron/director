@@ -1,8 +1,8 @@
 
 
 //
-// Generated on Sat Jul 14 2012 21:45:30 GMT+0530 (IST) by Nodejitsu, Inc (Using Codesurgeon).
-// Version 1.1.2
+// Generated on Thu Jul 26 2012 15:11:38 GMT-0400 (EDT) by Nodejitsu, Inc (Using Codesurgeon).
+// Version 1.1.3
 //
 
 (function (exports) {
@@ -476,14 +476,46 @@ Router.prototype.invoke = function(fns, thisArg, callback) {
     }
 };
 
-Router.prototype.traverse = function(method, path, routes, regexp) {
+Router.prototype.traverse = function(method, path, routes, regexp, filter) {
     var fns = [], current, exact, match, next, that;
+    function filterRoutes(routes) {
+        if (!filter) {
+            return routes;
+        }
+        function deepCopy(source) {
+            var result = [];
+            for (var i = 0; i < source.length; i++) {
+                result[i] = Array.isArray(source[i]) ? deepCopy(source[i]) : source[i];
+            }
+            return result;
+        }
+        function applyFilter(fns) {
+            for (var i = fns.length - 1; i >= 0; i--) {
+                if (Array.isArray(fns[i])) {
+                    applyFilter(fns[i]);
+                    if (fns[i].length === 0) {
+                        fns.splice(i, 1);
+                    }
+                } else {
+                    if (!filter(fns[i])) {
+                        fns.splice(i, 1);
+                    }
+                }
+            }
+        }
+        var newRoutes = deepCopy(routes);
+        newRoutes.matched = routes.matched;
+        newRoutes.captures = routes.captures;
+        newRoutes.after = routes.after.filter(filter);
+        applyFilter(newRoutes);
+        return newRoutes;
+    }
     if (path === this.delimiter && routes[method]) {
         next = [ [ routes.before, routes[method] ].filter(Boolean) ];
         next.after = [ routes.after ].filter(Boolean);
         next.matched = true;
         next.captures = [];
-        return next;
+        return filterRoutes(next);
     }
     for (var r in routes) {
         if (routes.hasOwnProperty(r) && (!this._methods[r] || this._methods[r] && typeof routes[r] === "object" && !Array.isArray(routes[r]))) {
@@ -501,10 +533,10 @@ Router.prototype.traverse = function(method, path, routes, regexp) {
                 next.matched = true;
                 next.captures = match.slice(1);
                 if (this.recurse && routes === this.routes) {
-                    next.push([ routes["before"], routes["on"] ].filter(Boolean));
-                    next.after = next.after.concat([ routes["after"] ].filter(Boolean));
+                    next.push([ routes.before, routes.on ].filter(Boolean));
+                    next.after = next.after.concat([ routes.after ].filter(Boolean));
                 }
-                return next;
+                return filterRoutes(next);
             }
             next = this.traverse(method, path, routes[r], current);
             if (next.matched) {
@@ -522,7 +554,7 @@ Router.prototype.traverse = function(method, path, routes, regexp) {
                 fns.matched = true;
                 fns.captures = next.captures;
                 fns.after = next.after;
-                return fns;
+                return filterRoutes(fns);
             }
         }
     }
@@ -586,14 +618,15 @@ Router.prototype.insert = function(method, path, route, parent) {
 
 Router.prototype.extend = function(methods) {
     var self = this, len = methods.length, i;
+    function extend(method) {
+        self._methods[method] = true;
+        self[method] = function() {
+            var extra = arguments.length === 1 ? [ method, "" ] : [ method ];
+            self.on.apply(self, extra.concat(Array.prototype.slice.call(arguments)));
+        };
+    }
     for (i = 0; i < len; i++) {
-        (function(method) {
-            self._methods[method] = true;
-            self[method] = function() {
-                var extra = arguments.length === 1 ? [ method, "" ] : [ method ];
-                self.on.apply(self, extra.concat(Array.prototype.slice.call(arguments)));
-            };
-        })(methods[i]);
+        extend(methods[i]);
     }
 };
 
