@@ -14,6 +14,7 @@ A routing library that works in both the browser and node.js environments with a
 * [Server-Side HTTP Routing](#http-routing)
 * [Server-Side CLI Routing](#cli-routing)
 
+
 # Usage
 * [API Documentation](#api-documentation)
 * [Frequently Asked Questions](#faq)
@@ -184,6 +185,12 @@ Director handles routing for HTTP requests similar to `journey` or `express`:
   //
   server.listen(8080);
 ```
+
+### See Also:
+
+ - Auto-generated Node.js API Clients for routers using [Director-Reflector](http://github.com/flatiron/director-reflector)
+ - RESTful Resource routing using [restful](http://github.com/flatiron/restful)
+ - HTML / Plain Text views of routers using [Director-Explorer](http://github.com/flatiron/director-explorer)
 
 <a name="cli-routing"></a>
 ## CLI Routing
