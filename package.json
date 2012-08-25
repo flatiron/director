@@ -21,7 +21,7 @@
     "ender"
   ],
   "devDependencies": {
-    "codesurgeon": "0.2.x",
+    "codesurgeon": "0.3.x",
     "colors": "0.5.x",
     "api-easy": "0.3.x",
     "uglify-js": "1.0.6",
