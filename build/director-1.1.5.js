@@ -1,8 +1,8 @@
 
 
 //
-// Generated on Sun Aug 26 2012 00:02:21 GMT+0530 (IST) by Nodejitsu, Inc (Using Codesurgeon).
-// Version 1.1.4
+// Generated on Sun Aug 26 2012 09:20:46 GMT+0530 (IST) by Nodejitsu, Inc (Using Codesurgeon).
+// Version 1.1.5
 //
 
 (function (exports) {
@@ -35,6 +35,12 @@ if (!Array.isArray){
 }
 
 var dloc = document.location;
+
+function dlocHashEmpty() {
+  // Non-IE browsers return '' when the address bar shows '#'; Director's logic
+  // assumes both mean empty.
+  return dloc.hash === '' || dloc.hash === '#';
+}
 
 var listener = {
   mode: 'modern',
@@ -200,14 +206,14 @@ Router.prototype.init = function (r) {
   listener.init(this.handler, this.history);
 
   if (this.history === false) {
-    if (dloc.hash === '' && r) {
+    if (dlocHashEmpty() && r) {
       dloc.hash = r;
-    } else if (dloc.hash.length > 0) {
+    } else if (!dlocHashEmpty()) {
       self.dispatch('on', dloc.hash.replace(/^#/, ''));
     }
   }
   else {
-    routeTo = dloc.hash === '' && r ? r : dloc.hash.length > 0 ? dloc.hash.replace(/^#/, '') : null;
+    var routeTo = dlocHashEmpty() && r ? r : !dlocHashEmpty() ? dloc.hash.replace(/^#/, '') : null;
     if (routeTo) {
       window.history.replaceState({}, document.title, routeTo);
     }
