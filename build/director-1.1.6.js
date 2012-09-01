@@ -1,8 +1,8 @@
 
 
 //
-// Generated on Sun Aug 26 2012 09:20:46 GMT+0530 (IST) by Nodejitsu, Inc (Using Codesurgeon).
-// Version 1.1.5
+// Generated on Sat Sep 01 2012 21:49:06 GMT+0530 (IST) by Nodejitsu, Inc (Using Codesurgeon).
+// Version 1.1.6
 //
 
 (function (exports) {
@@ -681,4 +681,4 @@ Router.prototype.mount = function(routes, path) {
 
 
 
-}(typeof process !== "undefined" && process.title ? module : window));
+}(typeof exports === "object" ? exports : window));
