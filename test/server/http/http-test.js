@@ -42,6 +42,8 @@ vows.describe('director/http').addBatch({
           router.path(/bar\/bazz\//, function () {
             this.get(/(\w+)/, handlers.respondWithId);
           });
+          router.get(/\/foo\/wild\/(.*)/, handlers.respondWithId);
+          router.get(/(\/v2)?\/somepath/, handlers.respondWithId);
 
           helpers.createServer(router)
             .listen(9090, this.callback);
@@ -50,7 +52,13 @@ vows.describe('director/http').addBatch({
         "a request to foo/update/bark": assertBark('foo/update/bark'),
         "a request to bar/bazz/bark": assertBark('bar/bazz/bark'),
         "a request to foo/bar/bark?test=test": assertBark('foo/bar/bark?test=test'),
-        "a request to foo/%RT": macros.assert404(9090, 'foo/%RT')
+        "a request to foo/wild/bark": assertBark('foo/wild/bark'),
+        "a request to foo/%RT": macros.assert404(9090, 'foo/%RT'),
+        "a request to /v2/somepath": macros.assertGet(
+          9090,
+          '/v2/somepath',
+          'hello from (/v2)'
+        )
       }
     }
   }
