@@ -46,6 +46,7 @@ surgeon
     '_asyncEverySeries',
     'paramifyString',
     'regifyString',
+    'terminator',
     'Router.prototype.configure',
     'Router.prototype.param',
     'Router.prototype.on',
