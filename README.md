@@ -146,9 +146,9 @@ Director handles routing for HTTP requests similar to `journey` or `express`:
   //
   // create some logic to be routed to.
   //
-  function helloWorld(route) {
+  function helloWorld() {
     this.res.writeHead(200, { 'Content-Type': 'text/plain' })
-    this.res.end('hello world from (' + route + ')');
+    this.res.end('hello world');
   }
 
   //
