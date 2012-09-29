@@ -15,7 +15,8 @@ surgeon
   //
   .configure({ 
     package: root + '/package.json',
-    owner: 'Nodejitsu, Inc (Using Codesurgeon).'
+    owner: 'Nodejitsu, Inc (Using Codesurgeon).',
+    noVersion: true
   })
   .read(
     path.join(lib, 'browser.js')
