@@ -15,7 +15,8 @@ surgeon
   //
   .configure({ 
     package: root + '/package.json',
-    owner: 'Nodejitsu, Inc (Using Codesurgeon).'
+    owner: 'Nodejitsu, Inc (Using Codesurgeon).',
+    noVersion: true
   })
   .read(
     path.join(lib, 'browser.js')
@@ -46,6 +47,7 @@ surgeon
     '_asyncEverySeries',
     'paramifyString',
     'regifyString',
+    'terminator',
     'Router.prototype.configure',
     'Router.prototype.param',
     'Router.prototype.on',
