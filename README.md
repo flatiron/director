@@ -307,7 +307,7 @@ When developing large client-side or server-side applications it is not always p
 <a name="scoped-routing"></a>
 ## Scoped Routing
 
-In large web appliations, both [Client-side](#client-side) and [Server-side](#server-side), routes are often scoped within a few individual resources. Director exposes a simple way to do this for [Adhoc Routing](#adhoc-routing) scenarios:
+In large web appliations, both [Client-side](#client-side) and [Server-side](#http-routing), routes are often scoped within a few individual resources. Director exposes a simple way to do this for [Adhoc Routing](#adhoc-routing) scenarios:
 
 ``` js
   var router = new director.http.Router();
@@ -357,7 +357,7 @@ In `director`, a "routing event" is a named property in the [Routing Table](#rou
 <a name="configuration"></a>
 ## Configuration
 
-Given the flexible nature of `director` there are several options available for both the [Client-side](#client-side) and [Server-side](#server-side). These options can be set using the `.configure()` method:
+Given the flexible nature of `director` there are several options available for both the [Client-side](#client-side) and [Server-side](#http-routing). These options can be set using the `.configure()` method:
 
 ``` js
   var router = new director.Router(routes).configure(options);
@@ -740,7 +740,7 @@ Configures the Router instance with the specified `options`. See [Configuration]
 * token {string}: Named parameter token to set to the specified `matcher`
 * matcher {string|Regexp}: Matcher for the specified `token`.
 
-Adds a route fragment for the given string `token` to the specified regex `matcher` to this Router instance. See [URL Parameters](#url-parameters) for more documentation.
+Adds a route fragment for the given string `token` to the specified regex `matcher` to this Router instance. See [URL Parameters](#url-params) for more documentation.
 
 ### on(method, path, route)
 * `method` {string}: Method to insert within the Routing Table (e.g. `on`, `get`, etc.).
@@ -817,6 +817,6 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 [0]: http://github.com/flatiron/director
-[1]: https://github.com/flatiron/director/blob/master/build/director.min.js
+[1]: https://github.com/flatiron/director/blob/master/build/director-1.1.6.min.js
 [2]: http://github.com/flatiron/flatiron
 [3]: http://github.com/flatiron/union
