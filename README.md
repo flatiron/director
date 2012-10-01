@@ -307,7 +307,7 @@ When developing large client-side or server-side applications it is not always p
 <a name="scoped-routing"></a>
 ## Scoped Routing
 
-In large web appliations, both [Client-side](#client-side) and [Server-side](#server-side), routes are often scoped within a few individual resources. Director exposes a simple way to do this for [Adhoc Routing](#adhoc-routing) scenarios:
+In large web appliations, both [Client-side](#client-side) and [Server-side](#http-routing), routes are often scoped within a few individual resources. Director exposes a simple way to do this for [Adhoc Routing](#adhoc-routing) scenarios:
 
 ``` js
   var router = new director.http.Router();
@@ -357,7 +357,7 @@ In `director`, a "routing event" is a named property in the [Routing Table](#rou
 <a name="configuration"></a>
 ## Configuration
 
-Given the flexible nature of `director` there are several options available for both the [Client-side](#client-side) and [Server-side](#server-side). These options can be set using the `.configure()` method:
+Given the flexible nature of `director` there are several options available for both the [Client-side](#client-side) and [Server-side](#http-routing). These options can be set using the `.configure()` method:
 
 ``` js
   var router = new director.Router(routes).configure(options);
@@ -740,7 +740,7 @@ Configures the Router instance with the specified `options`. See [Configuration]
 * token {string}: Named parameter token to set to the specified `matcher`
 * matcher {string|Regexp}: Matcher for the specified `token`.
 
-Adds a route fragment for the given string `token` to the specified regex `matcher` to this Router instance. See [URL Parameters](#url-parameters) for more documentation.
+Adds a route fragment for the given string `token` to the specified regex `matcher` to this Router instance. See [URL Parameters](#url-params) for more documentation.
 
 ### on(method, path, route)
 * `method` {string}: Method to insert within the Routing Table (e.g. `on`, `get`, etc.).
