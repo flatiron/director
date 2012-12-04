@@ -1,8 +1,8 @@
 
 
 //
-// Generated on Sat Sep 01 2012 21:49:06 GMT+0530 (IST) by Nodejitsu, Inc (Using Codesurgeon).
-// Version 1.1.6
+// Generated on Tue Dec 04 2012 01:06:43 GMT-0800 (PST) by Nodejitsu, Inc (Using Codesurgeon).
+// Version 1.1.8
 //
 
 (function (exports) {
@@ -355,9 +355,13 @@ function paramifyString(str, params, mod) {
 }
 
 function regifyString(str, params) {
-  if (~str.indexOf("*")) {
-    str = str.replace(/\*/g, "([_.()!\\ %@&a-zA-Z0-9-]+)");
+  var matches, last = 0, out = "";
+  while (matches = str.substr(last).match(/[^\w\d\- %@&]*\*[^\w\d\- %@&]*/)) {
+    last = matches.index + matches[0].length;
+    matches[0] = matches[0].replace(/^\*/, "([_.()!\\ %@&a-zA-Z0-9-]+)");
+    out += str.substr(0, matches.index) + matches[0];
   }
+  str = out += str.substr(last);
   var captures = str.match(/:([^\/]+)/ig), length;
   if (captures) {
     length = captures.length;
@@ -368,11 +372,29 @@ function regifyString(str, params) {
   return str;
 }
 
+function terminator(routes, delimiter, start, stop) {
+  var last = 0, left = 0, right = 0, start = (start || "(").toString(), stop = (stop || ")").toString(), i;
+  for (i = 0; i < routes.length; i++) {
+    var chunk = routes[i];
+    if (chunk.indexOf(start, last) > chunk.indexOf(stop, last) || ~chunk.indexOf(start, last) && !~chunk.indexOf(stop, last) || !~chunk.indexOf(start, last) && ~chunk.indexOf(stop, last)) {
+      left = chunk.indexOf(start, last);
+      right = chunk.indexOf(stop, last);
+      if (~left && !~right || !~left && ~right) {
+        var tmp = routes.slice(0, (i || 1) + 1).join(delimiter);
+        routes = [ tmp ].concat(routes.slice((i || 1) + 1));
+      }
+      last = (right > left ? right : left) + 1;
+      i = 0;
+    } else {
+      last = 0;
+    }
+  }
+  return routes;
+}
+
 Router.prototype.configure = function(options) {
   options = options || {};
-  for (var i = 0; i < this.methods.length; i++) {
-    this._methods[this.methods[i]] = true;
-  }
+  this.extend(this.methods);
   this.recurse = options.recurse || this.recurse || false;
   this.async = options.async || false;
   this.delimiter = options.delimiter || "/";
@@ -419,7 +441,9 @@ Router.prototype.on = Router.prototype.route = function(method, path, route) {
       self.on(m.toLowerCase(), path, route);
     });
   }
-  this.insert(method, this.scope.concat(path.split(new RegExp(this.delimiter))), route);
+  path = path.split(new RegExp(this.delimiter));
+  path = terminator(path, this.delimiter);
+  this.insert(method, this.scope.concat(path), route);
 };
 
 Router.prototype.dispatch = function(method, path, callback) {
@@ -624,17 +648,23 @@ Router.prototype.insert = function(method, path, route, parent) {
 
 
 Router.prototype.extend = function(methods) {
-  var self = this, len = methods.length, i;
+  var self = this;
   function extend(method) {
     self._methods[method] = true;
-    self[method] = function() {
+    function route() {
       var extra = arguments.length === 1 ? [ method, "" ] : [ method ];
       self.on.apply(self, extra.concat(Array.prototype.slice.call(arguments)));
-    };
+    }
+    if (!~self.methods.indexOf(method)) {
+      if (self._methods[method]) {
+        if (self[method] === route) return;
+      }
+      self[method] = route;
+    }
   }
-  for (i = 0; i < len; i++) {
-    extend(methods[i]);
-  }
+  methods.forEach(function(method) {
+    extend(method);
+  });
 };
 
 Router.prototype.runlist = function(fns) {
@@ -669,6 +699,7 @@ Router.prototype.mount = function(routes, path) {
     }
     if (isRoute) {
       local = local.concat(rename.split(self.delimiter));
+      local = terminator(local, self.delimiter);
     }
     self.insert(event, local, routes[route]);
   }
