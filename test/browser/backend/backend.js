@@ -5,7 +5,7 @@ var http     = require('http'),
 	pkg      = require('../../../package.json'),
 	index;
 
-fs.readFile('../html5-routes-harness.html', function (err, data) {
+fs.readFile(path.join(__dirname, '..', 'html5-routes-harness.html'), function (err, data) {
 	if (err) {
 		throw err;
 	}
