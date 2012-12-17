@@ -21,7 +21,7 @@
     "ender"
   ],
   "devDependencies": {
-    "codesurgeon": "~0.3.4",
+    "codesurgeon": "https://github.com/hij1nx/codesurgeon/tarball/master",
     "colors": "0.5.x",
     "api-easy": "0.3.x",
     "uglify-js": "1.0.6",
