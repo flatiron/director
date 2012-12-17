@@ -1,8 +1,8 @@
 
 
 //
-// Generated on Tue Dec 04 2012 01:06:43 GMT-0800 (PST) by Nodejitsu, Inc (Using Codesurgeon).
-// Version 1.1.8
+// Generated on Sun Dec 16 2012 22:47:05 GMT-0500 (EST) by Nodejitsu, Inc (Using Codesurgeon).
+// Version 1.1.9
 //
 
 (function (exports) {
@@ -184,6 +184,7 @@ var Router = exports.Router = function (routes) {
   this.params   = {};
   this.routes   = {};
   this.methods  = ['on', 'once', 'after', 'before'];
+  this.scope    = [];
   this._methods = {};
 
   this._insert = this.insert;
@@ -230,7 +231,7 @@ Router.prototype.init = function (r) {
 
 Router.prototype.explode = function () {
   var v = this.history === true ? this.getPath() : dloc.hash;
-  if (v[1] === '/') { v=v.slice(1) }
+  if (v.charAt(1) === '/') { v=v.slice(1) }
   return v.slice(1, v.length).split("/");
 };
 
@@ -394,7 +395,9 @@ function terminator(routes, delimiter, start, stop) {
 
 Router.prototype.configure = function(options) {
   options = options || {};
-  this.extend(this.methods);
+  for (var i = 0; i < this.methods.length; i++) {
+    this._methods[this.methods[i]] = true;
+  }
   this.recurse = options.recurse || this.recurse || false;
   this.async = options.async || false;
   this.delimiter = options.delimiter || "/";
@@ -648,23 +651,17 @@ Router.prototype.insert = function(method, path, route, parent) {
 
 
 Router.prototype.extend = function(methods) {
-  var self = this;
+  var self = this, len = methods.length, i;
   function extend(method) {
     self._methods[method] = true;
-    function route() {
+    self[method] = function() {
       var extra = arguments.length === 1 ? [ method, "" ] : [ method ];
       self.on.apply(self, extra.concat(Array.prototype.slice.call(arguments)));
-    }
-    if (!~self.methods.indexOf(method)) {
-      if (self._methods[method]) {
-        if (self[method] === route) return;
-      }
-      self[method] = route;
-    }
+    };
   }
-  methods.forEach(function(method) {
-    extend(method);
-  });
+  for (i = 0; i < len; i++) {
+    extend(methods[i]);
+  }
 };
 
 Router.prototype.runlist = function(fns) {
