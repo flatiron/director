@@ -15,33 +15,22 @@ var assert = require('assert'),
     handlers = helpers.handlers,
     macros = helpers.macros;
 
-function assertBark(uri) {
-  return macros.assertGet(
-    9090,
-    uri,
-    'hello from (bark)'
-  );
-}
-
-vows.describe('director/http').addBatch({
+vows.describe('director/http/before').addBatch({
   "An instance of director.http.Router": {
-    "instantiated with a Routing table": {
+    "with ad-hoc routes including .before()": {
       topic: function () {
         var router = new director.http.Router();
         
-        console.dir(router.before);
-        router.before('/hello', function () {
-          console.log('hello');
-        });
-        
+        router.before('/hello', function () { });
+        router.after('/hello', function () { });
         router.get('/hello', handlers.respondWithId);
-        
-        console.dir(router);
+
         return router;
       },
       "should have the correct routes defined": function (router) {
         assert.isObject(router.routes.hello);
         assert.isFunction(router.routes.hello.before);
+        assert.isFunction(router.routes.hello.after);
         assert.isFunction(router.routes.hello.get);
       }
     }
