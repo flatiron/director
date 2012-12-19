@@ -2,7 +2,6 @@ var http     = require('http'),
 	fs       = require('fs'),
 	path     = require('path'),
 	director = require('../../../lib/director'),
-	pkg      = require('../../../package.json'),
 	index;
 
 fs.readFile(path.join(__dirname, '..', 'html5-routes-harness.html'), function (err, data) {
@@ -23,10 +22,6 @@ function fileServer(folder, file) {
 	var root = path.resolve(__dirname, '..');
 	if (folder === 'build' || folder === 'node_modules') {
 		root = path.resolve(root, '..', '..');
-	}
-
-	if (folder === 'build' && path.basename(file, '.js') === 'director') {
-		file = 'director-'+pkg.version+'.js'
 	}
 
 	var filepath = path.resolve(root, folder, file);
