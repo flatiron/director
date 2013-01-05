@@ -21,6 +21,10 @@ vows.describe('director/http/stream').addBatch({
       topic: function () {
         var router = new director.http.Router();
         router.post(/foo\/bar/, { stream: true }, handlers.streamBody);
+        router.path('/a-path', function () {
+          this.post({ stream: true }, handlers.streamBody);
+        });
+
         return router;
       },
       "when passed to an http.Server instance": {
@@ -28,7 +32,11 @@ vows.describe('director/http/stream').addBatch({
           helpers.createServer(router)
             .listen(9092, this.callback);
         },
-        "a POST request to foo/bar": macros.assertPost(9092, 'foo/bar', {
+        "a POST request to /foo/bar": macros.assertPost(9092, 'foo/bar', {
+          foo: 'foo',
+          bar: 'bar'
+        }),
+        "a POST request to /a-path": macros.assertPost(9092, 'a-path', {
           foo: 'foo',
           bar: 'bar'
         })
