@@ -439,6 +439,7 @@ The `options` are:
   default is executed upon `Router.init()` since with real URIs the router can
   not know if it should call a route handler or not. Setting this to `false`
   disables the route handler initial execution.
+* **convert_hash_in_init:** If `html5history` is enabled, the window.location hash by default is converted to a route upon `Router.init()` since with canonical URIs the router can not know if it should convert the hash to a route or not. Setting this to `false` disables the hash conversion on router initialisation.
 
 ## URL Matching
 

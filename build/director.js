@@ -1,7 +1,7 @@
 
 
 //
-// Generated on Wed Nov 05 2014 19:17:25 GMT-0500 (EST) by Nodejitsu, Inc (Using Codesurgeon).
+// Generated on Wed Nov 05 2014 21:19:24 GMT-0500 (EST) by Nodejitsu, Inc (Using Codesurgeon).
 // Version 1.2.4
 //
 
@@ -195,9 +195,16 @@ Router.prototype.init = function (r) {
     }
   }
   else {
-    var routeTo = dlocHashEmpty() && r ? r : !dlocHashEmpty() ? dloc.hash.replace(/^#/, '') : null;
-    if (routeTo) {
-      window.history.replaceState({}, document.title, routeTo);
+    if (this.convert_hash_in_init === true) {
+      // Use hash as route
+      var routeTo = dlocHashEmpty() && r ? r : !dlocHashEmpty() ? dloc.hash.replace(/^#/, '') : null;
+      if (routeTo) {
+        window.history.replaceState({}, document.title, routeTo);
+      }
+    }
+    else {
+      // Use canonical url
+      var routeTo = this.getPath()
     }
 
     // Router has been initialized, but due to the chrome bug it will not
@@ -394,6 +401,7 @@ Router.prototype.configure = function(options) {
   this.resource = options.resource;
   this.history = options.html5history && this.historySupport || false;
   this.run_in_init = this.history === true && options.run_handler_in_init !== false;
+  this.convert_hash_in_init = this.history === true && options.convert_hash_in_init !== false;
   this.every = {
     after: options.after || null,
     before: options.before || null,
