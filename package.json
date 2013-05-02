@@ -27,7 +27,7 @@
     "uglify-js": "1.0.6",
     "request": "2.9.x",
     "qunitjs": "1.9.x",
-    "vows": "0.6.x"
+    "vows": "0.7.x"
   },
   "ender": "./build/ender.js",
   "browserify": "./build/director",
