@@ -98,6 +98,20 @@ vows.describe('director/core/regifyString').addBatch({
     'Should not match "/home/page"': function(result) {
       assert.isFalse(result('/home/page'));
     }
+  },
+  'When using "/folder/::home"': {
+    topic: function() {
+      return testRoute('/folder/::home', callback);
+    },
+    'Should match "/folder/:home"': function(result) {
+      assert.isTrue(result('/folder/:home'));
+    },
+    'Should not match "/folder/::home"': function(result) {
+      assert.isFalse(result('/folder/::home'));
+    },
+    'Should not match "/folder/abc" (the catchall regexp)': function(result) {
+      assert.isFalse(result('/folder/abc'));
+    }
   }
 
 }).export(module);
