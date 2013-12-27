@@ -1,12 +1,11 @@
 
 
 //
-// Generated on Wed Jun 05 2013 13:48:29 GMT-0400 (EDT) by Nodejitsu, Inc (Using Codesurgeon).
-// Version 1.2.0
+// Generated on Fri Dec 27 2013 12:02:11 GMT-0500 (EST) by Nodejitsu, Inc (Using Codesurgeon).
+// Version 1.2.2
 //
 
 (function (exports) {
-
 
 /*
  * browser.js: Browser specific functionality for director.
@@ -201,7 +200,7 @@ Router.prototype.init = function (r) {
   this.handler = function(onChangeEvent) {
     var newURL = onChangeEvent && onChangeEvent.newURL || window.location.hash;
     var url = self.history === true ? self.getPath() : newURL.replace(/.*#/, '');
-    self.dispatch('on', url[0] === '/' ? url : '/' + url);
+    self.dispatch('on', url.charAt(0) === '/' ? url : '/' + url);
   };
 
   listener.init(this.handler, this.history);
@@ -210,7 +209,7 @@ Router.prototype.init = function (r) {
     if (dlocHashEmpty() && r) {
       dloc.hash = r;
     } else if (!dlocHashEmpty()) {
-      self.dispatch('on', '/' + dloc.hash.replace(/^#/, ''));
+      self.dispatch('on', '/' + dloc.hash.replace(/^(#\/|#|\/)/, ''));
     }
   }
   else {
@@ -490,20 +489,22 @@ Router.prototype.dispatch = function(method, path, callback) {
 
 Router.prototype.invoke = function(fns, thisArg, callback) {
   var self = this;
+  var apply;
   if (this.async) {
-    _asyncEverySeries(fns, function apply(fn, next) {
+    apply = function(fn, next) {
       if (Array.isArray(fn)) {
         return _asyncEverySeries(fn, apply, next);
       } else if (typeof fn == "function") {
         fn.apply(thisArg, fns.captures.concat(next));
       }
-    }, function() {
+    };
+    _asyncEverySeries(fns, apply, function() {
       if (callback) {
         callback.apply(thisArg, arguments);
       }
     });
   } else {
-    _every(fns, function apply(fn) {
+    apply = function(fn) {
       if (Array.isArray(fn)) {
         return _every(fn, apply);
       } else if (typeof fn === "function") {
@@ -511,7 +512,8 @@ Router.prototype.invoke = function(fns, thisArg, callback) {
       } else if (typeof fn === "string" && self.resource) {
         self.resource[fn].apply(thisArg, fns.captures || []);
       }
-    });
+    };
+    _every(fns, apply);
   }
 };
 
