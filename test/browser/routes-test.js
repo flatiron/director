@@ -692,3 +692,21 @@ createTest('changing the hash twice should call each route once', {
     });
   }
 );
+
+// This test doesn't use the createTest since createTest runs init on the router before
+// running the test, which is what we want to test.
+test('fire the correct route when initializing the router', function(){
+  window.location.hash = 'initial';
+  var fired = [];
+  var router = new Router({
+    '/initial': function(){
+      fired.push('/initial');
+    },
+    'initial': function(){
+      fired.push('initial');
+    }
+  });
+  router.init();
+  deepEqual(fired, ['/initial', 'initial']);
+  router.destroy();
+});
