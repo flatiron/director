@@ -13,8 +13,8 @@ var assert = require('assert'),
 vows.describe('director/http/index').addBatch({
   "the traverse() method" : {
     topic: new director.http.Router(),
-    "/some/nested/route" : {
-      "should return a stack of three functions" : function(router) {
+    "/some/1/nested/2/route/3" : {
+      "should return a stack of three functions and three captures" : function(router) {
         function alpha() {}
         function beta() {}
         function gamma() {}
