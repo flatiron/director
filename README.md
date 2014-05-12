@@ -39,7 +39,7 @@ Here is a simple example:
   <head>
     <meta charset="utf-8">
     <title>A Gentle Introduction</title>
-    <script src="https://raw.github.com/flatiron/director/master/build/director.min.js"></script>
+    <script src="https://rawgithub.com/flatiron/director/master/build/director.min.js"></script>
     <script>
 
       var author = function () { console.log("author"); },
@@ -76,7 +76,7 @@ Director works great with your favorite DOM library, such as jQuery.
     <meta charset="utf-8">
     <title>A Gentle Introduction 2</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="https://raw.github.com/flatiron/director/master/build/director.min.js"></script>
+    <script src="https://rawgithub.com/flatiron/director/master/build/director.min.js"></script>
     <script>
     $('document').ready(function(){
       //
