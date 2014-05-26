@@ -1,8 +1,8 @@
 
 
 //
-// Generated on Fri Dec 27 2013 12:02:11 GMT-0500 (EST) by Nodejitsu, Inc (Using Codesurgeon).
-// Version 1.2.2
+// Generated on Sun May 25 2014 21:04:10 GMT-0700 (PDT) by Nodejitsu, Inc (Using Codesurgeon).
+// Version 1.2.3
 //
 
 (function (exports) {
@@ -426,6 +426,7 @@ Router.prototype.param = function(token, matcher) {
   this.params[token] = function(str) {
     return str.replace(compiled, matcher.source || matcher);
   };
+  return this;
 };
 
 Router.prototype.on = Router.prototype.route = function(method, path, route) {
