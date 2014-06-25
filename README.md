@@ -708,9 +708,10 @@ call the `setRoute()` method yourself.
 
 ## Attach Properties To `this`
 
-Generally, the `this` object bound to route handlers, will contain the request
-in `this.req` and the response in `this.res`. One may attach additional
-properties to `this` with the `router.attach` method:
+**Available in the http router only.** Generally, the `this` object bound to
+route handlers, will contain the request in `this.req` and the response in
+`this.res`. One may attach additional properties to `this` with the
+`router.attach` method:
 
 ```js
   var director = require('director');
