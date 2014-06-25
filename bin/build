@@ -51,6 +51,7 @@ surgeon
     'Router.prototype.configure',
     'Router.prototype.param',
     'Router.prototype.on',
+    'Router.prototype.path',
     'Router.prototype.dispatch',
     'Router.prototype.invoke',
     'Router.prototype.traverse',
