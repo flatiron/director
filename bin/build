@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var Codesurgeon = require('codesurgeon').Codesurgeon;
-var surgeon = new Codesurgeon;
+var surgeon = new Codesurgeon();
 
 var path    = require('path');
 
@@ -13,7 +13,7 @@ var lib     = path.join(root, 'lib', 'director');
 //
 surgeon
   //
-  .configure({ 
+  .configure({
     package: root + '/package.json',
     owner: 'Nodejitsu, Inc (Using Codesurgeon).',
     noVersion: true
@@ -22,22 +22,22 @@ surgeon
     path.join(lib, 'browser.js')
   )
   //
-  // we want everything so far. specify extract with no 
+  // We want everything so far. specify extract with no
   // parameters to get everything into the output buffer.
   //
-  .extract() 
+ .extract()
   //
-  // clear the input so far, but don't clear the output.
+  // Clear the input so far, but don't clear the output.
   //
-  .clear('inputs') 
+  .clear('inputs')
   //
-  // read the `router.js` file
+  // Read the `router.js` file
   //
   .read(
     path.join(lib, 'router.js')
   )
   //
-  // the current input buffer contains stuff that we dont
+  // The current input buffer contains stuff that we dont
   // want in the browser build, so let's cherry pick from
   // the buffer.
   //
@@ -61,18 +61,18 @@ surgeon
     'Router.prototype.mount'
   )
   //
-  // wrap everything that is in the current buffer with a
-  // closure so that we dont get any collisions with other
-  // libraries
+  // Wrap everything that is in the current buffer with a
+  // closure so that we don't get any collisions with other
+  // libraries.
   //
   .wrap()
   //
-  // write the debuggable version of the file. This file will
-  // get renamed to include the version from the package.json
+  // Write the debuggable version of the file. This file will
+  // get renamed to include the version from the package.json.
   //
   .write(root + '/build/director.js')
   //
-  // now lets make a minified version for production use.
+  // Make a minified version for production use.
   //
   .uglify()
   .write(root + '/build/director.min.js')
