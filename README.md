@@ -17,9 +17,9 @@ etc).
 
 # Features
 
-* [Client-Side Routing](#client-side)
-* [Server-Side HTTP Routing](#http-routing)
-* [Server-Side CLI Routing](#cli-routing)
+* [Client-Side Routing](#client-side-routing)
+* [Server-Side HTTP Routing](#server-side-http-routing)
+* [Server-Side CLI Routing](#server-side-cli-routing)
 
 # Usage
 
@@ -224,7 +224,7 @@ Director handles routing for HTTP requests similar to `journey` or `express`:
  - HTML / Plain Text views of routers using
    [Director-Explorer](http://github.com/flatiron/director-explorer)
 
-## CLI Routing
+## Server-Side CLI Routing
 
 Director supports Command Line Interface routing. Routes for cli options are
 based on command line input (i.e. `process.argv`) instead of a URL.
