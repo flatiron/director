@@ -265,7 +265,7 @@ destroy something
 * [Routing Events](#routing-events)
 * [Configuration](#configuration)
 * [URL Matching](#url-matching)
-* [URL Params](#url-params)
+* [URL Parameters](#url-parameters)
 * [Route Recursion](#route-recursion)
 * [Async Routing](#async-routing)
 * [Resources](#resources)
@@ -843,7 +843,7 @@ Configures the Router instance with the specified `options`. See
 * matcher {string|Regexp}: Matcher for the specified `token`.
 
 Adds a route fragment for the given string `token` to the specified regex
-`matcher` to this Router instance. See [URL Parameters](#url-params) for more
+`matcher` to this Router instance. See [URL Parameters](#url-parameters) for more
 documentation.
 
 ### on(method, path, route)
