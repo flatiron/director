@@ -48,6 +48,7 @@ surgeon
     'paramifyString',
     'regifyString',
     'terminator',
+    'QUERY_SEPARATOR',
     'Router.prototype.configure',
     'Router.prototype.param',
     'Router.prototype.on',

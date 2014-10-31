@@ -22,12 +22,12 @@
     "ender"
   ],
   "devDependencies": {
-    "codesurgeon": "https://github.com/hij1nx/codesurgeon/tarball/master",
-    "colors": "0.5.x",
     "api-easy": "0.3.x",
-    "uglify-js": "1.0.6",
-    "request": "2.9.x",
-    "qunitjs": "1.9.x",
+    "codesurgeon": "https://github.com/hij1nx/codesurgeon/tarball/master",
+    "colors": "~1.0.3",
+    "qunitjs": "~1.9.x",
+    "request": "~2.47.0",
+    "uglify-js": "~2.4.15",
     "vows": "0.7.x"
   },
   "ender": "./build/ender.js",

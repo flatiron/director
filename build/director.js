@@ -1,7 +1,7 @@
 
 
 //
-// Generated on Wed Jun 25 2014 00:16:13 GMT-0700 (PDT) by Nodejitsu, Inc (Using Codesurgeon).
+// Generated on Wed Nov 05 2014 19:17:25 GMT-0500 (EST) by Nodejitsu, Inc (Using Codesurgeon).
 // Version 1.2.4
 //
 
@@ -379,6 +379,8 @@ function terminator(routes, delimiter, start, stop) {
   return routes;
 }
 
+var QUERY_SEPARATOR = /\?.*/;
+
 Router.prototype.configure = function(options) {
   options = options || {};
   for (var i = 0; i < this.methods.length; i++) {
@@ -449,7 +451,7 @@ Router.prototype.path = function(path, routesFn) {
 };
 
 Router.prototype.dispatch = function(method, path, callback) {
-  var self = this, fns = this.traverse(method, path, this.routes, ""), invoked = this._invoked, after;
+  var self = this, fns = this.traverse(method, path.replace(QUERY_SEPARATOR, ""), this.routes, ""), invoked = this._invoked, after;
   this._invoked = true;
   if (!fns || fns.length === 0) {
     this.last = [];
