@@ -1,7 +1,7 @@
 
 
 //
-// Generated on Wed Nov 05 2014 21:19:24 GMT-0500 (EST) by Nodejitsu, Inc (Using Codesurgeon).
+// Generated on Wed Nov 05 2014 22:50:42 GMT-0500 (EST) by Nodejitsu, Inc (Using Codesurgeon).
 // Version 1.2.4
 //
 
@@ -178,7 +178,8 @@ var Router = exports.Router = function (routes) {
 };
 
 Router.prototype.init = function (r) {
-  var self = this;
+  var self = this
+    , routeTo;
   this.handler = function(onChangeEvent) {
     var newURL = onChangeEvent && onChangeEvent.newURL || window.location.hash;
     var url = self.history === true ? self.getPath() : newURL.replace(/.*#/, '');
@@ -195,16 +196,16 @@ Router.prototype.init = function (r) {
     }
   }
   else {
-    if (this.convert_hash_in_init === true) {
+    if (this.convert_hash_in_init) {
       // Use hash as route
-      var routeTo = dlocHashEmpty() && r ? r : !dlocHashEmpty() ? dloc.hash.replace(/^#/, '') : null;
+      routeTo = dlocHashEmpty() && r ? r : !dlocHashEmpty() ? dloc.hash.replace(/^#/, '') : null;
       if (routeTo) {
         window.history.replaceState({}, document.title, routeTo);
       }
     }
     else {
       // Use canonical url
-      var routeTo = this.getPath()
+      routeTo = this.getPath();
     }
 
     // Router has been initialized, but due to the chrome bug it will not

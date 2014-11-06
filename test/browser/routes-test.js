@@ -698,7 +698,7 @@ createTest('changing the hash twice should call each route once', {
 test('fire the correct route when initializing the router', function(){
   window.location.hash = 'initial';
   var fired = [];
-  var router = new Router({
+  var router = new (window.Router || window.RouterAlias)({
     '/initial': function(){
       fired.push('/initial');
     },
@@ -708,5 +708,32 @@ test('fire the correct route when initializing the router', function(){
   });
   router.init();
   deepEqual(fired, ['/initial', 'initial']);
+  router.destroy();
+});
+
+test('do not combine hash if convert_hash_in_init is false', function(){
+  window.location.hash = 'initial';
+  var fired = [];
+  var initialPath = window.location.pathname;
+  var routes = {
+    '/initial': function(){
+      fired.push('/initial');
+    },
+    'initial': function(){
+      fired.push('initial');
+    }
+  };
+  routes[initialPath] = function(){
+    fired.push('*');
+  };
+
+  var router = new (window.Router || window.RouterAlias)(routes);
+
+  router.configure({
+    html5history: true,
+    convert_hash_in_init: false
+  });
+  router.init();
+  deepEqual(fired, ['*']);
   router.destroy();
 });
