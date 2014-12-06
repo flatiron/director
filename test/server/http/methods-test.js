@@ -1,7 +1,7 @@
 /*
  * methods-test.js: Tests for HTTP methods.
  *
- * (C) 2011, Nodejitsu Inc.
+ * (C) 2011, Charlie Robbins, Paolo Fragomeni, & the Contributors.
  * MIT LICENSE
  *
  */

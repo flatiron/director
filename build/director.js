@@ -1,7 +1,7 @@
 
 
 //
-// Generated on Wed Nov 05 2014 22:50:42 GMT-0500 (EST) by Nodejitsu, Inc (Using Codesurgeon).
+// Generated on Sat Dec 06 2014 16:08:09 GMT-0500 (EST) by Charlie Robbins, Paolo Fragomeni & the Contributors (Using Codesurgeon).
 // Version 1.2.4
 //
 
@@ -10,7 +10,7 @@
 /*
  * browser.js: Browser specific functionality for director.
  *
- * (C) 2011, Nodejitsu Inc.
+ * (C) 2011, Charlie Robbins, Paolo Fragomeni, & the Contributors.
  * MIT LICENSE
  *
  */

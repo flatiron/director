@@ -1,7 +1,7 @@
 /*
  * attach-test.js: Tests 'router.attach' functionality.
  *
- * (C) 2011, Nodejitsu Inc.
+ * (C) 2011, Charlie Robbins, Paolo Fragomeni, & the Contributors.
  * MIT LICENSE
  *
  */

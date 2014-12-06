@@ -1,7 +1,7 @@
 /*
  * before-test.js: Tests for running before methods on HTTP server(s).
  *
- * (C) 2011, Nodejitsu Inc.
+ * (C) 2011, Charlie Robbins, Paolo Fragomeni, & the Contributors.
  * MIT LICENSE
  *
  */
@@ -20,7 +20,7 @@ vows.describe('director/http/before').addBatch({
     "with ad-hoc routes including .before()": {
       topic: function () {
         var router = new director.http.Router();
-        
+
         router.before('/hello', function () { });
         router.after('/hello', function () { });
         router.get('/hello', handlers.respondWithId);

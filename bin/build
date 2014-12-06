@@ -15,7 +15,7 @@ surgeon
   //
   .configure({
     package: root + '/package.json',
-    owner: 'Nodejitsu, Inc (Using Codesurgeon).',
+    owner: 'Charlie Robbins, Paolo Fragomeni & the Contributors (Using Codesurgeon).',
     noVersion: true
   })
   .read(

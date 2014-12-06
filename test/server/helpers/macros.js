@@ -1,7 +1,7 @@
 /*
  * macros.js: Test macros for director tests.
  *
- * (C) 2011, Nodejitsu Inc.
+ * (C) 2011, Charlie Robbins, Paolo Fragomeni, & the Contributors.
  * MIT LICENSE
  *
  */

@@ -1,7 +1,7 @@
 /*
  * stream-test.js: Tests for streaming HTTP in director.
  *
- * (C) 2011, Nodejitsu Inc.
+ * (C) 2011, Charlie Robbins, Paolo Fragomeni, & the Contributors.
  * MIT LICENSE
  *
  */

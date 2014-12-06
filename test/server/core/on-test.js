@@ -1,7 +1,7 @@
 /*
  * on-test.js: Tests for the on/route method.
  *
- * (C) 2011, Nodejitsu Inc.
+ * (C) 2011, Charlie Robbins, Paolo Fragomeni, & the Contributors.
  * MIT LICENSE
  *
  */

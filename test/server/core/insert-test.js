@@ -1,7 +1,7 @@
 /*
  * insert-test.js: Tests for inserting routes into a normalized routing table.
  *
- * (C) 2011, Nodejitsu Inc.
+ * (C) 2011, Charlie Robbins, Paolo Fragomeni, & the Contributors.
  * MIT LICENSE
  *
  */

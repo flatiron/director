@@ -1,11 +1,10 @@
 {
   "name": "director",
   "description": "A client Side/Server Side Router",
-  "author": "Nodejitsu Inc. <info@nodejitsu.com>",
+  "author": "Charlie Robbins <charlie.robbins@gmail.com>",
   "version": "1.2.4",
   "maintainers": [
     "hij1nx <paolo@nodejitsu.com>",
-    "indexzero <charlie@nodejitsu.com>",
     "beaugunderson <beau@beaugunderson.com>"
   ],
   "repository": {
@@ -22,11 +21,11 @@
     "ender"
   ],
   "devDependencies": {
-    "api-easy": "0.3.x",
+    "api-easy": "0.4.x",
     "codesurgeon": "https://github.com/hij1nx/codesurgeon/tarball/master",
     "colors": "~1.0.3",
     "qunitjs": "~1.9.x",
-    "request": "~2.47.0",
+    "request": "~2.49.0",
     "uglify-js": "~2.4.15",
     "vows": "0.7.x"
   },
@@ -34,7 +33,7 @@
   "browserify": "./build/director",
   "main": "./lib/director",
   "engines": {
-    "node": ">= 0.4.0"
+    "node": ">= 0.8.0"
   },
   "scripts": {
     "test": "vows test/server/*/*-test.js --spec"

@@ -1,7 +1,7 @@
 /*
  * http-test.js: Tests for basic HTTP server(s).
  *
- * (C) 2011, Nodejitsu Inc.
+ * (C) 2011, Charlie Robbins, Paolo Fragomeni, & the Contributors.
  * MIT LICENSE
  *
  */
