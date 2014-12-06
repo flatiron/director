@@ -1,6 +1,6 @@
 {
   "name": "director",
-  "version": "1.1.9",
+  "version": "1.2.5",
   "dependencies": {},
   "main": "build/director.js",
   "scripts": [
