@@ -34,7 +34,7 @@ vows.describe('director/core/path').addBatch({
 
         assert.isFunction(router.routes.foo.on);
         assert.isObject(router.routes.regions);
-        assert.isFunction(router.routes.regions['([._a-zA-Z0-9-]+)'].on);
+        assert.isFunction(router.routes.regions['([._a-zA-Z0-9-%()]+)'].on);
       },
       "should dispatch the function correctly": function (router) {
         router.dispatch('on', '/regions/newyork')

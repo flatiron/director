@@ -71,7 +71,7 @@ vows.describe('director/core/mount').addBatch({
           assertRoute(foobar,      ['foo', 'jitsu', 'then', 'before'],          router.routes);
           assertRoute(foobazzbuzz, ['foo', 'bazz', 'buzz', 'on'],               router.routes);
           assertRoute(foostar,     ['foo', 'jitsu', 'then', 'now', 'on'],       router.routes);
-          assertRoute(foodog,      ['foo', '([._a-zA-Z0-9-]+)', 'on'],          router.routes);
+          assertRoute(foodog,      ['foo', '([._a-zA-Z0-9-%()]+)', 'on'],     router.routes);
         },
 
         "should accept string path": function(router) {

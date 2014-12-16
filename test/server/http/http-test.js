@@ -38,6 +38,7 @@ vows.describe('director/http').addBatch({
       "when passed to an http.Server instance": {
         topic: function (router) {
           router.get(/foo\/bar\/(\w+)/, handlers.respondWithId);
+          router.get(/add\/:param\/bark/, handlers.respondWithId);
           router.get(/foo\/update\/(\w+)/, handlers.respondWithId);
           router.path(/bar\/bazz\//, function () {
             this.get(/(\w+)/, handlers.respondWithId);
@@ -53,6 +54,36 @@ vows.describe('director/http').addBatch({
         "a request to bar/bazz/bark": assertBark('bar/bazz/bark'),
         "a request to foo/bar/bark?test=test": assertBark('foo/bar/bark?test=test'),
         "a request to foo/wild/bark": assertBark('foo/wild/bark'),
+        "a request to add/:param/bark": {
+          topic: function () {
+            request({ uri: 'http://localhost:9090/add/test/bark' }, this.callback);
+          },
+          'should respond and parse the params': function (err, res, body) {
+            assert.isNull(err);
+            assert.equal(res.statusCode, 200);
+            assert.equal(body, 'hello from (test)');
+          }
+        },
+        "an encoded request to add/:param/bark": {
+          topic: function () {
+            request({ uri: 'http://localhost:9090/add/something%40example.com/bark' }, this.callback);
+          },
+          'should respond and parse the params': function (err, res, body) {
+            assert.isNull(err);
+            assert.equal(res.statusCode, 200);
+            assert.equal(body, 'hello from (something%40example.com)');
+          }
+        },
+        "an encoded request to add/:param/bark with additional special characters": {
+          topic: function () {
+            request({ uri: 'http://localhost:9090/add/something%40(example).com/bark' }, this.callback);
+          },
+          'should respond and parse the params': function (err, res, body) {
+            assert.isNull(err);
+            assert.equal(res.statusCode, 200);
+            assert.equal(body, 'hello from (something%40(example).com)');
+          }
+        },
         "a request to foo/%RT": macros.assert404(9090, 'foo/%RT'),
         "a request to /v2/somepath": macros.assertGet(
           9090,
