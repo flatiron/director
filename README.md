@@ -28,7 +28,7 @@ etc).
 
 ## Building client-side script
 
-Run the provided CLi script.
+Run the provided CLI script.
 
 ```bash
 ./bin/build
