@@ -26,6 +26,14 @@ etc).
 * [API Documentation](#api-documentation)
 * [Frequently Asked Questions](#faq)
 
+## Building client-side script
+
+Run the provided CLi script.
+
+```bash
+./bin/build
+```
+
 ## Client-side Routing
 
 It simply watches the hash of the URL to determine what to do, for example:
