@@ -74,6 +74,16 @@ vows.describe('director/http').addBatch({
             assert.equal(body, 'hello from (something%40example.com)');
           }
         },
+        "an encoded request to add/:param/bark with additional special characters": {
+          topic: function () {
+            request({ uri: 'http://localhost:9090/add/something%40(example).com/bark' }, this.callback);
+          },
+          'should respond and parse the params': function (err, res, body) {
+            assert.isNull(err);
+            assert.equal(res.statusCode, 200);
+            assert.equal(body, 'hello from (something%40(example).com)');
+          }
+        },
         "a request to foo/%RT": macros.assert404(9090, 'foo/%RT'),
         "a request to /v2/somepath": macros.assertGet(
           9090,
