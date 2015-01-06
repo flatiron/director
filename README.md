@@ -274,6 +274,7 @@ destroy something
 * [Configuration](#configuration)
 * [URL Matching](#url-matching)
 * [URL Parameters](#url-parameters)
+* [Wildcard routes](#wildcard-routes)
 * [Route Recursion](#route-recursion)
 * [Async Routing](#async-routing)
 * [Resources](#resources)
@@ -531,6 +532,15 @@ simple example where a `userId` is used repeatedly.
   //
   router.on('/anything/:userId', function (userId) { });
   router.on('/something-else/:userId', function (userId) { });
+```
+
+## Wildcard routes
+
+It is possible to define wildcard routes, so that /foo and /foo/a/b/c routes to
+the same handler, and gets passed `""` and `"a/b/c"` respectively.
+
+``` js
+  router.on("/foo/?((\w|.)*)"), function (path) { });
 ```
 
 ## Route Recursion
