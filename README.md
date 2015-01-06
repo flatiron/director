@@ -279,8 +279,8 @@ destroy something
 * [Resources](#resources)
 * [History API](#history-api)
 * [Instance Methods](#instance-methods)
-* [Attach Properties to `this`](#attach-to-this)
-* [HTTP Streaming and Body Parsing](#http-streaming-body-parsing)
+* [Attach Properties to `this`](#attach-properties-to-this)
+* [HTTP Streaming and Body Parsing](#http-streaming-and-body-parsing)
 
 ## Constructor
 
